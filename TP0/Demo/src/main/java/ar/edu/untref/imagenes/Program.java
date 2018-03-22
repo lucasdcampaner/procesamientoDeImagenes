@@ -33,23 +33,62 @@ public class Program extends Application {
     private ImageView imageResult;
     private Stage stage;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) {
+
         try {
             stage = primaryStage;
-
             Scene scene = new Scene(new VBox(), 800, 300);
             scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-
             configureWindow(stage);
-
             ((VBox) scene.getRoot()).getChildren().addAll(configureMenuBar(), configureMainLayout());
-
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void configureWindow(Stage stage) {
+
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
+        stage.setTitle("Procesamiento de imágenes");
+    }
+
+    private MenuBar configureMenuBar() {
+
+        MenuBar menuBar = new MenuBar();
+
+        // Menu file
+        Menu menuFile = new Menu("File");
+        MenuItem open = new MenuItem("Open file");
+        open.setOnAction(listenerOpen);
+        MenuItem save = new MenuItem("Save");
+        save.setOnAction(listenerSave);
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction(listenerExit);
+        menuFile.getItems().addAll(open, save, exit);
+
+        // Menu edit
+        Menu menuEdit = new Menu("Edit");
+        MenuItem createCircle = new MenuItem("Create circle");
+        MenuItem createRectangle = new MenuItem("Create rectangle");
+        MenuItem grayGradient = new MenuItem("Gray gradient");
+        MenuItem colorGradient = new MenuItem("Color gradient");
+        menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
+        menuBar.getMenus().addAll(menuFile, menuEdit);
+
+        return menuBar;
     }
 
     private VBox configureMainLayout() {
@@ -127,49 +166,6 @@ public class Program extends Application {
         return layoutGeneral;
     }
 
-    private void configureWindow(Stage stage) {
-
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(bounds.getWidth());
-        stage.setHeight(bounds.getHeight());
-        stage.setTitle("Procesamiento de imágenes");
-    }
-
-    private MenuBar configureMenuBar() {
-
-        MenuBar menuBar = new MenuBar();
-
-        // Menu file
-        Menu menuFile = new Menu("File");
-
-        MenuItem open = new MenuItem("Open file");
-        open.setOnAction(listenerOpen);
-        MenuItem save = new MenuItem("Save");
-        save.setOnAction(listenerSave);
-        MenuItem exit = new MenuItem("Exit");
-        exit.setOnAction(listenerExit);
-
-        menuFile.getItems().addAll(open, save, exit);
-
-        // Menu edit
-        Menu menuEdit = new Menu("Edit");
-
-        MenuItem createCircle = new MenuItem("Create circle");
-        MenuItem createRectangle = new MenuItem("Create rectangle");
-        MenuItem grayGradient = new MenuItem("Gray gradient");
-        MenuItem colorGradient = new MenuItem("Color gradient");
-
-        menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
-
-        menuBar.getMenus().addAll(menuFile, menuEdit);
-
-        return menuBar;
-    }
-
     private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -205,8 +201,4 @@ public class Program extends Application {
             Platform.exit();
         }
     };
-
-    public static void main(String[] args) {
-        launch(args);
-    }
 }
