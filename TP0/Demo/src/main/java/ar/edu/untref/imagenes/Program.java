@@ -13,12 +13,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
@@ -26,11 +29,12 @@ import javafx.stage.Stage;
 
 public class Program extends Application {
 
-	private ImageView mainImage;
+	private ImageView imageOriginal;
+	private ImageView imageResult;
 	private Stage stage;
 
 	@Override
-	public void start(Stage primaryStage) { 
+	public void start(Stage primaryStage) {
 		try {
 			stage = primaryStage;
 
@@ -38,7 +42,7 @@ public class Program extends Application {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
 			configureWindow(stage);
-			
+
 			((VBox) scene.getRoot()).getChildren().addAll(configureMenuBar(), configureMainLayout());
 
 			stage.setScene(scene);
@@ -47,32 +51,88 @@ public class Program extends Application {
 			e.printStackTrace();
 		}
 	}
-	
-	private HBox configureMainLayout() {
+
+	private VBox configureMainLayout() {
+
+		VBox layoutGeneral = new VBox();
+
+		HBox layoutImagesViews = new HBox();
+
+		// Imagen original
+		HBox layoutImageOriginal = new HBox();
+		layoutImageOriginal.setMinWidth(stage.getWidth() / 2);
+		layoutImageOriginal.setMaxWidth(stage.getWidth() / 2);
+		layoutImageOriginal.setMinHeight(600);
+		layoutImageOriginal.setMaxHeight(600);
+		layoutImageOriginal.getStyleClass().add("layout-main-image");
+
+		imageOriginal = new ImageView();
+		imageOriginal.setFitWidth(500);
+		imageOriginal.setFitHeight(500);
+		imageOriginal.setPreserveRatio(true);
+		layoutImageOriginal.getChildren().add(imageOriginal);
+
+		// Imagen resultado
+		HBox layoutImageResult = new HBox();
+		layoutImageResult.setMinWidth(stage.getWidth() / 2);
+		layoutImageResult.setMaxWidth(stage.getWidth() / 2);
+		layoutImageResult.setMinHeight(600);
+		layoutImageResult.setMaxHeight(600);
+		layoutImageResult.getStyleClass().add("layout-main-image");
+
+		imageResult = new ImageView();
+		imageResult.setFitWidth(500);
+		imageResult.setFitHeight(500);
+		imageResult.setPreserveRatio(true);
+		layoutImageResult.getChildren().add(imageResult);
 		
-		HBox layoutImageView = new HBox();
-		layoutImageView.setMaxWidth(600);
-		layoutImageView.setMaxHeight(600);
-		layoutImageView.setMinHeight(600);
-		layoutImageView.setMinHeight(600);
-		layoutImageView.getStyleClass().add("layout-main-image");
 		
-		mainImage = new ImageView();
-		mainImage.setFitWidth(500);
-		mainImage.setFitHeight(500);
-		mainImage.setPreserveRatio(true);
+		HBox.setHgrow(layoutImageOriginal, Priority.SOMETIMES);
+		HBox.setHgrow(layoutImageResult, Priority.SOMETIMES);
 		
-		layoutImageView.getChildren().add(mainImage);
-		
-		return layoutImageView;
+		layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
+
+		// Barra info
+		HBox layoutInfo = new HBox();
+		layoutInfo.setMaxHeight(200);
+		layoutInfo.getStyleClass().add("layout-info");
+
+		Label labelX = new Label("x: ");
+		labelX.getStyleClass().add("label-info");
+		Label posX = new Label("");
+		posX.getStyleClass().add("label-info");
+
+		Label labelY = new Label("y: ");
+		labelY.getStyleClass().add("label-info");
+		Label posY = new Label("");
+		posY.getStyleClass().add("label-info");
+
+		// Alinea los label de manera horizontal
+		HBox.setHgrow(labelX, Priority.SOMETIMES);
+		HBox.setHgrow(posX, Priority.SOMETIMES);
+		HBox.setHgrow(labelY, Priority.SOMETIMES);
+		HBox.setHgrow(posY, Priority.SOMETIMES);
+
+		imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				posX.setText(String.valueOf((int) event.getX()));
+				posY.setText(String.valueOf((int) event.getY()));
+			}
+		});
+
+		layoutInfo.getChildren().addAll(labelX, posX, labelY, posY);
+
+		layoutGeneral.getChildren().addAll(layoutInfo, layoutImagesViews);
+
+		return layoutGeneral;
 	}
 
 	private void configureWindow(Stage stage) {
 
-		
 		Screen screen = Screen.getPrimary();
 		Rectangle2D bounds = screen.getVisualBounds();
-		
+
 		stage.setX(bounds.getMinX());
 		stage.setY(bounds.getMinY());
 		stage.setWidth(bounds.getWidth());
@@ -107,12 +167,13 @@ public class Program extends Application {
 		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
 
 		menuBar.getMenus().addAll(menuFile, menuEdit);
+
 		return menuBar;
 	}
 
-	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
 		@Override
-		public void handle(ActionEvent event) { 
+		public void handle(ActionEvent event) {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Abrir imágen");
 			File file = fileChooser.showOpenDialog(stage);
@@ -121,7 +182,7 @@ public class Program extends Application {
 				if (file != null) {
 					BufferedImage bufferedImage = ImageIO.read(file);
 					Image image = SwingFXUtils.toFXImage(bufferedImage, null);
-					mainImage.setImage(image);
+					imageOriginal.setImage(image);
 				} else {
 					System.out.println("No se seleccionó ninguna imagen");
 				}
@@ -131,14 +192,14 @@ public class Program extends Application {
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
 
 		@Override
-		public void handle(ActionEvent event) { 
+		public void handle(ActionEvent event) {
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
 
 		@Override
 		public void handle(ActionEvent event) {

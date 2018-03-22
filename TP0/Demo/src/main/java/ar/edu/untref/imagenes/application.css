@@ -5,7 +5,16 @@
 }
 
 .layout-main-image {
-	-fx-background-color: gray;
+	-fx-background-color: lightgray ;
 	-fx-alignment: center;
-	-fx-background-insets: 30px; 
+	-fx-background-insets: 15px; 
+}
+
+.layout-info {
+	-fx-background-color: rgb(65,69,72);
+}
+
+.label-info {
+	-fx-padding: 10px;
+	-fx-text-fill: white;
 }
