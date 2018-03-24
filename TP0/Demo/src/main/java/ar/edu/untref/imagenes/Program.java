@@ -139,14 +139,16 @@ public class Program extends Application {
 		// Menu file
 		Menu menuFile = new Menu("File");
 
-		MenuItem open = new MenuItem("Open file");
+		MenuItem open = new MenuItem("Open image");
 		open.setOnAction(listenerOpen);
+		MenuItem openRAW = new MenuItem("Open image RAW");
+		openRAW.setOnAction(listenerOpenRAW);
 		MenuItem save = new MenuItem("Save");
 		save.setOnAction(listenerSave);
 		MenuItem exit = new MenuItem("Exit");
 		exit.setOnAction(listenerExit);
 
-		menuFile.getItems().addAll(open, save, exit);
+		menuFile.getItems().addAll(open, openRAW, save, exit);
 
 		// Menu edit
 		Menu menuEdit = new Menu("Edit");
@@ -162,6 +164,13 @@ public class Program extends Application {
 
 		return menuBar;
 	}
+	
+	private EventHandler<ActionEvent> listenerOpenRAW = new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+			imageOriginal.setImage(function.openRAW(256, 256));
+		}
+	};
 
 	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
 		@Override
