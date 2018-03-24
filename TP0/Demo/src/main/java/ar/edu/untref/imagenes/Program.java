@@ -12,10 +12,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import listener.ListenerDialogs;
 
 public class Program extends Application {
 
@@ -91,9 +91,6 @@ public class Program extends Application {
 		imageResult.setPreserveRatio(true);
 		layoutImageResult.getChildren().add(imageResult);
 
-		HBox.setHgrow(layoutImageOriginal, Priority.SOMETIMES);
-		HBox.setHgrow(layoutImageResult, Priority.SOMETIMES);
-
 		layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
 		// Barra info
@@ -110,12 +107,6 @@ public class Program extends Application {
 		labelY.getStyleClass().add("label-info");
 		Label posY = new Label("");
 		posY.getStyleClass().add("label-info");
-
-		// Alinea los label de manera horizontal
-		HBox.setHgrow(labelX, Priority.SOMETIMES);
-		HBox.setHgrow(posX, Priority.SOMETIMES);
-		HBox.setHgrow(labelY, Priority.SOMETIMES);
-		HBox.setHgrow(posY, Priority.SOMETIMES);
 
 		imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			@Override
@@ -164,17 +155,28 @@ public class Program extends Application {
 
 		return menuBar;
 	}
-	
+
 	private EventHandler<ActionEvent> listenerOpenRAW = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			imageOriginal.setImage(function.openRAW(256, 256));
+			Dialogs.showConfigurationRAW(new ListenerDialogs() {
+
+				@Override
+				public void accept() {
+					imageOriginal.setImage(function.openRAW(256, 256));
+				}
+
+				@Override
+				public void cancel() {
+				}
+			});
 		}
 	};
 
 	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
+
 			imageOriginal.setImage(function.openImage());
 		}
 	};

@@ -24,23 +24,22 @@ public class Functions {
 	public Image openImage() {
 
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
+		fileChooser.getExtensionFilters()
+				.add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
 		File file = fileChooser.showOpenDialog(stage);
 
 		if (file != null) {
-
 			ImagePlus imagePlus = new ImagePlus(file.getAbsolutePath());
 			Image image = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
 			return image;
 		}
-
 		return null;
 	}
 
 	public Image openRAW(int width, int height) {
 
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.raw"));
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("RAW", "*.raw"));
 		File file = fileChooser.showOpenDialog(stage);
 		byte[] imagenRaw = null;
 
@@ -64,7 +63,7 @@ public class Functions {
 				positionVector++;
 			}
 		}
-		
+
 		return SwingFXUtils.toFXImage(image.getBufferedImage(), null);
 	}
 
