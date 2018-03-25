@@ -130,9 +130,9 @@ public class Program extends Application {
         imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                valueR.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getRed() * 255));
-                valueG.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getGreen() * 255));
-                valueB.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getBlue() * 255));
+                valueR.setText(String.valueOf((int)getValuePixel(event.getX(), event.getY()).getRed() * 255));
+                valueG.setText(String.valueOf((int)getValuePixel(event.getX(), event.getY()).getGreen() * 255));
+                valueB.setText(String.valueOf((int)getValuePixel(event.getX(), event.getY()).getBlue() * 255));
             }
         });
 
