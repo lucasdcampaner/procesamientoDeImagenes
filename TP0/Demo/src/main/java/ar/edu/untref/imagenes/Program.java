@@ -130,34 +130,19 @@ public class Program extends Application {
         imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                valueR.setText(getValuePixelR(event.getX(), event.getY()));
-                valueG.setText(getValuePixelG(event.getX(), event.getY()));
-                valueB.setText(getValuePixelB(event.getX(), event.getY()));
+                valueR.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getRed() * 255));
+                valueG.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getGreen() * 255));
+                valueB.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getBlue() * 255));
             }
         });
 
         return layoutInfo;
     }
 
-    private String getValuePixelR(Double posX, Double posY) {
+    private Color getValuePixel(Double posX, Double posY) {
         int posXInt = posX.intValue();
         int posYInt = posY.intValue();
-        Color color = imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
-        return String.valueOf(color.getRed() * 255);
-    }
-
-    private String getValuePixelG(Double posX, Double posY) {
-        int posXInt = posX.intValue();
-        int posYInt = posY.intValue();
-        Color color = imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
-        return String.valueOf(color.getGreen() * 255);
-    }
-
-    private String getValuePixelB(Double posX, Double posY) {
-        int posXInt = posX.intValue();
-        int posYInt = posY.intValue();
-        Color color = imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
-        return String.valueOf(color.getBlue() * 255);
+        return imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
     }
 
     private Label createLabel(String text, String styleClass) {
