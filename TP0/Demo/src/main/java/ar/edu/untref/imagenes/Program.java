@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import listener.ListenerDialogs;
@@ -112,7 +113,11 @@ public class Program extends Application {
         Label posY = createLabel("", "label-info");
         Label labelR = createLabel("R: ", "label-info");
         Label valueR = createLabel("", "label-info");
-        layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR);
+        Label labelG = createLabel("G: ", "label-info");
+        Label valueG = createLabel("", "label-info");
+        Label labelB = createLabel("B: ", "label-info");
+        Label valueB = createLabel("", "label-info");
+        layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB);
 
         imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
@@ -122,7 +127,37 @@ public class Program extends Application {
             }
         });
 
+        imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                valueR.setText(getValuePixelR(event.getX(), event.getY()));
+                valueG.setText(getValuePixelG(event.getX(), event.getY()));
+                valueB.setText(getValuePixelB(event.getX(), event.getY()));
+            }
+        });
+
         return layoutInfo;
+    }
+
+    private String getValuePixelR(Double posX, Double posY) {
+        int posXInt = posX.intValue();
+        int posYInt = posY.intValue();
+        Color color = imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
+        return String.valueOf(color.getRed() * 255);
+    }
+
+    private String getValuePixelG(Double posX, Double posY) {
+        int posXInt = posX.intValue();
+        int posYInt = posY.intValue();
+        Color color = imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
+        return String.valueOf(color.getGreen() * 255);
+    }
+
+    private String getValuePixelB(Double posX, Double posY) {
+        int posXInt = posX.intValue();
+        int posYInt = posY.intValue();
+        Color color = imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
+        return String.valueOf(color.getBlue() * 255);
     }
 
     private Label createLabel(String text, String styleClass) {
