@@ -109,6 +109,22 @@ public class Functions {
 		Platform.exit();
 	}
 
+	public void circle() {
+		
+	}
+	
+	public void rectangle() {
+		
+	}
+	
+	public void grayGradient() {
+		// TODO: funcion para crear gradiente de grises
+	}
+	
+	public void colorGradient() {
+		// TODO: funcion para crear gradiente de colores
+	}
+	
 	public Color getValuePixel(ImageView image, Double posX, Double posY) {
 		int posXInt = posX.intValue();
 		int posYInt = posY.intValue();
