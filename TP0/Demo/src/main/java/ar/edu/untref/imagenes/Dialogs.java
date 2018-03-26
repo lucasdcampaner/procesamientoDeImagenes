@@ -24,22 +24,22 @@ public class Dialogs {
 			listenerDialog.cancel();
 		}
 	}
-	
+
 	public static void showError(String errorText) {
 
-	Alert alert = new Alert(AlertType.ERROR);
-    alert.setTitle("Error");
-    alert.setHeaderText("Result:");
-    alert.setContentText(errorText);
-    alert.showAndWait();
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText("Result:");
+		alert.setContentText(errorText);
+		alert.showAndWait();
 	}
-	
+
 	public static void showInformation(String infoText) {
 
 		Alert alert = new Alert(AlertType.INFORMATION);
-	    alert.setTitle("Information");
-	    alert.setHeaderText("Result:");
-	    alert.setContentText(infoText);
-	    alert.showAndWait();
-		}
+		alert.setTitle("Information");
+		alert.setHeaderText("Result:");
+		alert.setContentText(infoText);
+		alert.showAndWait();
+	}
 }

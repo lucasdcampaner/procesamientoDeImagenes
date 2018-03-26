@@ -13,7 +13,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import listener.ListenerDialogs;
@@ -107,16 +106,16 @@ public class Program extends Application {
         HBox layoutInfo = new HBox();
         layoutInfo.setMaxHeight(200);
         layoutInfo.getStyleClass().add("layout-info");
-        Label labelX = createLabel("x: ", "label-info");
-        Label posX = createLabel("", "label-info");
-        Label labelY = createLabel("y: ", "label-info");
-        Label posY = createLabel("", "label-info");
-        Label labelR = createLabel("R: ", "label-info");
-        Label valueR = createLabel("", "label-info");
-        Label labelG = createLabel("G: ", "label-info");
-        Label valueG = createLabel("", "label-info");
-        Label labelB = createLabel("B: ", "label-info");
-        Label valueB = createLabel("", "label-info");
+        Label labelX = createLabel("x: ");
+        Label posX = createLabel("");
+        Label labelY = createLabel("y: ");
+        Label posY = createLabel("");
+        Label labelR = createLabel("R: ");
+        Label valueR = createLabel("");
+        Label labelG = createLabel("G: ");
+        Label valueG = createLabel("");
+        Label labelB = createLabel("B: ");
+        Label valueB = createLabel("");
         layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB);
 
         imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
@@ -130,22 +129,21 @@ public class Program extends Application {
         imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                valueR.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getRed() * 255));
-                valueG.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getGreen() * 255));
-                valueB.setText(String.valueOf(getValuePixel(event.getX(), event.getY()).getBlue() * 255));
+            	
+            	int red = (int) function.getValuePixel(imageOriginal, event.getX(), event.getY()).getRed();
+            	int green = (int) function.getValuePixel(imageOriginal, event.getX(), event.getY()).getGreen();
+            	int blue = (int) function.getValuePixel(imageOriginal, event.getX(), event.getY()).getBlue();
+            	
+                valueR.setText(String.valueOf(red * 255));
+                valueG.setText(String.valueOf(green * 255));
+                valueB.setText(String.valueOf(blue * 255));
             }
         });
-
         return layoutInfo;
     }
 
-    private Color getValuePixel(Double posX, Double posY) {
-        int posXInt = posX.intValue();
-        int posYInt = posY.intValue();
-        return imageOriginal.getImage().getPixelReader().getColor(posXInt, posYInt);
-    }
-
-    private Label createLabel(String text, String styleClass) {
+    private Label createLabel(String text) {
+    	String styleClass = "label-info";
         Label label = new Label(text);
         label.getStyleClass().add(styleClass);
         return label;
@@ -204,7 +202,6 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-
             imageOriginal.setImage(function.openImage());
         }
     };
@@ -213,7 +210,6 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             function.saveImage(imageOriginal.getImage()); // para probar con img abierta
-            //function.saveImage(imageResult.getImage());
         }
     };
 
