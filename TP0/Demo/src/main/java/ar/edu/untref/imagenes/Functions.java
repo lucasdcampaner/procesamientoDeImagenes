@@ -109,14 +109,6 @@ public class Functions {
 		Platform.exit();
 	}
 
-	public void circle(UI ui) {
-		ui.createNewWindow(200, 200, "Circulo");
-	}
-	
-	public void rectangle() {
-		
-	}
-	
 	public void grayGradient() {
 		// TODO: funcion para crear gradiente de grises
 	}

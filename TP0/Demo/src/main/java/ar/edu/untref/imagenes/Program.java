@@ -182,17 +182,16 @@ public class Program extends Application {
 		return menuBar;
 	}
 
-	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
+	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() { 
 		@Override
-		public void handle(ActionEvent event) {
-			function.circle(ui);
+		public void handle(ActionEvent event) { 
+			ui.createCircle();
 		}
 	};
-
-	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {
+	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() { 
 		@Override
-		public void handle(ActionEvent event) {
-			function.rectangle();
+		public void handle(ActionEvent event) { 
+			ui.createRectangle();
 		}
 	};
 
