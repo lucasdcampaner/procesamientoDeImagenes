@@ -1,9 +1,15 @@
 package ar.edu.untref.imagenes;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -24,15 +30,19 @@ public class UI {
 		return label;
 	}
 
-	public void createCircle() {
+	public void createCircle(EventHandler<ActionEvent> listenerSave) {
 
 		Circle circle = new Circle();
 		circle.setRadius(100);
 		circle.setCenterX(150);
-		circle.setCenterY(150);
+		circle.setCenterY(130);
 		circle.setFill(Color.WHITE);
 		
-		BorderPane root = new BorderPane(circle);
+		BorderPane layoutCircle = new BorderPane();
+		layoutCircle.getChildren().add(circle);
+		
+		VBox root = new VBox(createMenuBarNewWindow(listenerSave));
+		root.getChildren().add(layoutCircle);
 		root.getStyleClass().add("root");
 
 		Scene scene = createNewWindow(root, 300, 300, "Cirulo");
@@ -42,16 +52,20 @@ public class UI {
 		stage.show();
 	}
 	
-	public void createRectangle() {
+	public void createRectangle(EventHandler<ActionEvent> listenerSave) {
 		
 		Rectangle rectangle = new Rectangle();
 		rectangle.setWidth(200);
 		rectangle.setHeight(200);
 		rectangle.setX(50);
-		rectangle.setY(50);
+		rectangle.setY(30);
 		rectangle.setFill(Color.WHITE);
 		
-		BorderPane root = new BorderPane(rectangle);
+		BorderPane layoutRectangle = new BorderPane();
+		layoutRectangle.getChildren().add(rectangle);
+		
+		VBox root = new VBox(createMenuBarNewWindow(listenerSave));
+		root.getChildren().add(layoutRectangle);
 		root.getStyleClass().add("root");
 		
 		Scene scene = createNewWindow(root, 300, 300, "Rectangulo");
@@ -59,5 +73,21 @@ public class UI {
 		Stage stage = new Stage();
 		stage.setScene(scene);
 		stage.show();
+	}
+	
+	private MenuBar createMenuBarNewWindow(EventHandler<ActionEvent> listenerSave) {
+
+		MenuBar menuBar = new MenuBar();
+
+		// Menu file
+		Menu menuFile = new Menu("File");
+
+		MenuItem save = new MenuItem("Save");
+		save.setOnAction(listenerSave);
+
+		menuFile.getItems().add(save);
+		menuBar.getMenus().add(menuFile);
+		
+		return menuBar;
 	}
 }

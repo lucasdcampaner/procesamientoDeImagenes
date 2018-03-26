@@ -182,16 +182,16 @@ public class Program extends Application {
 		return menuBar;
 	}
 
-	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {  
 		@Override
-		public void handle(ActionEvent event) { 
-			ui.createCircle();
+		public void handle(ActionEvent event) {  
+			ui.createCircle(listenerSave);
 		}
 	};
-	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {  
 		@Override
-		public void handle(ActionEvent event) { 
-			ui.createRectangle();
+		public void handle(ActionEvent event) {  
+			ui.createRectangle(listenerSave);
 		}
 	};
 
@@ -223,22 +223,22 @@ public class Program extends Application {
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
+	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() { 
 		@Override
-		public void handle(ActionEvent event) {
+		public void handle(ActionEvent event) { 
 			imageOriginal.setImage(function.openImage());
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
+	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() { 
 		@Override
-		public void handle(ActionEvent event) {
+		public void handle(ActionEvent event) { 
 			function.saveImage(imageOriginal.getImage()); // para probar con img
 															// abierta
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
+	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() { 
 		@Override
 		public void handle(ActionEvent event) {
 			function.exitApplication();
