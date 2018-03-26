@@ -47,7 +47,7 @@ public class Functions {
 		return null;
 	}
 
-	public Image openRAW(int width, int height) {
+	public Image openRAW(int width, int height, String stringType) {
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("RAW", "*.raw"));
@@ -62,14 +62,25 @@ public class Functions {
 			}
 		}
 
+		int type;
+		switch (stringType) {
+		case "Gris":
+			type = BufferedImage.TYPE_BYTE_GRAY;
+			break;
+		case "Color":
+			type = BufferedImage.TYPE_INT_RGB;
+			break;
+		default:
+			type = BufferedImage.TYPE_BYTE_GRAY;
+			break;
+		}
 		ImagePlus image = new ImagePlus();
-		image.setImage(new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY));
+		image.setImage(new BufferedImage(width, height, type));
 
 		int positionVector = 0;
 
 		for (int i = 0; i < image.getWidth(); i++) {
 			for (int j = 0; j < image.getHeight(); j++) {
-
 				image.getProcessor().set(j, i, imagenRaw[positionVector]);
 				positionVector++;
 			}

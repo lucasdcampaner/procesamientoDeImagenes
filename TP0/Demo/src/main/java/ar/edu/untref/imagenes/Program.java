@@ -15,7 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import listener.ListenerDialogs;
+import listener.ListenerResultDialogs;
 
 public class Program extends Application {
 
@@ -185,16 +185,12 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerOpenRAW = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            Dialogs.showConfigurationRAW(new ListenerDialogs() {
-
-                @Override
-                public void accept() {
-                    imageOriginal.setImage(function.openRAW(256, 256));
-                }
-
-                @Override
-                public void cancel() {
-                }
+            Dialogs.showConfigurationRAW(new ListenerResultDialogs<String[]>() {
+				
+				@Override
+				public void accept(String[] result) {
+					imageOriginal.setImage(function.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]));
+				};
             });
         }
     };

@@ -18,3 +18,11 @@
 	-fx-padding: 10px;
 	-fx-text-fill: white;
 }
+
+.label-dialog {
+	-fx-padding: 10px;
+}
+
+.container-dialog {
+	-fx-background-insets: 15px; 
+}

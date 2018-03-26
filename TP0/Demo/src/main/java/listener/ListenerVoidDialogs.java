@@ -1,6 +1,6 @@
 package listener;
 
-public interface ListenerDialogs {
+public interface ListenerVoidDialogs {
 	
 	void accept();
 	

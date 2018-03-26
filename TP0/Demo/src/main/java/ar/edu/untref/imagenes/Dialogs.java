@@ -1,27 +1,46 @@
 package ar.edu.untref.imagenes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import listener.ListenerDialogs;
+import javafx.scene.control.ChoiceDialog;
+import listener.ListenerResultDialogs;
 
 public class Dialogs {
 
-	public static void showConfigurationRAW(ListenerDialogs listenerDialog) {
+	public static void showConfigurationRAW(ListenerResultDialogs<String[]> listenerDialog) {
 
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Imagen RAW");
-		String s = "Elige la imágen que desea abrir";
-		alert.setContentText(s);
+		List<String> options = new ArrayList<>();
+		options.add("200x200");
+		options.add("256x256");
+		options.add("290x207");
+		options.add("389x164");
 
-		Optional<ButtonType> result = alert.showAndWait();
+		ChoiceDialog<String> dialog = new ChoiceDialog<>("200x200", options);
+		dialog.setTitle("Tamaño de imágen");
+		dialog.setHeaderText("Seleccione el tamaño correspondiente\n a la imágen que se desea abrir");
 
-		if (result.get() == ButtonType.OK) {
-			listenerDialog.accept();
-		} else {
-			listenerDialog.cancel();
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			createLayoutChoiceColor(result.get().split("x"), listenerDialog);
+		}
+	}
+	
+	private static void createLayoutChoiceColor(String[] lastResult, ListenerResultDialogs<String[]> listenerDialog) {
+		List<String> options = new ArrayList<>();
+		options.add("Gris");
+		options.add("Color");
+
+		ChoiceDialog<String> dialog = new ChoiceDialog<>("Gris", options);
+		dialog.setTitle("Tipo de imágen");
+		dialog.setHeaderText("Seleccione el tipo con\n el que desea abrir la imágen");
+
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			listenerDialog.accept(new String[]{ lastResult[0], lastResult[1],  result.get()});
 		}
 	}
 
