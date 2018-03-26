@@ -1,9 +1,9 @@
 package ar.edu.untref.imagenes;
 
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -13,6 +13,7 @@ public class UI {
 
 	private Scene createNewWindow(Parent root, int width, int height, String title) {
 		Scene scene = new Scene(root, width, height);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		return scene;
 	}
 
@@ -29,9 +30,10 @@ public class UI {
 		circle.setRadius(100);
 		circle.setCenterX(150);
 		circle.setCenterY(150);
-		circle.setFill(Color.RED);
+		circle.setFill(Color.WHITE);
 		
-		Group root = new Group(circle);
+		BorderPane root = new BorderPane(circle);
+		root.getStyleClass().add("root");
 
 		Scene scene = createNewWindow(root, 300, 300, "Cirulo");
 		
@@ -47,9 +49,10 @@ public class UI {
 		rectangle.setHeight(200);
 		rectangle.setX(50);
 		rectangle.setY(50);
-		rectangle.setFill(Color.RED);
+		rectangle.setFill(Color.WHITE);
 		
-		Group root = new Group(rectangle);
+		BorderPane root = new BorderPane(rectangle);
+		root.getStyleClass().add("root");
 		
 		Scene scene = createNewWindow(root, 300, 300, "Rectangulo");
 		
