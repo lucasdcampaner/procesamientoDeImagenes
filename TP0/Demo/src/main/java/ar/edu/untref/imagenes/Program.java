@@ -3,6 +3,7 @@ package ar.edu.untref.imagenes;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -12,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import listener.ListenerResultDialogs;
 
@@ -29,9 +31,9 @@ public class Program extends Application {
 		try {
 			stage = primaryStage;
 			function = new Functions(stage);
-			ui = new UI(stage);
+			ui = new UI();
 
-			Scene scene = ui.createWindow(800, 300, "Procesamiento de imágenes", true);
+			Scene scene = createWindow();
 			stage.setScene(scene);
 
 			((VBox) scene.getRoot()).getChildren().addAll(createMenuBar(), createMainLayout());
@@ -39,6 +41,23 @@ public class Program extends Application {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private Scene createWindow() {
+
+		Scene scene = new Scene(new VBox(), 800, 300);
+		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+		Screen screen = Screen.getPrimary();
+		Rectangle2D bounds = screen.getVisualBounds();
+
+		stage.setX(bounds.getMinX());
+		stage.setY(bounds.getMinY());
+		stage.setWidth(bounds.getWidth());
+		stage.setHeight(bounds.getHeight());
+		stage.setTitle("Procesamiento de imágenes");
+
+		return scene;
 	}
 
 	private VBox createMainLayout() {
@@ -166,7 +185,7 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			function.circle();
+			function.circle(ui);
 		}
 	};
 

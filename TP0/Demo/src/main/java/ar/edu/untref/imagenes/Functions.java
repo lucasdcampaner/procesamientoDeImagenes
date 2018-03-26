@@ -109,8 +109,8 @@ public class Functions {
 		Platform.exit();
 	}
 
-	public void circle() {
-		
+	public void circle(UI ui) {
+		ui.createNewWindow(200, 200, "Circulo");
 	}
 	
 	public void rectangle() {
