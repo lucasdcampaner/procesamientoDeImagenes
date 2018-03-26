@@ -212,7 +212,8 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            function.saveImage();
+            function.saveImage(imageOriginal.getImage()); // para probar con img abierta
+            //function.saveImage(imageResult.getImage());
         }
     };
 
