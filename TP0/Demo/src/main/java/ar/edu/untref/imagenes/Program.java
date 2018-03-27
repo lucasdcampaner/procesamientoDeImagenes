@@ -224,8 +224,10 @@ public class Program extends Application {
 
 				@Override
 				public void accept(String[] result) {
-					imageOriginal.setImage(
-							functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]));
+					Image image = functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]);
+					imageOriginal.setFitHeight(image.getHeight());
+					imageOriginal.setFitWidth(image.getWidth());
+					imageOriginal.setImage(image);
 				};
 			});
 		}
