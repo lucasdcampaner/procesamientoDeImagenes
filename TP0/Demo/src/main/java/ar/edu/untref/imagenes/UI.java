@@ -2,6 +2,7 @@ package ar.edu.untref.imagenes;
 
 import java.awt.image.BufferedImage;
 
+import ij.ImagePlus;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -144,6 +145,33 @@ public class UI {
 
         return image;
     }
+    
+    public Image colorGradient() {
+
+		int ancho = 500;
+		int alto = 500;
+
+		ImagePlus image = new ImagePlus();
+
+		image.setImage(new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_RGB));
+
+		double step = 1f / ancho;
+		double incremento = 0;
+
+		for (int i = 0; i < image.getWidth(); i++) {
+
+			for (int j = 0; j < image.getHeight(); j++) {
+
+				java.awt.Color color = java.awt.Color.getHSBColor((float) incremento, 1.0f, 1.0f);
+				int[] colorArray = { color.getRed(), color.getGreen(), color.getBlue() };
+				image.getProcessor().putPixel(i, j, colorArray);
+			}
+
+			incremento = incremento + step;
+		}
+
+		return SwingFXUtils.toFXImage(image.getBufferedImage(), null);
+	}
 
     public WritableImage setImageResult(ImageView imageOriginal, int x, int y, int w, int h) {
 

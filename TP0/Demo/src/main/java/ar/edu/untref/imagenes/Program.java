@@ -134,19 +134,14 @@ public class Program extends Application {
 			public void handle(MouseEvent event) {
 				posX.setText(String.valueOf((int) event.getX()));
 				posY.setText(String.valueOf((int) event.getY()));
-			}
-		});
-
-		imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
+				
 				Image image = imageOriginal.getImage();
 				valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
-						changePosYDoubleToInt(event.getY()))));
+						changePosYDoubleToInt(event.getY())).intValue()));
 				valueG.setText(String.valueOf(functions.getValuePixelGreenRGB(image,
-						changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY()))));
+						changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
 				valueB.setText(String.valueOf(functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()),
-						changePosYDoubleToInt(event.getY()))));
+						changePosYDoubleToInt(event.getY())).intValue()));
 			}
 		});
 
@@ -253,7 +248,8 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerColorGradient = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-
+			Image image = ui.colorGradient();
+			setSizeImageView(image);
 		}
 	};
 
