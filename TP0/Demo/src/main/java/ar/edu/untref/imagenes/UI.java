@@ -12,6 +12,8 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -132,8 +134,8 @@ public class UI {
         Canvas canvas = new Canvas(500, 500);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.rect(50, 100, 400, 300);
-        LinearGradient lg = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT,
-                new Stop(0.0, Color.BLACK), new Stop(1.0, Color.WHITE));
+        LinearGradient lg = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, new Stop(0.0, Color.BLACK),
+                new Stop(1.0, Color.WHITE));
         gc.setFill(lg);
         gc.fill();
         WritableImage image = canvas.snapshot(null, null);
@@ -141,5 +143,12 @@ public class UI {
         SwingFXUtils.toFXImage(bi, (WritableImage) image);
 
         return image;
+    }
+
+    public WritableImage nueva(ImageView imageOriginal, int x, int y, int w, int h) {
+
+        PixelReader reader = imageOriginal.getImage().getPixelReader();
+        WritableImage newImage = new WritableImage(reader, x, y, w, h);
+        return newImage;
     }
 }

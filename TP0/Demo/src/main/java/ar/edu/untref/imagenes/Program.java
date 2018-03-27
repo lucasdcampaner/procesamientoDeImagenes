@@ -27,6 +27,8 @@ public class Program extends Application {
     private Functions functions;
     private UI ui;
 
+    private int x, y, w, h;
+
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -142,6 +144,23 @@ public class Program extends Application {
                         changePosYDoubleToInt(event.getY()))));
             }
         });
+
+        imageOriginal.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                x = (int) event.getX();
+                y = (int) event.getY();
+            }
+        });
+
+        imageOriginal.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                w = (int) (event.getX() - x);
+                h = (int) (event.getY() - y);
+            }
+        });
+
         return layoutInfo;
     }
 
@@ -166,10 +185,12 @@ public class Program extends Application {
         openRAW.setOnAction(listenerOpenRAW);
         MenuItem save = new MenuItem("Save");
         save.setOnAction(listenerSave);
+        MenuItem selectRegion = new MenuItem("Region to new image");
+        selectRegion.setOnAction(listenerSelectRegion);
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(listenerExit);
 
-        menuFile.getItems().addAll(open, openRAW, save, exit);
+        menuFile.getItems().addAll(open, openRAW, save, selectRegion, exit);
 
         // Menu edit
         Menu menuEdit = new Menu("Edit");
@@ -266,6 +287,16 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             functions.exitApplication();
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerSelectRegion = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            Image image = ui.nueva(imageOriginal, x, y, w, h);
+            imageResult.setFitHeight(image.getHeight());
+            imageResult.setFitWidth(image.getWidth());
+            imageResult.setImage(image);
         }
     };
 
