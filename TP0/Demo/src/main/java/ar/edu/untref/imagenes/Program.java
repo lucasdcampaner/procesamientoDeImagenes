@@ -20,245 +20,252 @@ import listener.ListenerResultDialogs;
 
 public class Program extends Application {
 
-	private ImageView imageOriginal;
-	private ImageView imageResult;
-	private Stage stage;
+    private ImageView imageOriginal;
+    private ImageView imageResult;
+    private Stage stage;
 
-	private Functions functions;
-	private UI ui;
+    private Functions functions;
+    private UI ui;
 
-	@Override
-	public void start(Stage primaryStage) {
-		try {
-			stage = primaryStage;
-			functions = new Functions(stage);
-			ui = new UI();
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            stage = primaryStage;
+            functions = new Functions(stage);
+            ui = new UI();
 
-			Scene scene = createWindow();
-			stage.setScene(scene);
+            Scene scene = createWindow();
+            stage.setScene(scene);
 
-			((VBox) scene.getRoot()).getChildren().addAll(createMenuBar(), createMainLayout());
-			stage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            ((VBox) scene.getRoot()).getChildren().addAll(createMenuBar(), createMainLayout());
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private Scene createWindow() {
+    private Scene createWindow() {
 
-		Scene scene = new Scene(new VBox(), 800, 300);
-		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+        Scene scene = new Scene(new VBox(), 800, 300);
+        scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
-		Screen screen = Screen.getPrimary();
-		Rectangle2D bounds = screen.getVisualBounds();
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
 
-		stage.setX(bounds.getMinX());
-		stage.setY(bounds.getMinY());
-		stage.setWidth(bounds.getWidth());
-		stage.setHeight(bounds.getHeight());
-		stage.setTitle("Procesamiento de imágenes");
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
+        stage.setTitle("Procesamiento de imágenes");
 
-		return scene;
-	}
+        return scene;
+    }
 
-	private VBox createMainLayout() {
+    private VBox createMainLayout() {
 
-		VBox layoutGeneral = new VBox();
+        VBox layoutGeneral = new VBox();
 
-		HBox layoutImagesViews = new HBox();
+        HBox layoutImagesViews = new HBox();
 
-		// Imagen original
-		HBox layoutImageOriginal = new HBox();
-		layoutImageOriginal.setMinWidth(stage.getWidth() / 2);
-		layoutImageOriginal.setMaxWidth(stage.getWidth() / 2);
-		layoutImageOriginal.setMinHeight(600);
-		layoutImageOriginal.setMaxHeight(600);
-		layoutImageOriginal.getStyleClass().add("layout-main-image");
+        // Imagen original
+        HBox layoutImageOriginal = new HBox();
+        layoutImageOriginal.setMinWidth(stage.getWidth() / 2);
+        layoutImageOriginal.setMaxWidth(stage.getWidth() / 2);
+        layoutImageOriginal.setMinHeight(600);
+        layoutImageOriginal.setMaxHeight(600);
+        layoutImageOriginal.getStyleClass().add("layout-main-image");
 
-		imageOriginal = new ImageView();
-		imageOriginal.setFitWidth(500);
-		imageOriginal.setFitHeight(500);
-		imageOriginal.setPreserveRatio(true);
-		layoutImageOriginal.getChildren().add(imageOriginal);
+        imageOriginal = new ImageView();
+        imageOriginal.setFitWidth(500);
+        imageOriginal.setFitHeight(500);
+        imageOriginal.setPreserveRatio(true);
+        layoutImageOriginal.getChildren().add(imageOriginal);
 
-		// Imagen resultado
-		HBox layoutImageResult = new HBox();
-		layoutImageResult.setMinWidth(stage.getWidth() / 2);
-		layoutImageResult.setMaxWidth(stage.getWidth() / 2);
-		layoutImageResult.setMinHeight(600);
-		layoutImageResult.setMaxHeight(600);
-		layoutImageResult.getStyleClass().add("layout-main-image");
+        // Imagen resultado
+        HBox layoutImageResult = new HBox();
+        layoutImageResult.setMinWidth(stage.getWidth() / 2);
+        layoutImageResult.setMaxWidth(stage.getWidth() / 2);
+        layoutImageResult.setMinHeight(600);
+        layoutImageResult.setMaxHeight(600);
+        layoutImageResult.getStyleClass().add("layout-main-image");
 
-		imageResult = new ImageView();
-		imageResult.setFitWidth(500);
-		imageResult.setFitHeight(500);
-		imageResult.setPreserveRatio(true);
-		layoutImageResult.getChildren().add(imageResult);
+        imageResult = new ImageView();
+        imageResult.setFitWidth(500);
+        imageResult.setFitHeight(500);
+        imageResult.setPreserveRatio(true);
+        layoutImageResult.getChildren().add(imageResult);
 
-		layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
+        layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
-		// Barra info
-		HBox layoutInfo = createLayoutInfo();
+        // Barra info
+        HBox layoutInfo = createLayoutInfo();
 
-		layoutGeneral.getChildren().addAll(layoutInfo, layoutImagesViews);
+        layoutGeneral.getChildren().addAll(layoutInfo, layoutImagesViews);
 
-		return layoutGeneral;
-	}
+        return layoutGeneral;
+    }
 
-	private HBox createLayoutInfo() {
+    private HBox createLayoutInfo() {
 
-		HBox layoutInfo = new HBox();
-		layoutInfo.setMaxHeight(200);
-		layoutInfo.getStyleClass().add("layout-info");
-		Label labelX = ui.createLabel("x: ");
-		Label posX = ui.createLabel("");
-		Label labelY = ui.createLabel("y: ");
-		Label posY = ui.createLabel("");
-		Label labelR = ui.createLabel("R: ");
-		Label valueR = ui.createLabel("");
-		Label labelG = ui.createLabel("G: ");
-		Label valueG = ui.createLabel("");
-		Label labelB = ui.createLabel("B: ");
-		Label valueB = ui.createLabel("");
-		layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB);
+        HBox layoutInfo = new HBox();
+        layoutInfo.setMaxHeight(200);
+        layoutInfo.getStyleClass().add("layout-info");
+        Label labelX = ui.createLabel("x: ");
+        Label posX = ui.createLabel("");
+        Label labelY = ui.createLabel("y: ");
+        Label posY = ui.createLabel("");
+        Label labelR = ui.createLabel("R: ");
+        Label valueR = ui.createLabel("");
+        Label labelG = ui.createLabel("G: ");
+        Label valueG = ui.createLabel("");
+        Label labelB = ui.createLabel("B: ");
+        Label valueB = ui.createLabel("");
+        layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB);
 
-		imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				posX.setText(String.valueOf((int) event.getX()));
-				posY.setText(String.valueOf((int) event.getY()));
-			}
-		});
+        imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                posX.setText(String.valueOf((int) event.getX()));
+                posY.setText(String.valueOf((int) event.getY()));
+            }
+        });
 
-		imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				Image image = imageOriginal.getImage();
-				valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
-						changePosYDoubleToInt(event.getY()))));
-				valueG.setText(String.valueOf(functions.getValuePixelGreenRGB(image,
-						changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY()))));
-				valueB.setText(String.valueOf(functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()),
-						changePosYDoubleToInt(event.getY()))));
-			}
-		});
-		return layoutInfo;
-	}
+        imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Image image = imageOriginal.getImage();
+                valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
+                        changePosYDoubleToInt(event.getY()))));
+                valueG.setText(String.valueOf(functions.getValuePixelGreenRGB(image,
+                        changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY()))));
+                valueB.setText(String.valueOf(functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()),
+                        changePosYDoubleToInt(event.getY()))));
+            }
+        });
+        return layoutInfo;
+    }
 
-	private int changePosXDoubleToInt(Double posX) {
-		return posX.intValue();
-	}
+    private int changePosXDoubleToInt(Double posX) {
+        return posX.intValue();
+    }
 
-	private int changePosYDoubleToInt(Double posY) {
-		return posY.intValue();
-	}
+    private int changePosYDoubleToInt(Double posY) {
+        return posY.intValue();
+    }
 
-	private MenuBar createMenuBar() {
+    private MenuBar createMenuBar() {
 
-		MenuBar menuBar = new MenuBar();
+        MenuBar menuBar = new MenuBar();
 
-		// Menu file
-		Menu menuFile = new Menu("File");
+        // Menu file
+        Menu menuFile = new Menu("File");
 
-		MenuItem open = new MenuItem("Open image");
-		open.setOnAction(listenerOpen);
-		MenuItem openRAW = new MenuItem("Open image RAW");
-		openRAW.setOnAction(listenerOpenRAW);
-		MenuItem save = new MenuItem("Save");
-		save.setOnAction(listenerSave);
-		MenuItem exit = new MenuItem("Exit");
-		exit.setOnAction(listenerExit);
+        MenuItem open = new MenuItem("Open image");
+        open.setOnAction(listenerOpen);
+        MenuItem openRAW = new MenuItem("Open image RAW");
+        openRAW.setOnAction(listenerOpenRAW);
+        MenuItem save = new MenuItem("Save");
+        save.setOnAction(listenerSave);
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction(listenerExit);
 
-		menuFile.getItems().addAll(open, openRAW, save, exit);
+        menuFile.getItems().addAll(open, openRAW, save, exit);
 
-		// Menu edit
-		Menu menuEdit = new Menu("Edit");
+        // Menu edit
+        Menu menuEdit = new Menu("Edit");
 
-		MenuItem createCircle = new MenuItem("Create circle");
-		createCircle.setOnAction(listenerCreateCircle);
-		MenuItem createRectangle = new MenuItem("Create rectangle");
-		createRectangle.setOnAction(listenerCreateRectangle);
-		MenuItem grayGradient = new MenuItem("Gray gradient");
-		grayGradient.setOnAction(listenerCreateGrayGradient);
-		MenuItem colorGradient = new MenuItem("Color gradient");
-		colorGradient.setOnAction(listenerColorGradient);
+        MenuItem createCircle = new MenuItem("Create circle");
+        createCircle.setOnAction(listenerCreateCircle);
+        MenuItem createRectangle = new MenuItem("Create rectangle");
+        createRectangle.setOnAction(listenerCreateRectangle);
+        MenuItem grayGradient = new MenuItem("Gray gradient");
+        grayGradient.setOnAction(listenerCreateGrayGradient);
+        MenuItem colorGradient = new MenuItem("Color gradient");
+        colorGradient.setOnAction(listenerColorGradient);
 
-		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
+        menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
 
-		menuBar.getMenus().addAll(menuFile, menuEdit);
+        menuBar.getMenus().addAll(menuFile, menuEdit);
 
-		return menuBar;
-	}
+        return menuBar;
+    }
 
-	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			ui.createCircle(listenerSave);
-		}
-	};
-	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			ui.createRectangle(listenerSave);
-		}
-	};
+    private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            // ui.createCircle(listenerSave);
+            Image image = ui.createCircle();
+            imageOriginal.setFitHeight(image.getHeight());
+            imageOriginal.setFitWidth(image.getWidth());
+            imageOriginal.setImage(image);
+        }
+    };
+    private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            // ui.createRectangle(listenerSave);
+            Image image = ui.createRectangle();
+            imageOriginal.setFitHeight(image.getHeight());
+            imageOriginal.setFitWidth(image.getWidth());
+            imageOriginal.setImage(image);
+        }
+    };
 
-	private EventHandler<ActionEvent> listenerCreateGrayGradient = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			functions.grayGradient();
-		}
-	};
+    private EventHandler<ActionEvent> listenerCreateGrayGradient = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            functions.grayGradient();
+        }
+    };
 
-	private EventHandler<ActionEvent> listenerColorGradient = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			functions.colorGradient();
-		}
-	};
+    private EventHandler<ActionEvent> listenerColorGradient = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            functions.colorGradient();
+        }
+    };
 
-	private EventHandler<ActionEvent> listenerOpenRAW = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			Dialogs.showConfigurationRAW(new ListenerResultDialogs<String[]>() {
+    private EventHandler<ActionEvent> listenerOpenRAW = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            Dialogs.showConfigurationRAW(new ListenerResultDialogs<String[]>() {
 
-				@Override
-				public void accept(String[] result) {
-					Image image = functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]);
-					imageOriginal.setFitHeight(image.getHeight());
-					imageOriginal.setFitWidth(image.getWidth());
-					imageOriginal.setImage(image);
-				};
-			});
-		}
-	};
+                @Override
+                public void accept(String[] result) {
+                    Image image = functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]);
+                    imageOriginal.setFitHeight(image.getHeight());
+                    imageOriginal.setFitWidth(image.getWidth());
+                    imageOriginal.setImage(image);
+                };
+            });
+        }
+    };
 
-	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			Image image = functions.openImage();
-			imageOriginal.setFitHeight(image.getHeight());
-			imageOriginal.setFitWidth(image.getWidth());
-			imageOriginal.setImage(image);
-		}
-	};
+    private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            Image image = functions.openImage();
+            imageOriginal.setFitHeight(image.getHeight());
+            imageOriginal.setFitWidth(image.getWidth());
+            imageOriginal.setImage(image);
+        }
+    };
 
-	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			functions.saveImage(imageOriginal.getImage()); // para probar con img
-															// abierta
-		}
-	};
+    private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            functions.saveImage(imageOriginal.getImage()); // con img abierta o creada
+        }
+    };
 
-	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			functions.exitApplication();
-		}
-	};
+    private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            functions.exitApplication();
+        }
+    };
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
