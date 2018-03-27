@@ -134,7 +134,7 @@ public class UI {
 
         Canvas canvas = new Canvas(500, 500);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.rect(50, 100, 400, 300);
+        gc.rect(0, 0, 500, 500);
         LinearGradient lg = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, new Stop(0.0, Color.BLACK),
                 new Stop(1.0, Color.WHITE));
         gc.setFill(lg);
