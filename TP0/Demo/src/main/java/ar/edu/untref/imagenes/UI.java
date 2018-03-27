@@ -16,6 +16,9 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -117,6 +120,22 @@ public class UI {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
         gc.strokeOval(50, 50, 400, 400);
+        WritableImage image = canvas.snapshot(null, null);
+        BufferedImage bi = SwingFXUtils.fromFXImage((Image) image, null);
+        SwingFXUtils.toFXImage(bi, (WritableImage) image);
+
+        return image;
+    }
+
+    public Image grayGradient() {
+
+        Canvas canvas = new Canvas(500, 500);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.rect(50, 100, 400, 300);
+        LinearGradient lg = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT,
+                new Stop(0.0, Color.BLACK), new Stop(1.0, Color.WHITE));
+        gc.setFill(lg);
+        gc.fill();
         WritableImage image = canvas.snapshot(null, null);
         BufferedImage bi = SwingFXUtils.fromFXImage((Image) image, null);
         SwingFXUtils.toFXImage(bi, (WritableImage) image);

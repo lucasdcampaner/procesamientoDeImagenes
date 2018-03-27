@@ -214,7 +214,11 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerCreateGrayGradient = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            functions.grayGradient();
+            // functions.grayGradient();
+            Image image = ui.grayGradient();
+            imageOriginal.setFitHeight(image.getHeight());
+            imageOriginal.setFitWidth(image.getWidth());
+            imageOriginal.setImage(image);
         }
     };
 
