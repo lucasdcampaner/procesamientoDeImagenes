@@ -145,7 +145,7 @@ public class UI {
         return image;
     }
 
-    public WritableImage nueva(ImageView imageOriginal, int x, int y, int w, int h) {
+    public WritableImage setImageResult(ImageView imageOriginal, int x, int y, int w, int h) {
 
         PixelReader reader = imageOriginal.getImage().getPixelReader();
         WritableImage newImage = new WritableImage(reader, x, y, w, h);

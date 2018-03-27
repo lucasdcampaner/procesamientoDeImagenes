@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -27,6 +28,7 @@ public class Program extends Application {
 	private Functions functions;
 	private UI ui;
 
+	private Group groupImageOriginal;
 	private int x, y, w, h;
 
 	@Override
@@ -81,7 +83,10 @@ public class Program extends Application {
 		imageOriginal.setFitWidth(500);
 		imageOriginal.setFitHeight(500);
 		imageOriginal.setPreserveRatio(true);
-		layoutImageOriginal.getChildren().add(imageOriginal);
+
+		groupImageOriginal = new Group();
+		groupImageOriginal.getChildren().add(imageOriginal);
+		layoutImageOriginal.getChildren().add(groupImageOriginal);
 
 		// Imagen resultado
 		HBox layoutImageResult = new HBox();
@@ -158,6 +163,11 @@ public class Program extends Application {
 			public void handle(MouseEvent event) {
 				w = (int) (event.getX() - x);
 				h = (int) (event.getY() - y);
+				
+				Image image = ui.setImageResult(imageOriginal, x, y, w, h);
+				imageResult.setFitHeight(image.getHeight());
+				imageResult.setFitWidth(image.getWidth());
+				imageResult.setImage(image);
 			}
 		});
 
@@ -185,12 +195,10 @@ public class Program extends Application {
 		openRAW.setOnAction(listenerOpenRAW);
 		MenuItem save = new MenuItem("Save");
 		save.setOnAction(listenerSave);
-		MenuItem selectRegion = new MenuItem("Region to new image");
-		selectRegion.setOnAction(listenerSelectRegion);
 		MenuItem exit = new MenuItem("Exit");
 		exit.setOnAction(listenerExit);
 
-		menuFile.getItems().addAll(open, openRAW, save, selectRegion, exit);
+		menuFile.getItems().addAll(open, openRAW, save, exit);
 
 		// Menu edit
 		Menu menuEdit = new Menu("Edit");
@@ -215,6 +223,8 @@ public class Program extends Application {
 		imageOriginal.setFitHeight(image.getHeight());
 		imageOriginal.setFitWidth(image.getWidth());
 		imageOriginal.setImage(image);
+		new SelectorImage(groupImageOriginal, imageOriginal.getX(), imageOriginal.getY(), image.getWidth(),
+				image.getHeight());
 	}
 
 	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -243,7 +253,7 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerColorGradient = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			
+
 		}
 	};
 
@@ -280,16 +290,6 @@ public class Program extends Application {
 		@Override
 		public void handle(ActionEvent event) {
 			functions.exitApplication();
-		}
-	};
-
-	private EventHandler<ActionEvent> listenerSelectRegion = new EventHandler<ActionEvent>() {
-		@Override
-		public void handle(ActionEvent event) {
-			Image image = ui.nueva(imageOriginal, x, y, w, h);
-			imageResult.setFitHeight(image.getHeight());
-			imageResult.setFitWidth(image.getWidth());
-			imageResult.setImage(image);
 		}
 	};
 
