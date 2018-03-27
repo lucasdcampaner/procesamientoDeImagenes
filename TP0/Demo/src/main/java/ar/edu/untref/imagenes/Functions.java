@@ -128,14 +128,6 @@ public class Functions {
 		return image.getPixelReader().getColor(posX, posY).getBlue() * 255;
 	}
 
-	public void grayGradient() {
-		// TODO: funcion para crear gradiente de grises
-	}
-
-	public void colorGradient() {
-		// TODO: funcion para crear gradiente de colores
-	}
-
 	public void exitApplication() {
 		Platform.exit();
 	}
