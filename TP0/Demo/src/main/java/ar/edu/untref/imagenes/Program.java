@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -23,14 +24,14 @@ public class Program extends Application {
 	private ImageView imageResult;
 	private Stage stage;
 
-	private Functions function;
+	private Functions functions;
 	private UI ui;
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			stage = primaryStage;
-			function = new Functions(stage);
+			functions = new Functions(stage);
 			ui = new UI();
 
 			Scene scene = createWindow();
@@ -132,17 +133,24 @@ public class Program extends Application {
 		imageOriginal.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-
-				int red = (int) function.getValuePixel(imageOriginal, event.getX(), event.getY()).getRed();
-				int green = (int) function.getValuePixel(imageOriginal, event.getX(), event.getY()).getGreen();
-				int blue = (int) function.getValuePixel(imageOriginal, event.getX(), event.getY()).getBlue();
-
-				valueR.setText(String.valueOf(red * 255));
-				valueG.setText(String.valueOf(green * 255));
-				valueB.setText(String.valueOf(blue * 255));
+				Image image = imageOriginal.getImage();
+				valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
+						changePosYDoubleToInt(event.getY()))));
+				valueG.setText(String.valueOf(functions.getValuePixelGreenRGB(image,
+						changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY()))));
+				valueB.setText(String.valueOf(functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()),
+						changePosYDoubleToInt(event.getY()))));
 			}
 		});
 		return layoutInfo;
+	}
+
+	private int changePosXDoubleToInt(Double posX) {
+		return posX.intValue();
+	}
+
+	private int changePosYDoubleToInt(Double posY) {
+		return posY.intValue();
 	}
 
 	private MenuBar createMenuBar() {
@@ -182,15 +190,15 @@ public class Program extends Application {
 		return menuBar;
 	}
 
-	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {  
+	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
 		@Override
-		public void handle(ActionEvent event) {  
+		public void handle(ActionEvent event) {
 			ui.createCircle(listenerSave);
 		}
 	};
-	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {  
+	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {
 		@Override
-		public void handle(ActionEvent event) {  
+		public void handle(ActionEvent event) {
 			ui.createRectangle(listenerSave);
 		}
 	};
@@ -198,14 +206,14 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerCreateGrayGradient = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			function.grayGradient();
+			functions.grayGradient();
 		}
 	};
 
 	private EventHandler<ActionEvent> listenerColorGradient = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			function.colorGradient();
+			functions.colorGradient();
 		}
 	};
 
@@ -217,31 +225,34 @@ public class Program extends Application {
 				@Override
 				public void accept(String[] result) {
 					imageOriginal.setImage(
-							function.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]));
+							functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]));
 				};
 			});
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerOpen = new EventHandler<ActionEvent>() {
 		@Override
-		public void handle(ActionEvent event) { 
-			imageOriginal.setImage(function.openImage());
+		public void handle(ActionEvent event) {
+			Image image = functions.openImage();
+			imageOriginal.setFitHeight(image.getHeight());
+			imageOriginal.setFitWidth(image.getWidth());
+			imageOriginal.setImage(image);
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
 		@Override
-		public void handle(ActionEvent event) { 
-			function.saveImage(imageOriginal.getImage()); // para probar con img
+		public void handle(ActionEvent event) {
+			functions.saveImage(imageOriginal.getImage()); // para probar con img
 															// abierta
 		}
 	};
 
-	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() { 
+	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			function.exitApplication();
+			functions.exitApplication();
 		}
 	};
 

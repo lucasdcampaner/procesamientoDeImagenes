@@ -12,8 +12,6 @@ import ij.ImagePlus;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 //import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -45,6 +43,19 @@ public class Functions {
 			return image;
 		}
 		return null;
+	}
+
+	private String getExtensionFile(String fileName) {
+		String extension = "";
+
+		int i = fileName.lastIndexOf('.');
+		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+
+		if (i > p) {
+			extension = fileName.substring(i + 1);
+		}
+
+		return extension;
 	}
 
 	public Image openRAW(int width, int height, String stringType) {
@@ -105,35 +116,28 @@ public class Functions {
 		}
 	}
 
-	public void exitApplication() {
-		Platform.exit();
+	public Double getValuePixelRedRGB(Image image, int posX, int posY) {
+		return image.getPixelReader().getColor(posX, posY).getRed() * 255;
+	}
+
+	public Double getValuePixelGreenRGB(Image image, int posX, int posY) {
+		return image.getPixelReader().getColor(posX, posY).getGreen() * 255;
+	}
+
+	public Double getValuePixelBlueRGB(Image image, int posX, int posY) {
+		return image.getPixelReader().getColor(posX, posY).getBlue() * 255;
 	}
 
 	public void grayGradient() {
 		// TODO: funcion para crear gradiente de grises
 	}
-	
+
 	public void colorGradient() {
 		// TODO: funcion para crear gradiente de colores
 	}
-	
-	public Color getValuePixel(ImageView image, Double posX, Double posY) {
-		int posXInt = posX.intValue();
-		int posYInt = posY.intValue();
-		return image.getImage().getPixelReader().getColor(posXInt, posYInt);
-	}
 
-	private String getExtensionFile(String fileName) {
-		String extension = "";
-
-		int i = fileName.lastIndexOf('.');
-		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
-
-		if (i > p) {
-			extension = fileName.substring(i + 1);
-		}
-
-		return extension;
+	public void exitApplication() {
+		Platform.exit();
 	}
 
 }
