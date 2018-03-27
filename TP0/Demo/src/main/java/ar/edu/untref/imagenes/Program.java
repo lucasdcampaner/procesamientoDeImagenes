@@ -134,7 +134,7 @@ public class Program extends Application {
 			public void handle(MouseEvent event) {
 				posX.setText(String.valueOf((int) event.getX()));
 				posY.setText(String.valueOf((int) event.getY()));
-				
+
 				Image image = imageOriginal.getImage();
 				valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
 						changePosYDoubleToInt(event.getY())).intValue()));
@@ -158,11 +158,13 @@ public class Program extends Application {
 			public void handle(MouseEvent event) {
 				w = (int) (event.getX() - x);
 				h = (int) (event.getY() - y);
-				
-				Image image = ui.setImageResult(imageOriginal, x, y, w, h);
-				imageResult.setFitHeight(image.getHeight());
-				imageResult.setFitWidth(image.getWidth());
-				imageResult.setImage(image);
+
+				if (w > 0 && h > 0) {
+					Image image = ui.setImageResult(imageOriginal, x, y, w, h);
+					imageResult.setFitHeight(image.getHeight());
+					imageResult.setFitWidth(image.getWidth());
+					imageResult.setImage(image);
+				}
 			}
 		});
 
