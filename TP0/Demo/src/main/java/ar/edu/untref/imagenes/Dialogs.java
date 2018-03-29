@@ -25,22 +25,8 @@ public class Dialogs {
 
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()) {
-			createLayoutChoiceColor(result.get().split("x"), listenerDialog);
-		}
-	}
-	
-	private static void createLayoutChoiceColor(String[] lastResult, ListenerResultDialogs<String[]> listenerDialog) {
-		List<String> options = new ArrayList<>();
-		options.add("Gris");
-		options.add("Color");
-
-		ChoiceDialog<String> dialog = new ChoiceDialog<>("Gris", options);
-		dialog.setTitle("Tipo de imágen");
-		dialog.setHeaderText("Seleccione el tipo con\n el que desea abrir la imágen");
-
-		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()) {
-			listenerDialog.accept(new String[]{ lastResult[0], lastResult[1],  result.get()});
+			String[] resultString = result.get().split("x");
+			listenerDialog.accept(new String[] { resultString[0], resultString[1] });
 		}
 	}
 

@@ -26,3 +26,12 @@
 .container-dialog {
 	-fx-background-insets: 15px; 
 }
+
+.layout-slider {
+	-fx-alignment: center-right;
+}
+
+.slider { 
+	-fx-max-width: 700;
+	-fx-padding: 20px;
+}

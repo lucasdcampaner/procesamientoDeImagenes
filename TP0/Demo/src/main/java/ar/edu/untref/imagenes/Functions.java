@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 
 public class Functions {
 
+	private int[][] matrixImage = new int[][]{};
 	private Stage stage;
 
 	@SuppressWarnings("unused")
@@ -40,6 +41,8 @@ public class Functions {
 			extensionFile = getExtensionFile(path);
 			ImagePlus imagePlus = new ImagePlus(path);
 			Image image = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
+			
+			matrixImage = setMatrixImage(imagePlus);
 			return image;
 		}
 		return null;
@@ -58,7 +61,7 @@ public class Functions {
 		return extension;
 	}
 
-	public Image openRAW(int width, int height, String stringType) {
+	public Image openRAW(int width, int height) {
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().add(new ExtensionFilter("RAW", "*.raw"));
@@ -73,20 +76,8 @@ public class Functions {
 			}
 		}
 
-		int type;
-		switch (stringType) {
-		case "Gris":
-			type = BufferedImage.TYPE_BYTE_GRAY;
-			break;
-		case "Color":
-			type = BufferedImage.TYPE_INT_RGB;
-			break;
-		default:
-			type = BufferedImage.TYPE_BYTE_GRAY;
-			break;
-		}
 		ImagePlus image = new ImagePlus();
-		image.setImage(new BufferedImage(width, height, type));
+		image.setImage(new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY));
 
 		int positionVector = 0;
 
@@ -96,6 +87,7 @@ public class Functions {
 				positionVector++;
 			}
 		}
+		matrixImage = setMatrixImage(image);
 
 		return SwingFXUtils.toFXImage(image.getBufferedImage(), null);
 	}
@@ -116,6 +108,21 @@ public class Functions {
 		}
 	}
 
+	private int[][] setMatrixImage(ImagePlus image) {
+
+		int w = (int) image.getWidth();
+		int h = (int) image.getHeight();
+		int[][] matrix = new int[w][h];
+
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				matrix[i][j] = image.getPixel(i, j)[0];
+			}
+		}
+		
+		return matrix;
+	}
+
 	public Double getValuePixelRedRGB(Image image, int posX, int posY) {
 		return image.getPixelReader().getColor(posX, posY).getRed() * 255;
 	}
@@ -132,4 +139,7 @@ public class Functions {
 		Platform.exit();
 	}
 
+	public int[][] getMatrixImage() {
+		return matrixImage;
+	}
 }

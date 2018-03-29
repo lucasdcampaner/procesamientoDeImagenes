@@ -1,6 +1,8 @@
 package ar.edu.untref.imagenes;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
@@ -10,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -30,6 +33,9 @@ public class Program extends Application {
 
 	private Group groupImageOriginal;
 	private int x, y, w, h;
+
+	private Image image;
+	private Slider slider;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -89,7 +95,7 @@ public class Program extends Application {
 		layoutImageOriginal.getChildren().add(groupImageOriginal);
 
 		// Imagen resultado
-		HBox layoutImageResult = new HBox();
+		VBox layoutImageResult = new VBox();
 		layoutImageResult.setMinWidth(stage.getWidth() / 2);
 		layoutImageResult.setMaxWidth(stage.getWidth() / 2);
 		layoutImageResult.setMinHeight(600);
@@ -100,14 +106,32 @@ public class Program extends Application {
 		imageResult.setFitWidth(500);
 		imageResult.setFitHeight(500);
 		imageResult.setPreserveRatio(true);
-		layoutImageResult.getChildren().add(imageResult);
 
+		// Barra
+		VBox layoutSlider = new VBox();
+		layoutSlider.getStyleClass().add("layout-slider");
+		
+		slider = new Slider();
+		slider.setMin(0);
+		slider.setMax(255);
+		slider.setValue(200);
+		slider.setShowTickLabels(true);
+		slider.setShowTickMarks(true);
+		slider.setMajorTickUnit(15);
+		slider.setMinorTickCount(5);
+		slider.getStyleClass().add("slider");
+		slider.setVisible(false);
+		slider.valueProperty().addListener(listenerSlider);
+		
+		layoutSlider.getChildren().add(slider);
+		
+		layoutImageResult.getChildren().add(imageResult);
 		layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
 		// Barra info
 		HBox layoutInfo = createLayoutInfo();
 
-		layoutGeneral.getChildren().addAll(layoutInfo, layoutImagesViews);
+		layoutGeneral.getChildren().addAll(layoutInfo, layoutImagesViews, layoutSlider);
 
 		return layoutGeneral;
 	}
@@ -208,8 +232,10 @@ public class Program extends Application {
 		grayGradient.setOnAction(listenerCreateGrayGradient);
 		MenuItem colorGradient = new MenuItem("Color gradient");
 		colorGradient.setOnAction(listenerColorGradient);
+		MenuItem threshold = new MenuItem("Threshold");
+		threshold.setOnAction(listenerThreshold);
 
-		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
+		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient, threshold);
 
 		menuBar.getMenus().addAll(menuFile, menuEdit);
 
@@ -222,6 +248,13 @@ public class Program extends Application {
 		imageOriginal.setImage(image);
 		new SelectorImage(groupImageOriginal, imageOriginal.getX(), imageOriginal.getY(), image.getWidth(),
 				image.getHeight());
+		this.image = image;
+	}
+	
+	private void setSizeImageViewResult(Image image) {
+		imageResult.setFitHeight(image.getHeight());
+		imageResult.setFitWidth(image.getWidth());
+		imageResult.setImage(image);
 	}
 
 	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -231,6 +264,7 @@ public class Program extends Application {
 			setSizeImageView(image);
 		}
 	};
+
 	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
@@ -261,7 +295,7 @@ public class Program extends Application {
 			Dialogs.showConfigurationRAW(new ListenerResultDialogs<String[]>() {
 				@Override
 				public void accept(String[] result) {
-					Image image = functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]), result[2]);
+					Image image = functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]));
 					setSizeImageView(image);
 				};
 			});
@@ -279,8 +313,17 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			functions.saveImage(imageOriginal.getImage()); // con img abierta o
-															// creada
+			functions.saveImage(imageOriginal.getImage());
+		}
+	};
+
+	private EventHandler<ActionEvent> listenerThreshold = new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+
+			slider.setVisible(true);
+			int[][] newMatrix = Modifiers.thresholdize(functions.getMatrixImage(), (int) slider.getValue());
+			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
 		}
 	};
 
@@ -290,6 +333,18 @@ public class Program extends Application {
 			functions.exitApplication();
 		}
 	};
+
+	private ChangeListener<Number> listenerSlider = new ChangeListener<Number>() {
+		@Override
+		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+			int[][] newMatrix = Modifiers.thresholdize(functions.getMatrixImage(), newValue.intValue());
+			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
+		}
+	};
+	
+	private Image getImage() {
+		return this.image;
+	}
 
 	public static void main(String[] args) {
 		launch(args);
