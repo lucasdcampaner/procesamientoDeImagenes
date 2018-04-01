@@ -9,16 +9,18 @@ public class Modifiers {
 
 	public static int[][] thresholdize(int[][] matrixImage, int valueThreshold) {
 
+		int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
+		
 		for (int i = 0; i < matrixImage.length; i++) {
 			for (int j = 0; j < matrixImage[i].length; j++) {
 				if (matrixImage[i][j] > valueThreshold) {
-					matrixImage[i][j] = 255;
+					matrixAux[i][j] = 255;
 				} else {
-					matrixImage[i][j] = 0;
+					matrixAux[i][j] = 0;
 				}
 			}
 		}
-		return matrixImage;
+		return matrixAux;
 	}
 
 	public Image modifyValueOfAPixel(Image image, String posX, String posY, String pixelValue) {

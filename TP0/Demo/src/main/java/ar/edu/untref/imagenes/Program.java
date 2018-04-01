@@ -36,6 +36,9 @@ public class Program extends Application {
 
 	private Image image;
 	private Slider slider;
+	private int[][] matrix;
+	
+	private VBox layoutImageResult;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -95,7 +98,7 @@ public class Program extends Application {
 		layoutImageOriginal.getChildren().add(groupImageOriginal);
 
 		// Imagen resultado
-		VBox layoutImageResult = new VBox();
+		layoutImageResult = new VBox();
 		layoutImageResult.setMinWidth(stage.getWidth() / 2);
 		layoutImageResult.setMaxWidth(stage.getWidth() / 2);
 		layoutImageResult.setMinHeight(600);
@@ -114,7 +117,7 @@ public class Program extends Application {
 		slider = new Slider();
 		slider.setMin(0);
 		slider.setMax(255);
-		slider.setValue(200);
+		slider.setValue(120);
 		slider.setShowTickLabels(true);
 		slider.setShowTickMarks(true);
 		slider.setMajorTickUnit(15);
@@ -249,12 +252,20 @@ public class Program extends Application {
 		new SelectorImage(groupImageOriginal, imageOriginal.getX(), imageOriginal.getY(), image.getWidth(),
 				image.getHeight());
 		this.image = image;
+		matrix = functions.getMatrixImage();
 	}
 	
 	private void setSizeImageViewResult(Image image) {
+		
+		layoutImageResult.getChildren().remove(imageResult);
+		
+		imageResult = new ImageView();
+		imageResult.setPreserveRatio(true);
 		imageResult.setFitHeight(image.getHeight());
 		imageResult.setFitWidth(image.getWidth());
 		imageResult.setImage(image);
+				
+		layoutImageResult.getChildren().add(imageResult);
 	}
 
 	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -322,7 +333,7 @@ public class Program extends Application {
 		public void handle(ActionEvent event) {
 
 			slider.setVisible(true);
-			int[][] newMatrix = Modifiers.thresholdize(functions.getMatrixImage(), (int) slider.getValue());
+			int[][] newMatrix = Modifiers.thresholdize(matrix, (int) slider.getValue());
 			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
 		}
 	};
@@ -337,7 +348,7 @@ public class Program extends Application {
 	private ChangeListener<Number> listenerSlider = new ChangeListener<Number>() {
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-			int[][] newMatrix = Modifiers.thresholdize(functions.getMatrixImage(), newValue.intValue());
+			int[][] newMatrix = Modifiers.thresholdize(matrix, newValue.intValue());
 			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
 		}
 	};
