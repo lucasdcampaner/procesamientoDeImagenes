@@ -37,7 +37,7 @@ public class Program extends Application {
 	private Image image;
 	private Slider slider;
 	private int[][] matrix;
-	
+
 	private VBox layoutImageResult;
 
 	@Override
@@ -113,7 +113,7 @@ public class Program extends Application {
 		// Barra
 		VBox layoutSlider = new VBox();
 		layoutSlider.getStyleClass().add("layout-slider");
-		
+
 		slider = new Slider();
 		slider.setMin(0);
 		slider.setMax(255);
@@ -125,9 +125,9 @@ public class Program extends Application {
 		slider.getStyleClass().add("slider");
 		slider.setVisible(false);
 		slider.valueProperty().addListener(listenerSlider);
-		
+
 		layoutSlider.getChildren().add(slider);
-		
+
 		layoutImageResult.getChildren().add(imageResult);
 		layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
@@ -235,12 +235,20 @@ public class Program extends Application {
 		grayGradient.setOnAction(listenerCreateGrayGradient);
 		MenuItem colorGradient = new MenuItem("Color gradient");
 		colorGradient.setOnAction(listenerColorGradient);
+
+		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
+
+		// Menu edit
+		Menu menuFilter = new Menu("Filter");
+
 		MenuItem threshold = new MenuItem("Threshold");
 		threshold.setOnAction(listenerThreshold);
+		MenuItem negative = new MenuItem("Negative");
+		negative.setOnAction(listenerNegative);
 
-		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient, threshold);
+		menuFilter.getItems().addAll(threshold, negative);
 
-		menuBar.getMenus().addAll(menuFile, menuEdit);
+		menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter);
 
 		return menuBar;
 	}
@@ -254,23 +262,24 @@ public class Program extends Application {
 		this.image = image;
 		matrix = functions.getMatrixImage();
 	}
-	
+
 	private void setSizeImageViewResult(Image image) {
-		
+
 		layoutImageResult.getChildren().remove(imageResult);
-		
+
 		imageResult = new ImageView();
 		imageResult.setPreserveRatio(true);
 		imageResult.setFitHeight(image.getHeight());
 		imageResult.setFitWidth(image.getWidth());
 		imageResult.setImage(image);
-				
+
 		layoutImageResult.getChildren().add(imageResult);
 	}
 
 	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
+			slider.setVisible(false);
 			Image image = ui.createCircle();
 			setSizeImageView(image);
 		}
@@ -279,6 +288,7 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerCreateRectangle = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
+			slider.setVisible(false);
 			Image image = ui.createRectangle();
 			setSizeImageView(image);
 		}
@@ -287,6 +297,7 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerCreateGrayGradient = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
+			slider.setVisible(false);
 			Image image = ui.grayGradient();
 			setSizeImageView(image);
 		}
@@ -337,6 +348,17 @@ public class Program extends Application {
 			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
 		}
 	};
+	
+	private EventHandler<ActionEvent> listenerNegative = new EventHandler<ActionEvent>() {
+		@Override
+		public void handle(ActionEvent event) {
+
+			slider.setVisible(false);
+			int[][] newMatrix = Modifiers.negative(matrix);
+			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
+		}
+	};
+
 
 	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
 		@Override
@@ -352,7 +374,7 @@ public class Program extends Application {
 			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
 		}
 	};
-	
+
 	private Image getImage() {
 		return this.image;
 	}

@@ -10,7 +10,7 @@ public class Modifiers {
 	public static int[][] thresholdize(int[][] matrixImage, int valueThreshold) {
 
 		int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
-		
+
 		for (int i = 0; i < matrixImage.length; i++) {
 			for (int j = 0; j < matrixImage[i].length; j++) {
 				if (matrixImage[i][j] > valueThreshold) {
@@ -18,6 +18,18 @@ public class Modifiers {
 				} else {
 					matrixAux[i][j] = 0;
 				}
+			}
+		}
+		return matrixAux;
+	}
+
+	public static int[][] negative(int[][] matrixImage) {
+
+		int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
+
+		for (int i = 0; i < matrixImage.length; i++) {
+			for (int j = 0; j < matrixImage[i].length; j++) {
+				matrixAux[i][j] = -matrixImage[i][j] + 255;
 			}
 		}
 		return matrixAux;
