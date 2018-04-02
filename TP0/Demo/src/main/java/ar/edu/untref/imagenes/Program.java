@@ -15,6 +15,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -154,7 +157,11 @@ public class Program extends Application {
 		Label valueG = ui.createLabel("");
 		Label labelB = ui.createLabel("B: ");
 		Label valueB = ui.createLabel("");
-		layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB);
+		Label numberOfPixel = ui.createLabel("Number of pixels: ");
+		Label numberOfPixelValue = ui.createLabel("");
+
+		layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB,
+				numberOfPixel, numberOfPixelValue);
 
 		imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			@Override
@@ -186,16 +193,22 @@ public class Program extends Application {
 				w = (int) (event.getX() - x);
 				h = (int) (event.getY() - y);
 
+				numberOfPixelValue.setText("0");
 				if (w > 0 && h > 0) {
 					Image image = ui.setImageResult(imageOriginal, x, y, w, h);
 					imageResult.setFitHeight(image.getHeight());
 					imageResult.setFitWidth(image.getWidth());
 					imageResult.setImage(image);
+					numberOfPixelValue.setText(String.valueOf(getNumberOfPixel(imageResult.getImage())));
 				}
 			}
 		});
 
 		return layoutInfo;
+	}
+
+	private int getNumberOfPixel(Image image) {
+		return (int) image.getWidth() * (int) image.getHeight();
 	}
 
 	private int changePosXDoubleToInt(Double posX) {
@@ -348,7 +361,7 @@ public class Program extends Application {
 			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
 		}
 	};
-	
+
 	private EventHandler<ActionEvent> listenerNegative = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
@@ -358,7 +371,6 @@ public class Program extends Application {
 			setSizeImageViewResult(ui.getImageResult(getImage(), newMatrix));
 		}
 	};
-
 
 	private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
 		@Override
