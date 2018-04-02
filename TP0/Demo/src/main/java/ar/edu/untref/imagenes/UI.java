@@ -178,6 +178,7 @@ public class UI {
 		int w = (int) image.getWidth();
 		int h = (int) image.getHeight();
 		ImagePlus imageResult = new ImagePlus();
+		imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY));
 
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
