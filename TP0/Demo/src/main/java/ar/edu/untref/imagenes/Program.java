@@ -1,5 +1,8 @@
 package ar.edu.untref.imagenes;
 
+import java.io.IOException;
+
+import ij.ImagePlus;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -241,6 +244,21 @@ public class Program extends Application {
 
 				numberOfPixelValue.setText("0");
 				averageLevelsOfGrayValue.setText("0");
+				if (w > 0 && h > 0) {
+					Image imageResult;
+					imageResult = ui.getImageResult(imageViewOriginal, x, y, w, h);
+					setSizeImageViewResult(imageResult);
+					ImagePlus imagePlus;
+					try {
+						imagePlus = functions.getImagePlusFromImage(imageResult);
+						int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
+						numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrixImageResult)));
+						averageLevelsOfGrayValue
+								.setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 
@@ -265,15 +283,15 @@ public class Program extends Application {
 		matrix = functions.getMatrixImage();
 	}
 
-	private void setSizeImageViewResult(Image imageOriginal) {
+	private void setSizeImageViewResult(Image image) {
 
 		layoutImageResult.getChildren().remove(imageViewResult);
 
 		imageViewResult = new ImageView();
 		imageViewResult.setPreserveRatio(true);
-		imageViewResult.setFitHeight(imageOriginal.getHeight());
-		imageViewResult.setFitWidth(imageOriginal.getWidth());
-		imageViewResult.setImage(imageOriginal);
+		imageViewResult.setFitHeight(image.getHeight());
+		imageViewResult.setFitWidth(image.getWidth());
+		imageViewResult.setImage(image);
 
 		layoutImageResult.getChildren().add(imageViewResult);
 	}

@@ -42,7 +42,7 @@ public class Functions {
 			ImagePlus imagePlus = new ImagePlus(path);
 			Image image = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
 
-			matrixImage = setMatrixImage(imagePlus);
+			matrixImage = getMatrixImage(imagePlus);
 			return image;
 		}
 		return null;
@@ -87,7 +87,7 @@ public class Functions {
 				positionVector++;
 			}
 		}
-		matrixImage = setMatrixImage(image);
+		matrixImage = getMatrixImage(image);
 
 		return SwingFXUtils.toFXImage(image.getBufferedImage(), null);
 	}
@@ -108,7 +108,7 @@ public class Functions {
 		}
 	}
 
-	public int[][] setMatrixImage(ImagePlus image) {
+	public int[][] getMatrixImage(ImagePlus image) {
 
 		int w = (int) image.getWidth();
 		int h = (int) image.getHeight();
@@ -144,7 +144,16 @@ public class Functions {
 	}
 
 	public int getNumberOfPixel(int[][] matrixPixels) {
-		return matrixImage.length * matrixImage[0].length;
+
+		int numberOfPixels = 0;
+
+		for (int i = 0; i < matrixPixels.length; i++) {
+			for (int j = 0; j < matrixPixels[i].length; j++) {
+				numberOfPixels++;
+			}
+		}
+
+		return numberOfPixels;
 	}
 
 	public int averageLevelsOfGray(int[][] matrixPixels) {
@@ -163,15 +172,16 @@ public class Functions {
 	public int stringToInt(String text) {
 		return Integer.parseInt(text);
 	}
-	
+
 	public ImagePlus getImagePlusFromImage(Image image) throws IOException {
-		BufferedImage buffer = SwingFXUtils.fromFXImage(image, new BufferedImage((int) image.getWidth(), (int) image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+		BufferedImage buffer = SwingFXUtils.fromFXImage(image,
+				new BufferedImage((int) image.getWidth(), (int) image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
 		File outputfile = new File("cut_image.png");
 		ImageIO.write(buffer, "png", outputfile);
-		
+
 		ImagePlus imagePlus = new ImagePlus();
 		imagePlus.setImage(ImageIO.read(new File("cut_image.png")));
-		return  imagePlus;
+		return imagePlus;
 	}
 
 }
