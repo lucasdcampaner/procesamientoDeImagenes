@@ -35,7 +35,6 @@ public class Program extends Application {
 	private Group groupImageOriginal;
 	private int x, y, w, h;
 
-
 	private Slider slider;
 	private int[][] matrix;
 
@@ -56,6 +55,53 @@ public class Program extends Application {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private MenuBar createMenuBar() {
+
+		MenuBar menuBar = new MenuBar();
+
+		// Menu file
+		Menu menuFile = new Menu("File");
+
+		MenuItem open = new MenuItem("Open image");
+		open.setOnAction(listenerOpen);
+		MenuItem openRAW = new MenuItem("Open image RAW");
+		openRAW.setOnAction(listenerOpenRAW);
+		MenuItem save = new MenuItem("Save");
+		save.setOnAction(listenerSave);
+		MenuItem exit = new MenuItem("Exit");
+		exit.setOnAction(listenerExit);
+
+		menuFile.getItems().addAll(open, openRAW, save, exit);
+
+		// Menu edit
+		Menu menuEdit = new Menu("Edit");
+
+		MenuItem createCircle = new MenuItem("Create circle");
+		createCircle.setOnAction(listenerCreateCircle);
+		MenuItem createRectangle = new MenuItem("Create rectangle");
+		createRectangle.setOnAction(listenerCreateRectangle);
+		MenuItem grayGradient = new MenuItem("Gray gradient");
+		grayGradient.setOnAction(listenerCreateGrayGradient);
+		MenuItem colorGradient = new MenuItem("Color gradient");
+		colorGradient.setOnAction(listenerColorGradient);
+
+		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
+
+		// Menu edit
+		Menu menuFilter = new Menu("Filter");
+
+		MenuItem threshold = new MenuItem("Threshold");
+		threshold.setOnAction(listenerThreshold);
+		MenuItem negative = new MenuItem("Negative");
+		negative.setOnAction(listenerNegative);
+
+		menuFilter.getItems().addAll(threshold, negative);
+
+		menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter);
+
+		return menuBar;
 	}
 
 	private Scene createWindow() {
@@ -207,53 +253,6 @@ public class Program extends Application {
 
 	private int changePosYDoubleToInt(Double posY) {
 		return posY.intValue();
-	}
-
-	private MenuBar createMenuBar() {
-
-		MenuBar menuBar = new MenuBar();
-
-		// Menu file
-		Menu menuFile = new Menu("File");
-
-		MenuItem open = new MenuItem("Open image");
-		open.setOnAction(listenerOpen);
-		MenuItem openRAW = new MenuItem("Open image RAW");
-		openRAW.setOnAction(listenerOpenRAW);
-		MenuItem save = new MenuItem("Save");
-		save.setOnAction(listenerSave);
-		MenuItem exit = new MenuItem("Exit");
-		exit.setOnAction(listenerExit);
-
-		menuFile.getItems().addAll(open, openRAW, save, exit);
-
-		// Menu edit
-		Menu menuEdit = new Menu("Edit");
-
-		MenuItem createCircle = new MenuItem("Create circle");
-		createCircle.setOnAction(listenerCreateCircle);
-		MenuItem createRectangle = new MenuItem("Create rectangle");
-		createRectangle.setOnAction(listenerCreateRectangle);
-		MenuItem grayGradient = new MenuItem("Gray gradient");
-		grayGradient.setOnAction(listenerCreateGrayGradient);
-		MenuItem colorGradient = new MenuItem("Color gradient");
-		colorGradient.setOnAction(listenerColorGradient);
-
-		menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient);
-
-		// Menu edit
-		Menu menuFilter = new Menu("Filter");
-
-		MenuItem threshold = new MenuItem("Threshold");
-		threshold.setOnAction(listenerThreshold);
-		MenuItem negative = new MenuItem("Negative");
-		negative.setOnAction(listenerNegative);
-
-		menuFilter.getItems().addAll(threshold, negative);
-
-		menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter);
-
-		return menuBar;
 	}
 
 	private void setSizeImageView(Image image) {
