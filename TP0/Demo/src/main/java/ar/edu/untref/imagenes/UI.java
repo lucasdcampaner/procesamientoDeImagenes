@@ -42,7 +42,7 @@ public class UI {
 		label.getStyleClass().add(styleClass);
 		return label;
 	}
-	
+
 	public void createCircle(EventHandler<ActionEvent> listenerSave) {
 
 		Circle circle = new Circle();
@@ -178,14 +178,13 @@ public class UI {
 		int w = (int) image.getWidth();
 		int h = (int) image.getHeight();
 		ImagePlus imageResult = new ImagePlus();
-		imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY));
 
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
 				imageResult.getProcessor().putPixel(i, j, matrixImage[i][j]);
 			}
 		}
-		
+
 		return SwingFXUtils.toFXImage(imageResult.getBufferedImage(), null);
 	}
 
@@ -193,6 +192,7 @@ public class UI {
 
 		PixelReader reader = imageOriginal.getImage().getPixelReader();
 		WritableImage newImage = new WritableImage(reader, x, y, w, h);
+		
 		return newImage;
 	}
 }

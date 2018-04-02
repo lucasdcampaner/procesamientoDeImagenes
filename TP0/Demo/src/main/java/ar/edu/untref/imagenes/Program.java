@@ -1,5 +1,8 @@
 package ar.edu.untref.imagenes;
 
+import java.io.IOException;
+
+import ij.ImagePlus;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -195,15 +198,18 @@ public class Program extends Application {
 				numberOfPixelValue.setText("0");
 				averageLevelsOfGrayValue.setText("0");
 				if (w > 0 && h > 0) {
-					Image image = ui.setImageResult(imageOriginal, x, y, w, h);
-					imageResult.setFitHeight(image.getHeight());
-					imageResult.setFitWidth(image.getWidth());
-					imageResult.setImage(image);
+					Image image;
+					image = ui.setImageResult(imageOriginal, x, y, w, h);
+					setSizeImageViewResult(image);
+					try {
+						ImagePlus imagePlus = functions.getImagePlusFromImage(image);
+						int [][] matrixImageResult = functions.setMatrixImage(imagePlus);		
+						numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrixImageResult)));
+						averageLevelsOfGrayValue.setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
 
-					// ACA EN LUGAR DE LA MATRIX ORIGINAL NECESITO LA MATRIZ DE PIXELES DE LA IMAGEN
-					// RESULTADO
-					numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrix)));
-					averageLevelsOfGrayValue.setText(String.valueOf(functions.averageLevelsOfGray(matrix)));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		});

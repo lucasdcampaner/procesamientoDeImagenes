@@ -108,7 +108,7 @@ public class Functions {
 		}
 	}
 
-	private int[][] setMatrixImage(ImagePlus image) {
+	public int[][] setMatrixImage(ImagePlus image) {
 
 		int w = (int) image.getWidth();
 		int h = (int) image.getHeight();
@@ -162,6 +162,16 @@ public class Functions {
 
 	public int stringToInt(String text) {
 		return Integer.parseInt(text);
+	}
+	
+	public ImagePlus getImagePlusFromImage(Image image) throws IOException {
+		BufferedImage buffer = SwingFXUtils.fromFXImage(image, new BufferedImage((int) image.getWidth(), (int) image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+		File outputfile = new File("cut_image.png");
+		ImageIO.write(buffer, "png", outputfile);
+		
+		ImagePlus imagePlus = new ImagePlus();
+		imagePlus.setImage(ImageIO.read(new File("cut_image.png")));
+		return  imagePlus;
 	}
 
 }
