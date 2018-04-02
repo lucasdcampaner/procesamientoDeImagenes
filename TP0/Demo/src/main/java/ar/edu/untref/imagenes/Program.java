@@ -155,10 +155,12 @@ public class Program extends Application {
 		Label labelB = ui.createLabel("B: ");
 		Label valueB = ui.createLabel("");
 		Label numberOfPixel = ui.createLabel("Number of pixels: ");
-		Label numberOfPixelValue = ui.createLabel("");
+		Label numberOfPixelValue = ui.createLabel("0");
+		Label averageLevelsOfGray = ui.createLabel("Average levels of gray: ");
+		Label averageLevelsOfGrayValue = ui.createLabel("0");
 
 		layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB,
-				numberOfPixel, numberOfPixelValue);
+				numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
 
 		imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			@Override
@@ -191,12 +193,17 @@ public class Program extends Application {
 				h = (int) (event.getY() - y);
 
 				numberOfPixelValue.setText("0");
+				averageLevelsOfGrayValue.setText("0");
 				if (w > 0 && h > 0) {
 					Image image = ui.setImageResult(imageOriginal, x, y, w, h);
 					imageResult.setFitHeight(image.getHeight());
 					imageResult.setFitWidth(image.getWidth());
 					imageResult.setImage(image);
-					numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(imageResult.getImage())));
+
+					// ACA EN LUGAR DE LA MATRIX ORIGINAL NECESITO LA MATRIZ DE PIXELES DE LA IMAGEN
+					// RESULTADO
+					numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrix)));
+					averageLevelsOfGrayValue.setText(String.valueOf(functions.averageLevelsOfGray(matrix)));
 				}
 			}
 		});

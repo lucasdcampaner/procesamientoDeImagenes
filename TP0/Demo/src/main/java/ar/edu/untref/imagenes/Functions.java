@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 public class Functions {
 
-	private int[][] matrixImage = new int[][]{};
+	private int[][] matrixImage = new int[][] {};
 	private Stage stage;
 
 	@SuppressWarnings("unused")
@@ -41,7 +41,7 @@ public class Functions {
 			extensionFile = getExtensionFile(path);
 			ImagePlus imagePlus = new ImagePlus(path);
 			Image image = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
-			
+
 			matrixImage = setMatrixImage(imagePlus);
 			return image;
 		}
@@ -119,7 +119,7 @@ public class Functions {
 				matrix[i][j] = image.getPixel(i, j)[0];
 			}
 		}
-		
+
 		return matrix;
 	}
 
@@ -143,8 +143,25 @@ public class Functions {
 		return matrixImage;
 	}
 
-	public int getNumberOfPixel(Image image) {
-		return (int) image.getWidth() * (int) image.getHeight();
+	public int getNumberOfPixel(int[][] matrixPixels) {
+		return matrixImage.length * matrixImage[0].length;
+	}
+
+	public int averageLevelsOfGray(int[][] matrixPixels) {
+
+		int sumOfLevels = 0;
+
+		for (int i = 0; i < matrixPixels.length; i++) {
+			for (int j = 0; j < matrixPixels[i].length; j++) {
+				sumOfLevels += matrixPixels[i][j];
+			}
+		}
+
+		return sumOfLevels / getNumberOfPixel(matrixPixels);
+	}
+
+	public int stringToInt(String text) {
+		return Integer.parseInt(text);
 	}
 
 }
