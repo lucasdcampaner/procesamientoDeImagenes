@@ -15,9 +15,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -199,16 +196,12 @@ public class Program extends Application {
 					imageResult.setFitHeight(image.getHeight());
 					imageResult.setFitWidth(image.getWidth());
 					imageResult.setImage(image);
-					numberOfPixelValue.setText(String.valueOf(getNumberOfPixel(imageResult.getImage())));
+					numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(imageResult.getImage())));
 				}
 			}
 		});
 
 		return layoutInfo;
-	}
-
-	private int getNumberOfPixel(Image image) {
-		return (int) image.getWidth() * (int) image.getHeight();
 	}
 
 	private int changePosXDoubleToInt(Double posX) {

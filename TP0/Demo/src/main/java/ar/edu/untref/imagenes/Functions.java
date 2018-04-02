@@ -142,4 +142,9 @@ public class Functions {
 	public int[][] getMatrixImage() {
 		return matrixImage;
 	}
+
+	public int getNumberOfPixel(Image image) {
+		return (int) image.getWidth() * (int) image.getHeight();
+	}
+
 }
