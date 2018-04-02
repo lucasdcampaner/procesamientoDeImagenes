@@ -25,6 +25,7 @@ import listener.ListenerResultDialogs;
 public class Program extends Application {
 
 	private ImageView imageViewOriginal;
+	private Image imageOriginal;
 	private ImageView imageViewResult;
 	private Stage stage;
 
@@ -34,7 +35,7 @@ public class Program extends Application {
 	private Group groupImageOriginal;
 	private int x, y, w, h;
 
-	private Image image;
+
 	private Slider slider;
 	private int[][] matrix;
 
@@ -261,7 +262,7 @@ public class Program extends Application {
 		imageViewOriginal.setImage(image);
 		new SelectorImage(groupImageOriginal, imageViewOriginal.getX(), imageViewOriginal.getY(), image.getWidth(),
 				image.getHeight());
-		this.image = image;
+		this.imageOriginal = image;
 		matrix = functions.getMatrixImage();
 	}
 
@@ -377,7 +378,7 @@ public class Program extends Application {
 	};
 
 	private Image getImage() {
-		return this.image;
+		return this.imageOriginal;
 	}
 
 	public static void main(String[] args) {
