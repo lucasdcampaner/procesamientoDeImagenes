@@ -1,8 +1,5 @@
 package ar.edu.untref.imagenes;
 
-import java.io.IOException;
-
-import ij.ImagePlus;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,8 +24,8 @@ import listener.ListenerResultDialogs;
 
 public class Program extends Application {
 
-	private ImageView imageOriginal;
-	private ImageView imageResult;
+	private ImageView imageViewOriginal;
+	private ImageView imageViewResult;
 	private Stage stage;
 
 	private Functions functions;
@@ -91,13 +88,13 @@ public class Program extends Application {
 		layoutImageOriginal.setMaxHeight(600);
 		layoutImageOriginal.getStyleClass().add("layout-main-image");
 
-		imageOriginal = new ImageView();
-		imageOriginal.setFitWidth(500);
-		imageOriginal.setFitHeight(500);
-		imageOriginal.setPreserveRatio(true);
+		imageViewOriginal = new ImageView();
+		imageViewOriginal.setFitWidth(500);
+		imageViewOriginal.setFitHeight(500);
+		imageViewOriginal.setPreserveRatio(true);
 
 		groupImageOriginal = new Group();
-		groupImageOriginal.getChildren().add(imageOriginal);
+		groupImageOriginal.getChildren().add(imageViewOriginal);
 		layoutImageOriginal.getChildren().add(groupImageOriginal);
 
 		// Imagen resultado
@@ -108,10 +105,10 @@ public class Program extends Application {
 		layoutImageResult.setMaxHeight(600);
 		layoutImageResult.getStyleClass().add("layout-main-image");
 
-		imageResult = new ImageView();
-		imageResult.setFitWidth(500);
-		imageResult.setFitHeight(500);
-		imageResult.setPreserveRatio(true);
+		imageViewResult = new ImageView();
+		imageViewResult.setFitWidth(500);
+		imageViewResult.setFitHeight(500);
+		imageViewResult.setPreserveRatio(true);
 
 		// Barra
 		VBox layoutSlider = new VBox();
@@ -131,7 +128,7 @@ public class Program extends Application {
 
 		layoutSlider.getChildren().add(slider);
 
-		layoutImageResult.getChildren().add(imageResult);
+		layoutImageResult.getChildren().add(imageViewResult);
 		layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
 		// Barra info
@@ -165,13 +162,13 @@ public class Program extends Application {
 		layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB,
 				numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
 
-		imageOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
+		imageViewOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				posX.setText(String.valueOf((int) event.getX()));
 				posY.setText(String.valueOf((int) event.getY()));
 
-				Image image = imageOriginal.getImage();
+				Image image = imageViewOriginal.getImage();
 				valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
 						changePosYDoubleToInt(event.getY())).intValue()));
 				valueG.setText(String.valueOf(functions.getValuePixelGreenRGB(image,
@@ -181,7 +178,7 @@ public class Program extends Application {
 			}
 		});
 
-		imageOriginal.setOnMousePressed(new EventHandler<MouseEvent>() {
+		imageViewOriginal.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				x = (int) event.getX();
@@ -189,7 +186,7 @@ public class Program extends Application {
 			}
 		});
 
-		imageOriginal.setOnMouseReleased(new EventHandler<MouseEvent>() {
+		imageViewOriginal.setOnMouseReleased(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				w = (int) (event.getX() - x);
@@ -197,20 +194,6 @@ public class Program extends Application {
 
 				numberOfPixelValue.setText("0");
 				averageLevelsOfGrayValue.setText("0");
-				if (w > 0 && h > 0) {
-					Image image;
-					image = ui.setImageResult(imageOriginal, x, y, w, h);
-					setSizeImageViewResult(image);
-					try {
-						ImagePlus imagePlus = functions.getImagePlusFromImage(image);
-						int [][] matrixImageResult = functions.setMatrixImage(imagePlus);		
-						numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrixImageResult)));
-						averageLevelsOfGrayValue.setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
-
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
 			}
 		});
 
@@ -273,26 +256,26 @@ public class Program extends Application {
 	}
 
 	private void setSizeImageView(Image image) {
-		imageOriginal.setFitHeight(image.getHeight());
-		imageOriginal.setFitWidth(image.getWidth());
-		imageOriginal.setImage(image);
-		new SelectorImage(groupImageOriginal, imageOriginal.getX(), imageOriginal.getY(), image.getWidth(),
+		imageViewOriginal.setFitHeight(image.getHeight());
+		imageViewOriginal.setFitWidth(image.getWidth());
+		imageViewOriginal.setImage(image);
+		new SelectorImage(groupImageOriginal, imageViewOriginal.getX(), imageViewOriginal.getY(), image.getWidth(),
 				image.getHeight());
 		this.image = image;
 		matrix = functions.getMatrixImage();
 	}
 
-	private void setSizeImageViewResult(Image image) {
+	private void setSizeImageViewResult(Image imageOriginal) {
 
-		layoutImageResult.getChildren().remove(imageResult);
+		layoutImageResult.getChildren().remove(imageViewResult);
 
-		imageResult = new ImageView();
-		imageResult.setPreserveRatio(true);
-		imageResult.setFitHeight(image.getHeight());
-		imageResult.setFitWidth(image.getWidth());
-		imageResult.setImage(image);
+		imageViewResult = new ImageView();
+		imageViewResult.setPreserveRatio(true);
+		imageViewResult.setFitHeight(imageOriginal.getHeight());
+		imageViewResult.setFitWidth(imageOriginal.getWidth());
+		imageViewResult.setImage(imageOriginal);
 
-		layoutImageResult.getChildren().add(imageResult);
+		layoutImageResult.getChildren().add(imageViewResult);
 	}
 
 	private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -354,7 +337,7 @@ public class Program extends Application {
 	private EventHandler<ActionEvent> listenerSave = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent event) {
-			functions.saveImage(imageOriginal.getImage());
+			functions.saveImage(imageViewOriginal.getImage());
 		}
 	};
 
