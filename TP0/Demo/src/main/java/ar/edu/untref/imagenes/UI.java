@@ -173,10 +173,10 @@ public class UI {
         return SwingFXUtils.toFXImage(image.getBufferedImage(), null);
     }
 
-    public Image getImageResult(Image image, int[][] matrixImage) {
+    public Image getImageResult(int[][] matrixImage) {
 
-        int w = (int) image.getWidth();
-        int h = (int) image.getHeight();
+        int w = matrixImage.length;
+        int h = matrixImage[0].length;
         ImagePlus imageResult = new ImagePlus();
         imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY));
 
