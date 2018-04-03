@@ -92,10 +92,13 @@ public class Program extends Application {
         grayGradient.setOnAction(listenerCreateGrayGradient);
         MenuItem colorGradient = new MenuItem("Color gradient");
         colorGradient.setOnAction(listenerColorGradient);
+        MenuItem grayHistogram = new MenuItem("Gray Histogram");
+        grayHistogram.setOnAction(listenerGrayHistogram);
         MenuItem copyImageToLeft = new MenuItem("Copy Image to Left");
         copyImageToLeft.setOnAction(listenerCopyImageToLeft);
 
-        menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient, copyImageToLeft);
+        menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient, grayHistogram,
+                copyImageToLeft);
 
         // Menu edit
         Menu menuFilter = new Menu("Filter");
@@ -348,6 +351,18 @@ public class Program extends Application {
         }
     };
 
+    private EventHandler<ActionEvent> listenerGrayHistogram = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                int[] valores = Modifiers.computeGrayHistogram(matrix);
+                Image image = ui.drawGrayHistogramImage(valores);
+                setSizeImageViewResult(image);
+            }
+        }
+    };
+
     private EventHandler<ActionEvent> listenerColorGradient = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -362,11 +377,7 @@ public class Program extends Application {
 
             if (imageViewResult.getImage() != null) {
                 imageResult = imageViewResult.getImage();
-                // imageOriginal = imageResult;
                 setSizeImageViewOriginal(imageResult);
-                // imageOriginal = imageViewResult.getImage();
-                // imageViewOriginal.setImage(imageOriginal);
-                // //////imageViewOriginal = imageViewResult;
             }
         }
     };

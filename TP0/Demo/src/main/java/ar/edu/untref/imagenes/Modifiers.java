@@ -7,57 +7,76 @@ import javafx.scene.image.WritableImage;
 
 public class Modifiers {
 
-	public static int[][] thresholdize(int[][] matrixImage, int valueThreshold) {
+    public static int[][] thresholdize(int[][] matrixImage, int valueThreshold) {
 
-		int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
+        int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
 
-		for (int i = 0; i < matrixImage.length; i++) {
-			for (int j = 0; j < matrixImage[i].length; j++) {
-				if (matrixImage[i][j] > valueThreshold) {
-					matrixAux[i][j] = 255;
-				} else {
-					matrixAux[i][j] = 0;
-				}
-			}
-		}
-		return matrixAux;
-	}
+        for (int i = 0; i < matrixImage.length; i++) {
+            for (int j = 0; j < matrixImage[i].length; j++) {
+                if (matrixImage[i][j] > valueThreshold) {
+                    matrixAux[i][j] = 255;
+                } else {
+                    matrixAux[i][j] = 0;
+                }
+            }
+        }
+        return matrixAux;
+    }
 
     public static int[][] negative(int[][] matrixImage) {
 
-		int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
+        int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
 
-		for (int i = 0; i < matrixImage.length; i++) {
-			for (int j = 0; j < matrixImage[i].length; j++) {
-				matrixAux[i][j] = -matrixImage[i][j] + 255;
-			}
-		}
-		return matrixAux;
-	}
+        for (int i = 0; i < matrixImage.length; i++) {
+            for (int j = 0; j < matrixImage[i].length; j++) {
+                matrixAux[i][j] = -matrixImage[i][j] + 255;
+            }
+        }
+        return matrixAux;
+    }
 
-	public Image modifyValueOfAPixel(Image image, String posX, String posY, String pixelValue) {
+    public Image modifyValueOfAPixel(Image image, String posX, String posY, String pixelValue) {
 
-		PixelReader pixelReader = image.getPixelReader();
-		int width = (int) image.getWidth();
-		int height = (int) image.getHeight();
-		WritableImage writableImage = new WritableImage(width, height);
-		PixelWriter pixelWriter = writableImage.getPixelWriter();
+        PixelReader pixelReader = image.getPixelReader();
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+        WritableImage writableImage = new WritableImage(width, height);
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
 
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				pixelWriter.setColor(x, y, pixelReader.getColor(x, y));
-			}
-		}
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                pixelWriter.setColor(x, y, pixelReader.getColor(x, y));
+            }
+        }
 
-		int x = toInt(posX);
-		int y = toInt(posY);
-		pixelWriter.setArgb(x, y, toInt(pixelValue));
-		return writableImage;
+        int x = toInt(posX);
+        int y = toInt(posY);
+        pixelWriter.setArgb(x, y, toInt(pixelValue));
+        return writableImage;
 
-	}
+    }
 
-	private int toInt(String text) {
-		return Integer.parseInt(text);
-	}
+    private int toInt(String text) {
+        return Integer.parseInt(text);
+    }
+
+    public static int[] computeGrayHistogram(int[][] matrixImage) {
+
+        int[] arrayAux = new int[256];
+        for (int i = 0; i < arrayAux.length; i++) {
+            arrayAux[i] = 0;
+        }
+        int posicionValorNivel = -1;
+        int valorAnterior = 0;
+        for (int i = 0; i < matrixImage.length; i++) {
+            for (int j = 0; j < matrixImage[i].length; j++) {
+                posicionValorNivel = matrixImage[i][j];
+                valorAnterior = arrayAux[posicionValorNivel];
+                arrayAux[posicionValorNivel] = valorAnterior + 1;
+            }
+        }
+        return arrayAux; // existe algo creo igual en imageOriginal.getProcessor().getHistogram();
+
+    }
 
 }

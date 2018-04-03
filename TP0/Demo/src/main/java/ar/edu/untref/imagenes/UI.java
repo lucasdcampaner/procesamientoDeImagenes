@@ -196,4 +196,14 @@ public class UI {
 
         return newImage;
     }
+
+    public Image grayHistogram() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Image drawGrayHistogramImage(int[] valores) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
