@@ -75,7 +75,8 @@ public class Modifiers {
                 arrayAux[posicionValorNivel] = valorAnterior + 1;
             }
         }
-        return arrayAux; // existe algo creo igual en imageOriginal.getProcessor().getHistogram();
+        return arrayAux; // existe algo creo igual en
+                         // imageOriginal.getProcessor().getHistogram();
 
     }
 
