@@ -23,7 +23,7 @@ public class Modifiers {
 		return matrixAux;
 	}
 
-	public static int[][] negative(int[][] matrixImage) {
+    public static int[][] negative(int[][] matrixImage) {
 
 		int[][] matrixAux = new int[matrixImage.length][matrixImage[0].length];
 
