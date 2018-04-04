@@ -243,8 +243,8 @@ public class Functions {
         int w = matrix.length;
         int h = matrix[0].length;
 
-        int maxValue = matrix[0][0];
-        int minValue = matrix[0][0];
+        int maxValue = 0;
+        int minValue = 255;
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
@@ -258,14 +258,13 @@ public class Functions {
                 }
             }
         }
-
+        
         int[][] result = new int[w][h];
 
         for (int k = 0; k < w; k++) {
             for (int l = 0; l < h; l++) {
-                int value = (result[k][l] * (255 / (maxValue - minValue))
-                        + (255 - ((255 * maxValue) / (maxValue - minValue))));
-                result[k][l] = value;
+                int value = Math.round((255f / (maxValue - minValue)) * (matrix[k][l] - minValue));
+                result[k][l] = (int) value;
             }
         }
 

@@ -326,7 +326,7 @@ public class Program extends Application {
         imageViewResult.setFitHeight(image.getHeight());
         imageViewResult.setFitWidth(image.getWidth());
         imageViewResult.setImage(image);
-        
+
         ImagePlus imagePlus = null;
         try {
             imagePlus = functions.getImagePlusFromImage(image, "second_image");
@@ -463,17 +463,16 @@ public class Program extends Application {
             // Matrices de imagenes
             Image image = functions.openImage(false);
             setSizeImageViewResult(image);
-            
+
             // Igualacion de tamaños con relleno de valores 0
             List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
-            
+
             // Suma de imagenes
             int[][] matrixAdded = Modifiers.addImage(bothMatrix.get(0), bothMatrix.get(1));
-            
+
             // Normalizacion de imagen resultante
-            
-//            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
-            setSizeImageViewResult(ui.getImageResult(matrixAdded));
+            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
+             setSizeImageViewResult(ui.getImageResult(imageNormalized));
         }
     };
 
