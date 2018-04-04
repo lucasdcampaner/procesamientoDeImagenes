@@ -41,7 +41,8 @@ public class Program extends Application {
     private int x, y, w, h;
 
     private Slider slider;
-    private int[][] matrix;
+    private int[][] matrix1;
+    private int[][] matrix2;
 
     private VBox layoutImageResult;
     private VBox layoutImageOriginal;
@@ -265,7 +266,7 @@ public class Program extends Application {
                     setSizeImageViewResult(imageResult);
                     ImagePlus imagePlus;
                     try {
-                        imagePlus = functions.getImagePlusFromImage(imageResult);
+                        imagePlus = functions.getImagePlusFromImage(imageResult, "cut_image");
                         int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
                         numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrixImageResult)));
                         averageLevelsOfGrayValue
@@ -301,14 +302,13 @@ public class Program extends Application {
 
         ImagePlus imagePlus = null;
         try {
-            imagePlus = functions.getImagePlusFromImage(this.imageOriginal);
+            imagePlus = functions.getImagePlusFromImage(this.imageOriginal, "main_image");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
 
-        matrix = matrixImageResult;
+        matrix1 = matrixImageResult;
 
         layoutImageOriginal.getChildren().add(imageViewOriginal);
         groupImageOriginal.getChildren().add(imageViewOriginal);
@@ -326,6 +326,16 @@ public class Program extends Application {
         imageViewResult.setFitHeight(image.getHeight());
         imageViewResult.setFitWidth(image.getWidth());
         imageViewResult.setImage(image);
+        
+        ImagePlus imagePlus = null;
+        try {
+            imagePlus = functions.getImagePlusFromImage(image, "second_image");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
+
+        matrix2 = matrixImageResult;
 
         layoutImageResult.getChildren().add(imageViewResult);
     }
@@ -362,7 +372,7 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                int[] valores = Modifiers.computeGrayHistogram(matrix);
+                int[] valores = Modifiers.computeGrayHistogram(matrix1);
                 Image image = ui.drawGrayHistogramImage(valores);
                 setSizeImageViewResult(image);
             }
@@ -421,7 +431,7 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             slider.setVisible(true);
-            int[][] newMatrix = Modifiers.thresholdize(matrix, (int) slider.getValue());
+            int[][] newMatrix = Modifiers.thresholdize(matrix1, (int) slider.getValue());
             setSizeImageViewResult(ui.getImageResult(newMatrix));
         }
     };
@@ -431,7 +441,7 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             slider.setVisible(false);
-            int[][] newMatrix = Modifiers.negative(matrix);
+            int[][] newMatrix = Modifiers.negative(matrix1);
             imageResult = ui.getImageResult(newMatrix);
             setSizeImageViewResult(imageResult);
         }
@@ -447,34 +457,41 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerAddImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            functions.openImage(false);
 
-            int[][] matrix1 = functions.getMatrixImage();
-            int[][] matrix2 = functions.getMatrixSecondImage();
+            slider.setVisible(false);
+
+            // Matrices de imagenes
+            Image image = functions.openImage(false);
+            setSizeImageViewResult(image);
+            
+            // Igualacion de tamaños con relleno de valores 0
             List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
-
-            setSizeImageViewResult(ui.getImageResult(bothMatrix.get(1)));
+            
+            // Suma de imagenes
+            int[][] matrixAdded = Modifiers.addImage(bothMatrix.get(0), bothMatrix.get(1));
+            
+            // Normalizacion de imagen resultante
+            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
+            setSizeImageViewResult(ui.getImageResult(imageNormalized));
         }
     };
 
     private EventHandler<ActionEvent> listenerSubstractImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            Image image = functions.openImage(false);
         }
     };
 
     private EventHandler<ActionEvent> listenerMultiplyImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            Image image = functions.openImage(false);
         }
     };
 
     private ChangeListener<Number> listenerSlider = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            int[][] newMatrix = Modifiers.thresholdize(matrix, newValue.intValue());
+            int[][] newMatrix = Modifiers.thresholdize(matrix1, newValue.intValue());
             setSizeImageViewResult(ui.getImageResult(newMatrix));
         }
     };

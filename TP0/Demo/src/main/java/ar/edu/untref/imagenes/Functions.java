@@ -237,19 +237,52 @@ public class Functions {
 
         return matrixResult;
     }
+    
+    public int[][] normalizeMatrix(int[][] matrix) {
+
+        int w = matrix.length;
+        int h = matrix[0].length;
+
+        int maxValue = matrix[0][0];
+        int minValue = matrix[0][0];
+        
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+
+                if (matrix[i][j] > maxValue) {
+                    maxValue = matrix[i][j];
+                }
+
+                if (matrix[i][j] < minValue) {
+                    minValue = matrix[i][j];
+                }
+            }
+        }
+        
+        int[][] result = new int[w][h];
+
+        for (int k = 0; k < w; k++) {
+            for (int l = 0; l < h; l++) {
+                int value = (int) (matrix[k][l] * ((255 - minValue) / maxValue)) + minValue;
+                result[k][l] = value;
+            }
+        }
+        
+        return result;
+    }
 
     public int stringToInt(String text) {
         return Integer.parseInt(text);
     }
 
-    public ImagePlus getImagePlusFromImage(Image image) throws IOException {
+    public ImagePlus getImagePlusFromImage(Image image, String name) throws IOException {
         BufferedImage buffer = SwingFXUtils.fromFXImage(image,
                 new BufferedImage((int) image.getWidth(), (int) image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
-        File outputfile = new File("cut_image.png");
+        File outputfile = new File(name + ".png");
         ImageIO.write(buffer, "png", outputfile);
 
         ImagePlus imagePlus = new ImagePlus();
-        imagePlus.setImage(ImageIO.read(new File("cut_image.png")));
+        imagePlus.setImage(ImageIO.read(new File(name + ".png")));
         return imagePlus;
     }
 
