@@ -494,6 +494,24 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerMultiplyImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
+            
+            slider.setVisible(false);
+
+            // Matrices de imagenes
+            functions.openImage(false);
+            
+            int[][] matrix1 = functions.getMatrixImage();
+            int[][] matrix2 = functions.getMatrixSecondImage();
+
+            // Igualacion de tamaños con relleno de valores 0
+            List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
+
+            // Suma de imagenes
+            int[][] matrixAdded = Modifiers.multiplyImage(bothMatrix.get(0), bothMatrix.get(1));
+
+            // Normalizacion de imagen resultante
+            int[][] imageNormalized = functions.dinamicRange(matrixAdded);
+             setSizeImageViewResult(ui.getImageResult(imageNormalized));
         }
     };
 

@@ -114,4 +114,21 @@ public class Modifiers {
         }
         return matrixAux;
     }
+    
+    public static int[][] multiplyImage(int[][] firstImage, int[][] secondImage) {
+        
+        int w = firstImage.length;
+        int h = firstImage[0].length;
+
+        int[][] matrixAux = new int[w][h];
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                for (int k = 0; k < h; k++) {
+                    matrixAux[i][j] += firstImage[i][k] * secondImage[k][j];
+                }
+            }
+        }
+        return matrixAux;
+    }
 }

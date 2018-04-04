@@ -258,13 +258,44 @@ public class Functions {
                 }
             }
         }
-        
+
         int[][] result = new int[w][h];
 
         for (int k = 0; k < w; k++) {
             for (int l = 0; l < h; l++) {
                 int value = Math.round((255f / (maxValue - minValue)) * (matrix[k][l] - minValue));
-                result[k][l] = (int) value;
+                result[k][l] = value;
+            }
+        }
+
+        return result;
+    }
+
+    public int[][] dinamicRange(int[][] matrix) {
+
+        int w = matrix.length;
+        int h = matrix[0].length;
+
+        int maxValue = 0;
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                if (matrix[i][j] > maxValue) {
+                    maxValue = matrix[i][j];
+                }
+            }
+        }
+
+        int[][] result = new int[w][h];
+
+        for (int k = 0; k < w; k++) {
+            for (int l = 0; l < h; l++) {
+
+                int r = matrix[k][l];
+                float R = (float) Math.log(1 + maxValue);
+                int value = Math.round(((255f / R) * (float) Math.log(1 + r)));
+
+                result[k][l] = value;
             }
         }
 
