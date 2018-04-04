@@ -81,22 +81,35 @@ public class Modifiers {
         return arrayAux;
 
         /*
-         * // version abortada con imageOriginal.getProcessor().getHistogram(); int[]
-         * arrayAux = new long[256]; try { arrayAux =
-         * getImagePlusFromImage(imageOriginal).getProcessor().getHistogram(); for(int i
-         * = 0; i < arrayAux.length; i++){ int value = arrayAux[i]; System.out.println(i
-         * + " con valor: " + value); } return arrayAux; } catch (IOException e) { //
-         * TODO Auto-generated catch block e.printStackTrace(); } return null;
+         * // version abortada con imageOriginal.getProcessor().getHistogram();
+         * int[] arrayAux = new long[256]; try { arrayAux =
+         * getImagePlusFromImage(imageOriginal).getProcessor().getHistogram();
+         * for(int i = 0; i < arrayAux.length; i++){ int value = arrayAux[i];
+         * System.out.println(i + " con valor: " + value); } return arrayAux; }
+         * catch (IOException e) { // TODO Auto-generated catch block
+         * e.printStackTrace(); } return null;
          */
     }
 
     public static int[][] addImage(int[][] firstImage, int[][] secondImage) {
-        
+
         int[][] matrixAux = new int[firstImage.length][firstImage[0].length];
 
         for (int i = 0; i < firstImage.length; i++) {
             for (int j = 0; j < firstImage[i].length; j++) {
                 matrixAux[i][j] = firstImage[i][j] + secondImage[i][j];
+            }
+        }
+        return matrixAux;
+    }
+
+    public static int[][] substractImage(int[][] firstImage, int[][] secondImage) {
+
+        int[][] matrixAux = new int[firstImage.length][firstImage[0].length];
+
+        for (int i = 0; i < firstImage.length; i++) {
+            for (int j = 0; j < firstImage[i].length; j++) {
+                matrixAux[i][j] = Math.abs(firstImage[i][j] - secondImage[i][j]);
             }
         }
         return matrixAux;

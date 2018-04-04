@@ -42,7 +42,6 @@ public class Program extends Application {
 
     private Slider slider;
     private int[][] matrix1;
-    private int[][] matrix2;
 
     private VBox layoutImageResult;
     private VBox layoutImageOriginal;
@@ -327,16 +326,6 @@ public class Program extends Application {
         imageViewResult.setFitWidth(image.getWidth());
         imageViewResult.setImage(image);
 
-        ImagePlus imagePlus = null;
-        try {
-            imagePlus = functions.getImagePlusFromImage(image, "second_image");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
-
-        matrix2 = matrixImageResult;
-
         layoutImageResult.getChildren().add(imageViewResult);
     }
 
@@ -461,8 +450,10 @@ public class Program extends Application {
             slider.setVisible(false);
 
             // Matrices de imagenes
-            Image image = functions.openImage(false);
-            setSizeImageViewResult(image);
+            functions.openImage(false);
+            
+            int[][] matrix1 = functions.getMatrixImage();
+            int[][] matrix2 = functions.getMatrixSecondImage();
 
             // Igualacion de tamaños con relleno de valores 0
             List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
@@ -479,6 +470,24 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerSubstractImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
+            
+            slider.setVisible(false);
+
+            // Matrices de imagenes
+            functions.openImage(false);
+            
+            int[][] matrix1 = functions.getMatrixImage();
+            int[][] matrix2 = functions.getMatrixSecondImage();
+
+            // Igualacion de tamaños con relleno de valores 0
+            List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
+
+            // Suma de imagenes
+            int[][] matrixAdded = Modifiers.substractImage(bothMatrix.get(0), bothMatrix.get(1));
+
+            // Normalizacion de imagen resultante
+            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
+             setSizeImageViewResult(ui.getImageResult(imageNormalized));
         }
     };
 
