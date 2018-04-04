@@ -61,7 +61,6 @@ public class Modifiers {
     }
 
     public static int[] computeGrayHistogram(int[][] matrixImage) {
-
         int[] arrayAux = new int[256];
         for (int i = 0; i < arrayAux.length; i++) {
             arrayAux[i] = 0;
@@ -75,8 +74,19 @@ public class Modifiers {
                 arrayAux[posicionValorNivel] = valorAnterior + 1;
             }
         }
-        return arrayAux; // existe algo creo igual en imageOriginal.getProcessor().getHistogram();
+        for (int i = 0; i < arrayAux.length; i++) {
+            int value = arrayAux[i];
+            // System.out.println(i + " con valor: " + value);
+        }
+        return arrayAux;
 
+        /*
+         * // version abortada con imageOriginal.getProcessor().getHistogram(); int[]
+         * arrayAux = new long[256]; try { arrayAux =
+         * getImagePlusFromImage(imageOriginal).getProcessor().getHistogram(); for(int i
+         * = 0; i < arrayAux.length; i++){ int value = arrayAux[i]; System.out.println(i
+         * + " con valor: " + value); } return arrayAux; } catch (IOException e) { //
+         * TODO Auto-generated catch block e.printStackTrace(); } return null;
+         */
     }
-
 }

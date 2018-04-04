@@ -10,129 +10,129 @@ import javafx.scene.shape.StrokeLineCap;
 
 public class SelectorImage {
 
-	private final DragContext dragContext = new DragContext();
-	private Rectangle rect = new Rectangle();
+    private final DragContext dragContext = new DragContext();
+    private Rectangle rect = new Rectangle();
 
-	private Group group;
-	
-	private double x;
-	private double y;
-	private double w;
-	private double h;
+    private Group group;
 
-	public Bounds getBounds() {
-		return rect.getBoundsInParent();
-	}
+    private double x;
+    private double y;
+    private double w;
+    private double h;
 
-	public SelectorImage(Group group, double x, double y, double w, double h) {
+    public Bounds getBounds() {
+        return rect.getBoundsInParent();
+    }
 
-		this.group = group;
-		
-		this.x = x;
-		this.y = y;
-		this.h = h;
-		this.w = w;
+    public SelectorImage(Group group, double x, double y, double w, double h) {
 
-		Color color = new Color(0, 0, 1, 0.5);
-		rect = new Rectangle(0, 0, 0, 0);
-		rect.setStroke(color);
-		rect.setStrokeWidth(1);
-		rect.setStrokeLineCap(StrokeLineCap.ROUND);
-		rect.setFill(Color.LIGHTBLUE.deriveColor(0, 1.2, 1, 0.6));
+        this.group = group;
 
-		group.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
-		group.addEventHandler(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
-		group.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
+        this.x = x;
+        this.y = y;
+        this.h = h;
+        this.w = w;
 
-	}
+        Color color = new Color(0, 0, 1, 0.5);
+        rect = new Rectangle(0, 0, 0, 0);
+        rect.setStroke(color);
+        rect.setStrokeWidth(1);
+        rect.setStrokeLineCap(StrokeLineCap.ROUND);
+        rect.setFill(Color.LIGHTBLUE.deriveColor(0, 1.2, 1, 0.6));
 
-	private EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
-		@Override
-		public void handle(MouseEvent event) {
-			mousePressed(event);
-		}
-	};
+        group.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
+        group.addEventHandler(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
+        group.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
 
-	private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
-		@Override
-		public void handle(MouseEvent event) {
-			mouseDragged(event);
-		}
-	};
+    }
 
-	private EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
-		@Override
-		public void handle(MouseEvent event) {
-			mouseReleased(event);
-		}
-	};
+    private EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            mousePressed(event);
+        }
+    };
 
-	private void mousePressed(MouseEvent event) {
-		if (event.isSecondaryButtonDown())
-			return;
+    private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            mouseDragged(event);
+        }
+    };
 
-		// remove old rect
-		rect.setX(0);
-		rect.setY(0);
-		rect.setWidth(0);
-		rect.setHeight(0);
+    private EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            mouseReleased(event);
+        }
+    };
 
-		group.getChildren().remove(rect);
+    private void mousePressed(MouseEvent event) {
+        if (event.isSecondaryButtonDown())
+            return;
 
-		// prepare new drag operation
-		dragContext.mouseAnchorX = event.getX();
-		dragContext.mouseAnchorY = event.getY();
+        // remove old rect
+        rect.setX(0);
+        rect.setY(0);
+        rect.setWidth(0);
+        rect.setHeight(0);
 
-		rect.setX(dragContext.mouseAnchorX);
-		rect.setY(dragContext.mouseAnchorY);
-		rect.setWidth(0);
-		rect.setHeight(0);
+        group.getChildren().remove(rect);
 
-		group.getChildren().add(rect);
-	}
+        // prepare new drag operation
+        dragContext.mouseAnchorX = event.getX();
+        dragContext.mouseAnchorY = event.getY();
 
-	private void mouseDragged(MouseEvent event) {
+        rect.setX(dragContext.mouseAnchorX);
+        rect.setY(dragContext.mouseAnchorY);
+        rect.setWidth(0);
+        rect.setHeight(0);
 
-		if (event.isSecondaryButtonDown())
-			return;
+        group.getChildren().add(rect);
+    }
 
-		double widthImageMin = x;
-		double widthImageMax = w;
-		double heightImageMin = y;
-		double heightImageMax = h;
+    private void mouseDragged(MouseEvent event) {
 
-		if (event.getX() >= widthImageMin && event.getX() <= widthImageMax && event.getY() >= heightImageMin
-				&& event.getY() <= heightImageMax) {
+        if (event.isSecondaryButtonDown())
+            return;
 
-			double offsetX = event.getX() - dragContext.mouseAnchorX;
-			double offsetY = event.getY() - dragContext.mouseAnchorY;
+        double widthImageMin = x;
+        double widthImageMax = w;
+        double heightImageMin = y;
+        double heightImageMax = h;
 
-			if (offsetX > 0)
-				rect.setWidth(offsetX);
-			else {
-				rect.setX(event.getX());
-				rect.setWidth(dragContext.mouseAnchorX - rect.getX());
-			}
+        if (event.getX() >= widthImageMin && event.getX() <= widthImageMax && event.getY() >= heightImageMin
+                && event.getY() <= heightImageMax) {
 
-			if (offsetY > 0) {
-				rect.setHeight(offsetY);
-			} else {
-				rect.setY(event.getY());
-				rect.setHeight(dragContext.mouseAnchorY - rect.getY());
-			}
-		} else {
-			return;
-		}
-	}
+            double offsetX = event.getX() - dragContext.mouseAnchorX;
+            double offsetY = event.getY() - dragContext.mouseAnchorY;
 
-	private void mouseReleased(MouseEvent event) {
-		if (event.isSecondaryButtonDown())
-			return;
-		
-	}
+            if (offsetX > 0)
+                rect.setWidth(offsetX);
+            else {
+                rect.setX(event.getX());
+                rect.setWidth(dragContext.mouseAnchorX - rect.getX());
+            }
 
-	private static final class DragContext {
-		public double mouseAnchorX;
-		public double mouseAnchorY;
-	}
+            if (offsetY > 0) {
+                rect.setHeight(offsetY);
+            } else {
+                rect.setY(event.getY());
+                rect.setHeight(dragContext.mouseAnchorY - rect.getY());
+            }
+        } else {
+            return;
+        }
+    }
+
+    private void mouseReleased(MouseEvent event) {
+        if (event.isSecondaryButtonDown())
+            return;
+
+    }
+
+    private static final class DragContext {
+        public double mouseAnchorX;
+        public double mouseAnchorY;
+    }
 }

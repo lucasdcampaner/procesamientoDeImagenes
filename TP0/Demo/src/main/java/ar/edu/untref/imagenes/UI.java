@@ -1,5 +1,7 @@
 package ar.edu.untref.imagenes;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import ij.ImagePlus;
@@ -197,13 +199,61 @@ public class UI {
         return newImage;
     }
 
-    public Image grayHistogram() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public Image drawGrayHistogramImage(int[] valores) {
-        // TODO Auto-generated method stub
-        return null;
+
+        // Determine the maximum vertical value...
+        int maxValue = 0;
+
+        for (int key = 0; key < valores.length; key++) {
+            int value = valores[key];
+            maxValue = Math.max(maxValue, value);
+        }
+
+        // System.out.println("el maximo es: " + maxValue);
+
+        int xOffset = 0;
+        int yOffset = 0;
+        int barWidth = 2;
+
+        int xPos = xOffset;
+        int width = 512;
+        int height = 512;
+
+        // create a BufferedImage for mentioned image types.
+        BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        // create a graphics2d object which can be used to draw into the buffered image
+        Graphics2D g2d = buffImg.createGraphics();
+
+        g2d.setColor(java.awt.Color.WHITE);
+        g2d.fillRect(0, 0, width, height);
+
+        for (int key = 0; key < valores.length; key++) {
+
+            g2d.setColor(java.awt.Color.BLACK);
+
+            int value = valores[key];
+            // Calculate the percentage that the given value uses compared to that of the
+            // maximum value
+            float percentage = (float) value / (float) maxValue;
+
+            // Calculate the line height based on the available vertical space...
+            int barHeight = Math.round(percentage * height);
+
+            int yPos = height + yOffset - barHeight;
+            Rectangle2D bar = new Rectangle2D.Float(xPos, yPos, barWidth, barHeight);
+
+            g2d.fill(bar);
+            g2d.draw(bar);
+            xPos += barWidth;
+        }
+        // disposes of this graphics context and releases any system resources that it
+        // is using
+        g2d.dispose();
+
+        WritableImage image = SwingFXUtils.toFXImage(buffImg, null);
+
+        return image;
+
     }
 }
