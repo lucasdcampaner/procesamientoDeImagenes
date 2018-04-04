@@ -471,8 +471,9 @@ public class Program extends Application {
             int[][] matrixAdded = Modifiers.addImage(bothMatrix.get(0), bothMatrix.get(1));
             
             // Normalizacion de imagen resultante
-            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
-            setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            
+//            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
+            setSizeImageViewResult(ui.getImageResult(matrixAdded));
         }
     };
 

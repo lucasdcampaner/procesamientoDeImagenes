@@ -237,7 +237,7 @@ public class Functions {
 
         return matrixResult;
     }
-    
+
     public int[][] normalizeMatrix(int[][] matrix) {
 
         int w = matrix.length;
@@ -245,7 +245,7 @@ public class Functions {
 
         int maxValue = matrix[0][0];
         int minValue = matrix[0][0];
-        
+
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
 
@@ -258,16 +258,17 @@ public class Functions {
                 }
             }
         }
-        
+
         int[][] result = new int[w][h];
 
         for (int k = 0; k < w; k++) {
             for (int l = 0; l < h; l++) {
-                int value = (int) (matrix[k][l] * ((255 - minValue) / maxValue)) + minValue;
+                int value = (result[k][l] * (255 / (maxValue - minValue))
+                        + (255 - ((255 * maxValue) / (maxValue - minValue))));
                 result[k][l] = value;
             }
         }
-        
+
         return result;
     }
 
