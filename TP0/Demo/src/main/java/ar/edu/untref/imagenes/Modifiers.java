@@ -35,6 +35,32 @@ public class Modifiers {
         return matrixAux;
     }
 
+    public static int[][] contrast(int[][] matrix, int r1, int r2) {
+
+        int[][] matrixAux = new int[matrix.length][matrix[0].length];
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+
+                if (matrix[i][j] <= r1) {
+                    float s1 = r1 - 1;
+                    if (r1 <= 1) {
+                        s1 = 1 / 2;
+                    }
+                    float m = (float) s1 / r1;
+                    matrixAux[i][j] = Math.round((m * matrix[i][j]));
+
+                } else if (matrix[i][j] >= r2 && r2 < 254) {
+                    
+                    float s2 = r2 + 1;
+                    float m = (float) (255f - s2) / (255f - r2);
+                    matrixAux[i][j] = Math.round((m * matrix[i][j]));
+                }
+            }
+        }
+        return matrixAux;
+    }
+
     public Image modifyValueOfAPixel(Image image, String posX, String posY, String pixelValue) {
 
         PixelReader pixelReader = image.getPixelReader();
@@ -74,21 +100,7 @@ public class Modifiers {
                 arrayAux[posicionValorNivel] = valorAnterior + 1;
             }
         }
-        // for (int i = 0; i < arrayAux.length; i++) {
-        // int value = arrayAux[i];
-        // System.out.println(i + " con valor: " + value);
-        // }
         return arrayAux;
-
-        /*
-         * // version abortada con imageOriginal.getProcessor().getHistogram();
-         * int[] arrayAux = new long[256]; try { arrayAux =
-         * getImagePlusFromImage(imageOriginal).getProcessor().getHistogram();
-         * for(int i = 0; i < arrayAux.length; i++){ int value = arrayAux[i];
-         * System.out.println(i + " con valor: " + value); } return arrayAux; }
-         * catch (IOException e) { // TODO Auto-generated catch block
-         * e.printStackTrace(); } return null;
-         */
     }
 
     public static int[][] addImage(int[][] firstImage, int[][] secondImage) {
@@ -141,7 +153,7 @@ public class Modifiers {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                    matrixAux[i][j] = scalar * matrix[i][j];
+                matrixAux[i][j] = scalar * matrix[i][j];
             }
         }
         return matrixAux;

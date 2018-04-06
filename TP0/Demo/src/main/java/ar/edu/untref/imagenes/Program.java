@@ -117,8 +117,11 @@ public class Program extends Application {
         multiplyImage.setOnAction(listenerMultiplyImage);
         MenuItem scalarByImage = new MenuItem("Scalar by image");
         scalarByImage.setOnAction(listenerScalarByImage);
+        MenuItem contrast = new MenuItem("Cotrast");
+        contrast.setOnAction(listenerContrast);
 
-        menuFilter.getItems().addAll(threshold, negative, addImage, substractImage, multiplyImage, scalarByImage);
+        menuFilter.getItems().addAll(threshold, negative, addImage, substractImage, multiplyImage, scalarByImage,
+                contrast);
 
         menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter);
 
@@ -468,7 +471,7 @@ public class Program extends Application {
 
             // Matrices de imagenes
             functions.openImage(false);
-            
+
             int[][] matrix1 = functions.getMatrixImage();
             int[][] matrix2 = functions.getMatrixSecondImage();
 
@@ -480,19 +483,19 @@ public class Program extends Application {
 
             // Normalizacion de imagen resultante
             int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
-             setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            setSizeImageViewResult(ui.getImageResult(imageNormalized));
         }
     };
 
     private EventHandler<ActionEvent> listenerSubstractImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            
+
             slider.setVisible(false);
 
             // Matrices de imagenes
             functions.openImage(false);
-            
+
             int[][] matrix1 = functions.getMatrixImage();
             int[][] matrix2 = functions.getMatrixSecondImage();
 
@@ -504,19 +507,19 @@ public class Program extends Application {
 
             // Normalizacion de imagen resultante
             int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
-             setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            setSizeImageViewResult(ui.getImageResult(imageNormalized));
         }
     };
 
     private EventHandler<ActionEvent> listenerMultiplyImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            
+
             slider.setVisible(false);
 
             // Matrices de imagenes
             functions.openImage(false);
-            
+
             int[][] matrix1 = functions.getMatrixImage();
             int[][] matrix2 = functions.getMatrixSecondImage();
 
@@ -528,16 +531,27 @@ public class Program extends Application {
 
             // Normalizacion de imagen resultante
             int[][] imageNormalized = functions.dinamicRange(matrixAdded);
-             setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            setSizeImageViewResult(ui.getImageResult(imageNormalized));
         }
     };
-    
+
+    private EventHandler<ActionEvent> listenerContrast = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            Dialogs.showConfigureContrast(result -> {
+                int[][] matrixAdded = Modifiers.contrast(matrix1, result[0], result[1]);
+                setSizeImageViewResult(ui.getImageResult(matrixAdded));    
+            });
+        }
+    };
+
     private EventHandler<ActionEvent> listenerScalarByImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
             Dialogs.showConfigurationScalar(result -> {
                 int[][] resultMatrix = Modifiers.scalarByMatrix(result, matrix1);
-                
+
                 int[][] imageNormalized = functions.dinamicRange(resultMatrix);
                 setSizeImageViewResult(ui.getImageResult(imageNormalized));
             });
