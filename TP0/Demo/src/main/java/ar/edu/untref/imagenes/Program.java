@@ -595,8 +595,12 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
             int w = matrix1.length;
             int h = matrix1[0].length;
+            
             int countPixels = functions.calculatePixelsToContaminate(matrix1, 10);
             List<int[]> pixelsSelected = functions.getPixelsToContaminate(w, h, countPixels);
+            
+            int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.8);
+            setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     }; 
     

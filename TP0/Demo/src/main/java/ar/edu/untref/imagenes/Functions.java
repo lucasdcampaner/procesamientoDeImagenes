@@ -320,16 +320,16 @@ public class Functions {
 
         int counter = 0;
 
-        int[] valueSelect = new int[2];
-
         List<int[]> listValuesSelect = new ArrayList<>();
 
         while (counter <= count) {
 
             Random random = new Random();
             
-            int firstValue = random.nextInt(w + 1);
-            int secondValue = random.nextInt(h + 1);
+            int[] valueSelect = new int[2];
+
+            int firstValue = random.nextInt(w);
+            int secondValue = random.nextInt(h);
 
             if (!listValuesSelect.contains(firstValue)) {
 
@@ -338,15 +338,31 @@ public class Functions {
                 if (!listValuesSelect.contains(secondValue)) {
                     valueSelect[1] = secondValue;
                 } else {
-                    valueSelect[1] = random.nextInt(h + 1);
+                    valueSelect[1] = random.nextInt(h);
                 }
-                
+
                 listValuesSelect.add(valueSelect);
                 counter++;
             }
         }
 
         return listValuesSelect;
+    }
+
+    public int[][] applyExponencial(int[][] matrix, List<int[]> pixelsSelected, double lamda) {
+
+        for (int i = 0; i < pixelsSelected.size(); i++) {
+            
+            double value = Distribution.exponencial(lamda);
+            
+            int x = pixelsSelected.get(i)[0];
+            int y = pixelsSelected.get(i)[1];
+            double valuePixel = matrix[x][y] * value;
+            
+            matrix[x][y] = (int) valuePixel;
+        }
+        
+        return matrix;
     }
 
     public ImagePlus getImagePlusFromImage(Image image, String name) throws IOException {
