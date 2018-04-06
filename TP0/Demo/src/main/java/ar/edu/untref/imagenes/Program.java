@@ -593,7 +593,10 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerNoiseGaussiano = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            
+            int w = matrix1.length;
+            int h = matrix1[0].length;
+            int countPixels = functions.calculatePixelsToContaminate(matrix1, 10);
+            List<int[]> pixelsSelected = functions.getPixelsToContaminate(w, h, countPixels);
         }
     }; 
     

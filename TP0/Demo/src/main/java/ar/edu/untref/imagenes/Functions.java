@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -313,6 +314,39 @@ public class Functions {
         int count = w * h;
 
         return Math.round(count * percent / 100);
+    }
+
+    public List<int[]> getPixelsToContaminate(int w, int h, int count) {
+
+        int counter = 0;
+
+        int[] valueSelect = new int[2];
+
+        List<int[]> listValuesSelect = new ArrayList<>();
+
+        while (counter <= count) {
+
+            Random random = new Random();
+            
+            int firstValue = random.nextInt(w + 1);
+            int secondValue = random.nextInt(h + 1);
+
+            if (!listValuesSelect.contains(firstValue)) {
+
+                valueSelect[0] = firstValue;
+
+                if (!listValuesSelect.contains(secondValue)) {
+                    valueSelect[1] = secondValue;
+                } else {
+                    valueSelect[1] = random.nextInt(h + 1);
+                }
+                
+                listValuesSelect.add(valueSelect);
+                counter++;
+            }
+        }
+
+        return listValuesSelect;
     }
 
     public ImagePlus getImagePlusFromImage(Image image, String name) throws IOException {
