@@ -306,6 +306,15 @@ public class Functions {
         return Integer.parseInt(text);
     }
 
+    public int calculatePixelsToContaminate(int[][] matrix, int percent) {
+
+        int w = matrix.length;
+        int h = matrix[0].length;
+        int count = w * h;
+
+        return Math.round(count * percent / 100);
+    }
+
     public ImagePlus getImagePlusFromImage(Image image, String name) throws IOException {
         BufferedImage buffer = SwingFXUtils.fromFXImage(image,
                 new BufferedImage((int) image.getWidth(), (int) image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));

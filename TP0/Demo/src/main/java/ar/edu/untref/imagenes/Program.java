@@ -121,8 +121,19 @@ public class Program extends Application {
 
         menuFilter.getItems().addAll(threshold, negative, addImage, substractImage, multiplyImage, scalarByImage,
                 contrast);
+        
+     // Menu noise
+        Menu menuNoise = new Menu("Noise");
+        MenuItem noiseGaussiano = new MenuItem("Gaussiano");
+        noiseGaussiano.setOnAction(listenerNoiseGaussiano);
+        MenuItem noiseRayleigh = new MenuItem("Rayleigh");
+        noiseRayleigh.setOnAction(listenerNoiseRayleigh);
+        MenuItem noiseExponencial = new MenuItem("Exponencial");
+        noiseExponencial.setOnAction(listenerNoiseExponencial);
 
-        menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter);
+        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial);
+        
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter, menuNoise);
 
         return menuBar;
     }
@@ -443,7 +454,15 @@ public class Program extends Application {
             functions.saveImage(imageViewOriginal.getImage());
         }
     };
+    
+    private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            functions.exitApplication();
+        }
+    };
 
+    // Modifiers ---------------------------------------------------------
     private EventHandler<ActionEvent> listenerThreshold = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -464,14 +483,7 @@ public class Program extends Application {
             setSizeImageViewResult(imageResult);
         }
     };
-
-    private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent event) {
-            functions.exitApplication();
-        }
-    };
-
+    
     private EventHandler<ActionEvent> listenerAddImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -567,6 +579,7 @@ public class Program extends Application {
         }
     };
 
+    // Slider ---------------------------------------------------------
     private ChangeListener<Number> listenerSlider = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -574,6 +587,29 @@ public class Program extends Application {
             setSizeImageViewResult(ui.getImageResult(newMatrix));
         }
     };
+    
+    
+    // Noises ---------------------------------------------------------
+    private EventHandler<ActionEvent> listenerNoiseGaussiano = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            
+        }
+    }; 
+    
+    private EventHandler<ActionEvent> listenerNoiseRayleigh = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            
+        }
+    }; 
+    
+    private EventHandler<ActionEvent> listenerNoiseExponencial = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            
+        }
+    }; 
 
     private Image getImageOriginal() {
         return this.imageOriginal;
