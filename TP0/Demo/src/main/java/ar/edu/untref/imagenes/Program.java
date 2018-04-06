@@ -94,11 +94,13 @@ public class Program extends Application {
         colorGradient.setOnAction(listenerColorGradient);
         MenuItem grayHistogram = new MenuItem("Gray Histogram");
         grayHistogram.setOnAction(listenerGrayHistogram);
+        MenuItem equalizeToBetterImage = new MenuItem("Equalize to better image");
+        equalizeToBetterImage.setOnAction(listenerEqualizeToBetterImage);
         MenuItem copyImageToLeft = new MenuItem("Copy Image to Left");
         copyImageToLeft.setOnAction(listenerCopyImageToLeft);
 
         menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient, grayHistogram,
-                copyImageToLeft);
+                equalizeToBetterImage, copyImageToLeft);
 
         // Menu filter
         Menu menuFilter = new Menu("Filter");
@@ -363,6 +365,19 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 int[] valores = Modifiers.computeGrayHistogram(matrix1);
                 Image image = ui.drawGrayHistogramImage(valores);
+                setSizeImageViewResult(image);
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerEqualizeToBetterImage = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                int[] valores = Modifiers.computeGrayHistogram(matrix1);
+                float[] valoresFuncionAcumulada = Modifiers.getvaloresFuncionAcumulada(valores);
+                Image image = ui.equalizeToBetterImage(matrix, valoresFuncionAcumulada);
                 setSizeImageViewResult(image);
             }
         }

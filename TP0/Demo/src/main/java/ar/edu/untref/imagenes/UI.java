@@ -256,4 +256,19 @@ public class UI {
         return image;
 
     }
+
+    public Image equalizeToBetterImage(int[][] matrix, float[] valoresFuncionAcumulada) {
+        int w = matrix.length;
+        int h = matrix[0].length;
+        ImagePlus imageResult = new ImagePlus();
+        imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY));
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                imageResult.getProcessor().putPixel(i, j, Math.round(valoresFuncionAcumulada[matrix[i][j]] * 255));
+            }
+        }
+
+        return SwingFXUtils.toFXImage(imageResult.getBufferedImage(), null);
+    }
 }
