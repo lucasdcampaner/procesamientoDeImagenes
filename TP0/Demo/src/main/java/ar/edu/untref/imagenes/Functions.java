@@ -307,7 +307,7 @@ public class Functions {
         return Integer.parseInt(text);
     }
 
-    public int calculatePixelsToContaminate(int[][] matrix, int percent) {
+    private int calculatePixelsToContaminate(int[][] matrix, int percent) {
 
         int w = matrix.length;
         int h = matrix[0].length;
@@ -316,9 +316,13 @@ public class Functions {
         return Math.round(count * percent / 100);
     }
 
-    public List<int[]> getPixelsToContaminate(int w, int h, int count) {
+    public List<int[]> getPixelsToContaminate(int[][] matrix, int percent) {
 
+        int w = matrix.length;
+        int h = matrix[0].length;
         int counter = 0;
+        
+        int count = calculatePixelsToContaminate(matrix, percent);
 
         List<int[]> listValuesSelect = new ArrayList<>();
 

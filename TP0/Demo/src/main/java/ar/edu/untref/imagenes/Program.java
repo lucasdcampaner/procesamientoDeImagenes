@@ -587,7 +587,6 @@ public class Program extends Application {
         }
     };
     
-    
     // Noises ---------------------------------------------------------
     private EventHandler<ActionEvent> listenerNoiseGaussiano = new EventHandler<ActionEvent>() {
         @Override
@@ -606,18 +605,12 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            int w = matrix1.length;
-            int h = matrix1[0].length;
-            
-            
             Dialogs.showConfigurationPercentNoise(result -> {
-                int countPixels = functions.calculatePixelsToContaminate(matrix1, result);
-                List<int[]> pixelsSelected = functions.getPixelsToContaminate(w, h, countPixels);
+                List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
                 
                 int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
             });
-            
         }
     }; 
 
