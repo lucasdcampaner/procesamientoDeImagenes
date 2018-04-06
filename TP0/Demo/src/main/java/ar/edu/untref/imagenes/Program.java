@@ -115,8 +115,10 @@ public class Program extends Application {
         substractImage.setOnAction(listenerSubstractImage);
         MenuItem multiplyImage = new MenuItem("Multiply image");
         multiplyImage.setOnAction(listenerMultiplyImage);
+        MenuItem scalarByImage = new MenuItem("Scalar by image");
+        scalarByImage.setOnAction(listenerScalarByImage);
 
-        menuFilter.getItems().addAll(threshold, negative, addImage, substractImage, multiplyImage);
+        menuFilter.getItems().addAll(threshold, negative, addImage, substractImage, multiplyImage, scalarByImage);
 
         menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter);
 
@@ -527,6 +529,18 @@ public class Program extends Application {
             // Normalizacion de imagen resultante
             int[][] imageNormalized = functions.dinamicRange(matrixAdded);
              setSizeImageViewResult(ui.getImageResult(imageNormalized));
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerScalarByImage = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            Dialogs.showConfigurationScalar(result -> {
+                int[][] resultMatrix = Modifiers.scalarByMatrix(result, matrix1);
+                
+                int[][] imageNormalized = functions.dinamicRange(resultMatrix);
+                setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            });
         }
     };
 

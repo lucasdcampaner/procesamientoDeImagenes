@@ -7,6 +7,7 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
 import listener.ListenerResultDialogs;
 
 public class Dialogs {
@@ -27,6 +28,18 @@ public class Dialogs {
         if (result.isPresent()) {
             String[] resultString = result.get().split("x");
             listenerDialog.accept(new String[] { resultString[0], resultString[1] });
+        }
+    }
+    
+    public static void showConfigurationScalar(ListenerResultDialogs<Integer> listenerDialog) {
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Escalar por matriz");
+        dialog.setHeaderText("Ingrese un número para multiplicar la imagen");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            listenerDialog.accept(Integer.valueOf(result.get()));
         }
     }
 

@@ -74,10 +74,10 @@ public class Modifiers {
                 arrayAux[posicionValorNivel] = valorAnterior + 1;
             }
         }
-        for (int i = 0; i < arrayAux.length; i++) {
-            int value = arrayAux[i];
-            // System.out.println(i + " con valor: " + value);
-        }
+        // for (int i = 0; i < arrayAux.length; i++) {
+        // int value = arrayAux[i];
+        // System.out.println(i + " con valor: " + value);
+        // }
         return arrayAux;
 
         /*
@@ -114,9 +114,9 @@ public class Modifiers {
         }
         return matrixAux;
     }
-    
+
     public static int[][] multiplyImage(int[][] firstImage, int[][] secondImage) {
-        
+
         int w = firstImage.length;
         int h = firstImage[0].length;
 
@@ -132,45 +132,61 @@ public class Modifiers {
         return matrixAux;
     }
 
-   private static float sumalista(float[] listaNumeros, int n) {
-       if (n == 0)
-           return listaNumeros[n];
-       else
-           return listaNumeros[n] + sumalista(listaNumeros, n - 1);
-   }
+    public static int[][] scalarByMatrix(int scalar, int[][] matrix) {
 
-   public static float[] getvaloresFuncionAcumulada(int[] valores) {
+        int w = matrix.length;
+        int h = matrix[0].length;
 
-       float[] arrayAux = new float[256];
-       int maxValue = 0;
-       int sumaTotal = 0;
-       for (int key = 0; key < valores.length; key++) {
-           int value = valores[key];
-           sumaTotal = sumaTotal + valores[key];
-           maxValue = Math.max(maxValue, value);
+        int[][] matrixAux = new int[w][h];
 
-           arrayAux[key] = (float) valores[key];
-       }
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                    matrixAux[i][j] = scalar * matrix[i][j];
+            }
+        }
+        return matrixAux;
+    }
 
-       for (int i = 0; i < arrayAux.length; i++) {
-           /*
-            * arrayAux[0] = arrayAux[0]/sumaTotal; //para el 0, esta bien arrayAux[1] =
-            * (arrayAux[1] + arrayAux[0]) /sumaTotal; //para el 1, esta bien arrayAux[2] =
-            * (arrayAux[2] + arrayAux[1] + arrayAux[0]) /sumaTotal; //para el 2, esta bien
-            * arrayAux[3] = (arrayAux[3] + arrayAux[2] + arrayAux[1] + arrayAux[0])
-            * /sumaTotal; //para el 2, esta bien arrayAux[i] = (arrayAux[i-1] +
-            * arrayAux[i]) /sumaTotal; // hacer recursiva
-            */
-           arrayAux[i] = sumalista(arrayAux, i) / sumaTotal;
+    private static float sumalista(float[] listaNumeros, int n) {
+        if (n == 0)
+            return listaNumeros[n];
+        else
+            return listaNumeros[n] + sumalista(listaNumeros, n - 1);
+    }
 
-           System.out.println(i + " vFuncACum con valor: " + arrayAux[i]);
-       }
+    public static float[] getvaloresFuncionAcumulada(int[] valores) {
 
-       float ttt = 0f;
-       for (int i = 0; i < arrayAux.length; i++) {
-           ttt += arrayAux[i];
-       }
-       System.out.println("la suma 1 valor: " + ttt);
-       return arrayAux;
-   }
+        float[] arrayAux = new float[256];
+        int maxValue = 0;
+        int sumaTotal = 0;
+        for (int key = 0; key < valores.length; key++) {
+            int value = valores[key];
+            sumaTotal = sumaTotal + valores[key];
+            maxValue = Math.max(maxValue, value);
+
+            arrayAux[key] = (float) valores[key];
+        }
+
+        for (int i = 0; i < arrayAux.length; i++) {
+            /*
+             * arrayAux[0] = arrayAux[0]/sumaTotal; //para el 0, esta bien
+             * arrayAux[1] = (arrayAux[1] + arrayAux[0]) /sumaTotal; //para el
+             * 1, esta bien arrayAux[2] = (arrayAux[2] + arrayAux[1] +
+             * arrayAux[0]) /sumaTotal; //para el 2, esta bien arrayAux[3] =
+             * (arrayAux[3] + arrayAux[2] + arrayAux[1] + arrayAux[0])
+             * /sumaTotal; //para el 2, esta bien arrayAux[i] = (arrayAux[i-1] +
+             * arrayAux[i]) /sumaTotal; // hacer recursiva
+             */
+            arrayAux[i] = sumalista(arrayAux, i) / sumaTotal;
+
+            System.out.println(i + " vFuncACum con valor: " + arrayAux[i]);
+        }
+
+        float ttt = 0f;
+        for (int i = 0; i < arrayAux.length; i++) {
+            ttt += arrayAux[i];
+        }
+        System.out.println("la suma 1 valor: " + ttt);
+        return arrayAux;
+    }
 }
