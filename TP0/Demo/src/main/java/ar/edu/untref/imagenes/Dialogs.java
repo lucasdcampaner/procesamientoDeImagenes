@@ -52,6 +52,18 @@ public class Dialogs {
         }
     }
     
+    public static void showConfigurationPercentNoise(ListenerResultDialogs<Integer> listenerDialog) {
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Porcentaje de ruido");
+        dialog.setHeaderText("Ingrese el porcentaje con el que quiere contaminar la imagen");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            listenerDialog.accept(Integer.valueOf(result.get()));
+        }
+    }
+    
     public static void showConfigureContrast(ListenerResultDialogs<Integer[]> listenerResultDialogs){
         
         Dialog<Pair<String, String>> dialog = new Dialog<>();

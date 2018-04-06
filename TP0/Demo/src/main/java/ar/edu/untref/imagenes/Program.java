@@ -46,7 +46,7 @@ public class Program extends Application {
 
     private VBox layoutImageResult;
     private VBox layoutImageOriginal;
-
+    
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -466,7 +466,6 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerThreshold = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-
             slider.setVisible(true);
             int[][] newMatrix = Modifiers.thresholdize(matrix1, (int) slider.getValue());
             setSizeImageViewResult(ui.getImageResult(newMatrix));
@@ -593,14 +592,6 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerNoiseGaussiano = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            int w = matrix1.length;
-            int h = matrix1[0].length;
-            
-            int countPixels = functions.calculatePixelsToContaminate(matrix1, 10);
-            List<int[]> pixelsSelected = functions.getPixelsToContaminate(w, h, countPixels);
-            
-            int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.8);
-            setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     }; 
     
@@ -614,6 +605,18 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerNoiseExponencial = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
+
+            int w = matrix1.length;
+            int h = matrix1[0].length;
+            
+            
+            Dialogs.showConfigurationPercentNoise(result -> {
+                int countPixels = functions.calculatePixelsToContaminate(matrix1, result);
+                List<int[]> pixelsSelected = functions.getPixelsToContaminate(w, h, countPixels);
+                
+                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
+                setSizeImageViewResult(ui.getImageResult(matrixResult));
+            });
             
         }
     }; 
