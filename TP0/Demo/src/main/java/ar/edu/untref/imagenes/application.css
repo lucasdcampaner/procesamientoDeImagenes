@@ -35,3 +35,12 @@
 	-fx-max-width: 700;
 	-fx-padding: 20px;
 }
+
+.button-switch { 
+	-fx-min-width: 80;
+	-fx-padding: 10px;
+}
+
+.layout-button { 
+	-fx-alignment: center;	
+}

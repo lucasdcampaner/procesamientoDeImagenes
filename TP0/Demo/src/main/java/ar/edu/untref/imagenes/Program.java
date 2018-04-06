@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -96,11 +97,9 @@ public class Program extends Application {
         grayHistogram.setOnAction(listenerGrayHistogram);
         MenuItem equalizeToBetterImage = new MenuItem("Equalize to better image");
         equalizeToBetterImage.setOnAction(listenerEqualizeToBetterImage);
-        MenuItem copyImageToLeft = new MenuItem("Copy Image to Left");
-        copyImageToLeft.setOnAction(listenerCopyImageToLeft);
 
         menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient, grayHistogram,
-                equalizeToBetterImage, copyImageToLeft);
+                equalizeToBetterImage);
 
         // Menu filter
         Menu menuFilter = new Menu("Filter");
@@ -201,12 +200,22 @@ public class Program extends Application {
         layoutSlider.getChildren().add(slider);
 
         layoutImageResult.getChildren().add(imageViewResult);
+
+        Button buttonSwitch = new Button("<-");
+        buttonSwitch.getStyleClass().add("button-switch");
+        buttonSwitch.setOnAction(listenerSwitchImage);
+
+        VBox layoutButton = new VBox();
+        layoutButton.setMinWidth(stage.getWidth());
+        layoutButton.getStyleClass().add("layout-button");
+        layoutButton.getChildren().add(buttonSwitch);
+
         layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
         // Barra info
         HBox layoutInfo = createLayoutInfo();
 
-        layoutGeneral.getChildren().addAll(layoutInfo, layoutImagesViews, layoutSlider);
+        layoutGeneral.getChildren().addAll(layoutInfo, layoutImagesViews, layoutButton, layoutSlider);
 
         return layoutGeneral;
     }
@@ -396,7 +405,7 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerCopyImageToLeft = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerSwitchImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
 
@@ -541,7 +550,7 @@ public class Program extends Application {
 
             Dialogs.showConfigureContrast(result -> {
                 int[][] matrixAdded = Modifiers.contrast(matrix1, result[0], result[1]);
-                setSizeImageViewResult(ui.getImageResult(matrixAdded));    
+                setSizeImageViewResult(ui.getImageResult(matrixAdded));
             });
         }
     };
