@@ -166,7 +166,7 @@ public class Modifiers {
             return listaNumeros[n] + sumalista(listaNumeros, n - 1);
     }
 
-    public static float[] getvaloresFuncionAcumulada(int[] valores) {
+    public static float[] getCumulativeFunctionValues(int[] valores) {
 
         float[] arrayAux = new float[256];
         int maxValue = 0;
