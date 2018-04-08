@@ -111,6 +111,18 @@ public class Program extends Application {
 
         menuOperations.getItems().addAll(addImage, substractImage, multiplyImage, scalarByImage);
 
+        // Menu functions
+        Menu menuFunctions = new Menu("Functions");
+
+        MenuItem threshold = new MenuItem("Threshold");
+        threshold.setOnAction(listenerThreshold);
+        MenuItem negative = new MenuItem("Negative");
+        negative.setOnAction(listenerNegative);
+        MenuItem contrast = new MenuItem("Cotrast");
+        contrast.setOnAction(listenerContrast);
+
+        menuFunctions.getItems().addAll(threshold, negative, contrast);
+
         // Menu edit
         Menu menuEdit = new Menu("Edit");
 
@@ -120,18 +132,6 @@ public class Program extends Application {
         equalizeToBetterImage.setOnAction(listenerEqualizeToBetterImage);
 
         menuEdit.getItems().addAll(grayHistogram, equalizeToBetterImage);
-
-        // Menu filter
-        Menu menuFilter = new Menu("Filter");
-
-        MenuItem threshold = new MenuItem("Threshold");
-        threshold.setOnAction(listenerThreshold);
-        MenuItem negative = new MenuItem("Negative");
-        negative.setOnAction(listenerNegative);
-        MenuItem contrast = new MenuItem("Cotrast");
-        contrast.setOnAction(listenerContrast);
-
-        menuFilter.getItems().addAll(threshold, negative, contrast);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
@@ -144,7 +144,7 @@ public class Program extends Application {
 
         menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial);
 
-        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuEdit, menuFilter,
+        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuEdit,
                 menuNoise);
 
         return menuBar;
