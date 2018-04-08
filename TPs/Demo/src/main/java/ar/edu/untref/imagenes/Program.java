@@ -241,6 +241,7 @@ public class Program extends Application {
         HBox layoutInfo = new HBox();
         layoutInfo.setMaxHeight(200);
         layoutInfo.getStyleClass().add("layout-info");
+        Label pixelInformation = ui.createLabel("Pixels information -> ");
         Label labelX = ui.createLabel("x: ");
         Label posX = ui.createLabel("");
         Label labelY = ui.createLabel("y: ");
@@ -256,7 +257,7 @@ public class Program extends Application {
         Label averageLevelsOfGray = ui.createLabel("Average levels of gray: ");
         Label averageLevelsOfGrayValue = ui.createLabel("0");
 
-        layoutInfo.getChildren().addAll(labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB,
+        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB,
                 numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
 
         imageViewOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
