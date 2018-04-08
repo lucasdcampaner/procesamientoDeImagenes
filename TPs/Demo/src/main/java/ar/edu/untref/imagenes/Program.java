@@ -114,24 +114,24 @@ public class Program extends Application {
         // Menu functions
         Menu menuFunctions = new Menu("Functions");
 
-        MenuItem threshold = new MenuItem("Threshold");
-        threshold.setOnAction(listenerThreshold);
         MenuItem negative = new MenuItem("Negative");
         negative.setOnAction(listenerNegative);
+        MenuItem grayHistogram = new MenuItem("Gray Histogram");
+        grayHistogram.setOnAction(listenerGrayHistogram);
         MenuItem contrast = new MenuItem("Cotrast");
         contrast.setOnAction(listenerContrast);
+        MenuItem threshold = new MenuItem("Threshold");
+        threshold.setOnAction(listenerThreshold);
 
-        menuFunctions.getItems().addAll(threshold, negative, contrast);
+        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, threshold);
 
         // Menu edit
         Menu menuEdit = new Menu("Edit");
 
-        MenuItem grayHistogram = new MenuItem("Gray Histogram");
-        grayHistogram.setOnAction(listenerGrayHistogram);
         MenuItem equalizeToBetterImage = new MenuItem("Equalize to better image");
         equalizeToBetterImage.setOnAction(listenerEqualizeToBetterImage);
 
-        menuEdit.getItems().addAll(grayHistogram, equalizeToBetterImage);
+        menuEdit.getItems().addAll(equalizeToBetterImage);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
