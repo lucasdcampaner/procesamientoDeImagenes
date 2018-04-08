@@ -98,6 +98,19 @@ public class Program extends Application {
         colorGradient.setOnAction(listenerColorGradient);
         gradients.getItems().addAll(grayGradient, colorGradient);
 
+        // Menu operations
+        Menu menuOperations = new Menu("Operations");
+        MenuItem addImage = new MenuItem("Add image");
+        addImage.setOnAction(listenerAddImage);
+        MenuItem substractImage = new MenuItem("Substract image");
+        substractImage.setOnAction(listenerSubstractImage);
+        MenuItem multiplyImage = new MenuItem("Multiply image");
+        multiplyImage.setOnAction(listenerMultiplyImage);
+        MenuItem scalarByImage = new MenuItem("Scalar by image");
+        scalarByImage.setOnAction(listenerScalarByImage);
+
+        menuOperations.getItems().addAll(addImage, substractImage, multiplyImage, scalarByImage);
+
         // Menu edit
         Menu menuEdit = new Menu("Edit");
 
@@ -120,19 +133,6 @@ public class Program extends Application {
 
         menuFilter.getItems().addAll(threshold, negative, contrast);
 
-        // Menu operations
-        Menu menuOperations = new Menu("Operations");
-        MenuItem addImage = new MenuItem("Add image");
-        addImage.setOnAction(listenerAddImage);
-        MenuItem substractImage = new MenuItem("Substract image");
-        substractImage.setOnAction(listenerSubstractImage);
-        MenuItem multiplyImage = new MenuItem("Multiply image");
-        multiplyImage.setOnAction(listenerMultiplyImage);
-        MenuItem scalarByImage = new MenuItem("Scalar by image");
-        scalarByImage.setOnAction(listenerScalarByImage);
-
-        menuOperations.getItems().addAll(addImage, substractImage, multiplyImage, scalarByImage);
-
         // Menu noise
         Menu menuNoise = new Menu("Noise");
         MenuItem noiseGaussiano = new MenuItem("Gaussiano");
@@ -144,7 +144,7 @@ public class Program extends Application {
 
         menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial);
 
-        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuEdit, menuFilter, menuOperations,
+        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuEdit, menuFilter,
                 menuNoise);
 
         return menuBar;
