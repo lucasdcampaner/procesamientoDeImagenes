@@ -224,7 +224,7 @@ public class Program extends Application {
 
         layoutImageResult.getChildren().add(imageViewResult);
 
-        Button buttonSwitch = new Button("<-");
+        Button buttonSwitch = new Button("Exchange image");
         buttonSwitch.getStyleClass().add("button-switch");
         buttonSwitch.setOnAction(listenerSwitchImage);
 
