@@ -82,19 +82,31 @@ public class Program extends Application {
 
         menuFile.getItems().addAll(open, openRAW, save, exit);
 
-        // Menu edit
-        Menu menuEdit = new Menu("Edit");
+        // Menu geometric figures
+        Menu geometricFigures = new Menu("Geometric figures");
+        MenuItem createCircle = new MenuItem("Create circle");
+        createCircle.setOnAction(listenerCreateCircle);
+        MenuItem createRectangle = new MenuItem("Create rectangle");
+        createRectangle.setOnAction(listenerCreateRectangle);
+        geometricFigures.getItems().addAll(createCircle, createRectangle);
 
+        // Menu gradients
+        Menu gradients = new Menu("Gradients");
         MenuItem grayGradient = new MenuItem("Gray gradient");
         grayGradient.setOnAction(listenerCreateGrayGradient);
         MenuItem colorGradient = new MenuItem("Color gradient");
         colorGradient.setOnAction(listenerColorGradient);
+        gradients.getItems().addAll(grayGradient, colorGradient);
+
+        // Menu edit
+        Menu menuEdit = new Menu("Edit");
+
         MenuItem grayHistogram = new MenuItem("Gray Histogram");
         grayHistogram.setOnAction(listenerGrayHistogram);
         MenuItem equalizeToBetterImage = new MenuItem("Equalize to better image");
         equalizeToBetterImage.setOnAction(listenerEqualizeToBetterImage);
 
-        menuEdit.getItems().addAll(grayGradient, colorGradient, grayHistogram, equalizeToBetterImage);
+        menuEdit.getItems().addAll(grayHistogram, equalizeToBetterImage);
 
         // Menu filter
         Menu menuFilter = new Menu("Filter");
@@ -132,15 +144,8 @@ public class Program extends Application {
 
         menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial);
 
-        // Menu geometric figures
-        Menu geometricFigures = new Menu("Geometric figures");
-        MenuItem createCircle = new MenuItem("Create circle");
-        createCircle.setOnAction(listenerCreateCircle);
-        MenuItem createRectangle = new MenuItem("Create rectangle");
-        createRectangle.setOnAction(listenerCreateRectangle);
-        geometricFigures.getItems().addAll(createCircle, createRectangle);
-
-        menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter, menuOperations, menuNoise, geometricFigures);
+        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuEdit, menuFilter, menuOperations,
+                menuNoise);
 
         return menuBar;
     }
