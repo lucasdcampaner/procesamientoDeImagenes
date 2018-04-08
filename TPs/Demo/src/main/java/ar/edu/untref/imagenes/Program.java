@@ -407,8 +407,8 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 int[] valores = Modifiers.computeGrayHistogram(matrix1);
-                float[] valoresFuncionAcumulada = Modifiers.getvaloresFuncionAcumulada(valores);
-                Image image = ui.equalizeToBetterImage(matrix1, valoresFuncionAcumulada);
+                float[] cumulativeFunctionValues = Modifiers.getCumulativeFunctionValues(valores);
+                Image image = ui.equalizeToBetterImage(matrix1, cumulativeFunctionValues);
                 setSizeImageViewResult(image);
             }
         }

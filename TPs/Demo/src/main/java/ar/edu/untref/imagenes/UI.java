@@ -257,7 +257,7 @@ public class UI {
 
     }
 
-    public Image equalizeToBetterImage(int[][] matrix, float[] valoresFuncionAcumulada) {
+    public Image equalizeToBetterImage(int[][] matrix, float[] cumulativeFunctionValues) {
         int w = matrix.length;
         int h = matrix[0].length;
         ImagePlus imageResult = new ImagePlus();
@@ -265,7 +265,7 @@ public class UI {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                imageResult.getProcessor().putPixel(i, j, Math.round(valoresFuncionAcumulada[matrix[i][j]] * 255));
+                imageResult.getProcessor().putPixel(i, j, Math.round(cumulativeFunctionValues[matrix[i][j]] * 255));
             }
         }
 
