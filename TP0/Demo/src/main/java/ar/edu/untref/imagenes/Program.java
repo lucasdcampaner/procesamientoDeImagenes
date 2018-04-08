@@ -85,10 +85,6 @@ public class Program extends Application {
         // Menu edit
         Menu menuEdit = new Menu("Edit");
 
-        MenuItem createCircle = new MenuItem("Create circle");
-        createCircle.setOnAction(listenerCreateCircle);
-        MenuItem createRectangle = new MenuItem("Create rectangle");
-        createRectangle.setOnAction(listenerCreateRectangle);
         MenuItem grayGradient = new MenuItem("Gray gradient");
         grayGradient.setOnAction(listenerCreateGrayGradient);
         MenuItem colorGradient = new MenuItem("Color gradient");
@@ -98,8 +94,7 @@ public class Program extends Application {
         MenuItem equalizeToBetterImage = new MenuItem("Equalize to better image");
         equalizeToBetterImage.setOnAction(listenerEqualizeToBetterImage);
 
-        menuEdit.getItems().addAll(createCircle, createRectangle, grayGradient, colorGradient, grayHistogram,
-                equalizeToBetterImage);
+        menuEdit.getItems().addAll(grayGradient, colorGradient, grayHistogram, equalizeToBetterImage);
 
         // Menu filter
         Menu menuFilter = new Menu("Filter");
@@ -137,7 +132,15 @@ public class Program extends Application {
 
         menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial);
 
-        menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter, menuOperations, menuNoise);
+        // Menu geometric figures
+        Menu geometricFigures = new Menu("Geometric figures");
+        MenuItem createCircle = new MenuItem("Create circle");
+        createCircle.setOnAction(listenerCreateCircle);
+        MenuItem createRectangle = new MenuItem("Create rectangle");
+        createRectangle.setOnAction(listenerCreateRectangle);
+        geometricFigures.getItems().addAll(createCircle, createRectangle);
+
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter, menuOperations, menuNoise, geometricFigures);
 
         return menuBar;
     }
