@@ -46,7 +46,7 @@ public class Program extends Application {
 
     private VBox layoutImageResult;
     private VBox layoutImageOriginal;
-    
+
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -108,6 +108,13 @@ public class Program extends Application {
         threshold.setOnAction(listenerThreshold);
         MenuItem negative = new MenuItem("Negative");
         negative.setOnAction(listenerNegative);
+        MenuItem contrast = new MenuItem("Cotrast");
+        contrast.setOnAction(listenerContrast);
+
+        menuFilter.getItems().addAll(threshold, negative, contrast);
+
+        // Menu operations
+        Menu menuOperations = new Menu("Operations");
         MenuItem addImage = new MenuItem("Add image");
         addImage.setOnAction(listenerAddImage);
         MenuItem substractImage = new MenuItem("Substract image");
@@ -116,13 +123,10 @@ public class Program extends Application {
         multiplyImage.setOnAction(listenerMultiplyImage);
         MenuItem scalarByImage = new MenuItem("Scalar by image");
         scalarByImage.setOnAction(listenerScalarByImage);
-        MenuItem contrast = new MenuItem("Cotrast");
-        contrast.setOnAction(listenerContrast);
 
-        menuFilter.getItems().addAll(threshold, negative, addImage, substractImage, multiplyImage, scalarByImage,
-                contrast);
-        
-     // Menu noise
+        menuOperations.getItems().addAll(addImage, substractImage, multiplyImage, scalarByImage);
+
+        // Menu noise
         Menu menuNoise = new Menu("Noise");
         MenuItem noiseGaussiano = new MenuItem("Gaussiano");
         noiseGaussiano.setOnAction(listenerNoiseGaussiano);
@@ -132,8 +136,8 @@ public class Program extends Application {
         noiseExponencial.setOnAction(listenerNoiseExponencial);
 
         menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial);
-        
-        menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter, menuNoise);
+
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuFilter, menuOperations, menuNoise);
 
         return menuBar;
     }
@@ -454,7 +458,7 @@ public class Program extends Application {
             functions.saveImage(imageViewOriginal.getImage());
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerExit = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -482,7 +486,7 @@ public class Program extends Application {
             setSizeImageViewResult(imageResult);
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerAddImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -586,33 +590,33 @@ public class Program extends Application {
             setSizeImageViewResult(ui.getImageResult(newMatrix));
         }
     };
-    
+
     // Noises ---------------------------------------------------------
     private EventHandler<ActionEvent> listenerNoiseGaussiano = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
         }
-    }; 
-    
+    };
+
     private EventHandler<ActionEvent> listenerNoiseRayleigh = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            
+
         }
-    }; 
-    
+    };
+
     private EventHandler<ActionEvent> listenerNoiseExponencial = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
 
             Dialogs.showConfigurationPercentNoise(result -> {
                 List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
-                
+
                 int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
             });
         }
-    }; 
+    };
 
     private Image getImageOriginal() {
         return this.imageOriginal;
