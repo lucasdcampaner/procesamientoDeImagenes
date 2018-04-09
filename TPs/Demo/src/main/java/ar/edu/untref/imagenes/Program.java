@@ -471,9 +471,12 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerThreshold = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            slider.setVisible(true);
-            int[][] newMatrix = Modifiers.thresholdize(matrix1, (int) slider.getValue());
-            setSizeImageViewResult(ui.getImageResult(newMatrix));
+
+            if (getImageOriginal() != null) {
+                slider.setVisible(true);
+                int[][] newMatrix = Modifiers.thresholdize(matrix1, (int) slider.getValue());
+                setSizeImageViewResult(ui.getImageResult(newMatrix));
+            }
         }
     };
 
@@ -481,10 +484,12 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            slider.setVisible(false);
-            int[][] newMatrix = Modifiers.negative(matrix1);
-            imageResult = ui.getImageResult(newMatrix);
-            setSizeImageViewResult(imageResult);
+            if (getImageOriginal() != null) {
+                slider.setVisible(false);
+                int[][] newMatrix = Modifiers.negative(matrix1);
+                imageResult = ui.getImageResult(newMatrix);
+                setSizeImageViewResult(imageResult);
+            }
         }
     };
 
@@ -492,23 +497,25 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            slider.setVisible(false);
+            if (getImageOriginal() != null) {
+                slider.setVisible(false);
 
-            // Matrices de imagenes
-            functions.openImage(false);
+                // Matrices de imagenes
+                functions.openImage(false);
 
-            int[][] matrix1 = functions.getMatrixImage();
-            int[][] matrix2 = functions.getMatrixSecondImage();
+                int[][] matrix1 = functions.getMatrixImage();
+                int[][] matrix2 = functions.getMatrixSecondImage();
 
-            // Igualacion de tamaños con relleno de valores 0
-            List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
+                // Igualacion de tamaños con relleno de valores 0
+                List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
 
-            // Suma de imagenes
-            int[][] matrixAdded = Modifiers.addImage(bothMatrix.get(0), bothMatrix.get(1));
+                // Suma de imagenes
+                int[][] matrixAdded = Modifiers.addImage(bothMatrix.get(0), bothMatrix.get(1));
 
-            // Normalizacion de imagen resultante
-            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
-            setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                // Normalizacion de imagen resultante
+                int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
+                setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            }
         }
     };
 
@@ -516,23 +523,25 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            slider.setVisible(false);
+            if (getImageOriginal() != null) {
+                slider.setVisible(false);
 
-            // Matrices de imagenes
-            functions.openImage(false);
+                // Matrices de imagenes
+                functions.openImage(false);
 
-            int[][] matrix1 = functions.getMatrixImage();
-            int[][] matrix2 = functions.getMatrixSecondImage();
+                int[][] matrix1 = functions.getMatrixImage();
+                int[][] matrix2 = functions.getMatrixSecondImage();
 
-            // Igualacion de tamaños con relleno de valores 0
-            List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
+                // Igualacion de tamaños con relleno de valores 0
+                List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
 
-            // Suma de imagenes
-            int[][] matrixAdded = Modifiers.substractImage(bothMatrix.get(0), bothMatrix.get(1));
+                // Suma de imagenes
+                int[][] matrixAdded = Modifiers.substractImage(bothMatrix.get(0), bothMatrix.get(1));
 
-            // Normalizacion de imagen resultante
-            int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
-            setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                // Normalizacion de imagen resultante
+                int[][] imageNormalized = functions.normalizeMatrix(matrixAdded);
+                setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            }
         }
     };
 
@@ -540,23 +549,25 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            slider.setVisible(false);
+            if (getImageOriginal() != null) {
+                slider.setVisible(false);
 
-            // Matrices de imagenes
-            functions.openImage(false);
+                // Matrices de imagenes
+                functions.openImage(false);
 
-            int[][] matrix1 = functions.getMatrixImage();
-            int[][] matrix2 = functions.getMatrixSecondImage();
+                int[][] matrix1 = functions.getMatrixImage();
+                int[][] matrix2 = functions.getMatrixSecondImage();
 
-            // Igualacion de tamaños con relleno de valores 0
-            List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
+                // Igualacion de tamaños con relleno de valores 0
+                List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
 
-            // Suma de imagenes
-            int[][] matrixAdded = Modifiers.multiplyImage(bothMatrix.get(0), bothMatrix.get(1));
+                // Suma de imagenes
+                int[][] matrixAdded = Modifiers.multiplyImage(bothMatrix.get(0), bothMatrix.get(1));
 
-            // Normalizacion de imagen resultante
-            int[][] imageNormalized = functions.dinamicRange(matrixAdded);
-            setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                // Normalizacion de imagen resultante
+                int[][] imageNormalized = functions.dinamicRange(matrixAdded);
+                setSizeImageViewResult(ui.getImageResult(imageNormalized));
+            }
         }
     };
 
@@ -564,22 +575,27 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            Dialogs.showConfigureContrast(result -> {
-                int[][] matrixAdded = Modifiers.contrast(matrix1, result[0], result[1]);
-                setSizeImageViewResult(ui.getImageResult(matrixAdded));
-            });
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigureContrast(result -> {
+                    int[][] matrixAdded = Modifiers.contrast(matrix1, result[0], result[1]);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
+            }
         }
     };
 
     private EventHandler<ActionEvent> listenerScalarByImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            Dialogs.showConfigurationScalar(result -> {
-                int[][] resultMatrix = Modifiers.scalarByMatrix(result, matrix1);
 
-                int[][] imageNormalized = functions.dinamicRange(resultMatrix);
-                setSizeImageViewResult(ui.getImageResult(imageNormalized));
-            });
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationScalar(result -> {
+                    int[][] resultMatrix = Modifiers.scalarByMatrix(result, matrix1);
+
+                    int[][] imageNormalized = functions.dinamicRange(resultMatrix);
+                    setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                });
+            }
         }
     };
 
@@ -596,13 +612,16 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerNoiseGaussiano = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+            }
         }
     };
 
     private EventHandler<ActionEvent> listenerNoiseRayleigh = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-
+            if (getImageOriginal() != null) {
+            }
         }
     };
 
@@ -610,14 +629,16 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            Dialogs.showConfigurationPercentNoise(result -> {
-                List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationPercentNoise(result -> {
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
 
-                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
-                
-                int[][] imageNormalized = functions.dinamicRange(matrixResult);
-                setSizeImageViewResult(ui.getImageResult(imageNormalized));
-            });
+                    int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
+
+                    int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                    setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                });
+            }
         }
     };
 
