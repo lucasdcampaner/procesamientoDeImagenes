@@ -4,10 +4,10 @@ import java.util.Random;
 
 public class Distribution {
 
-    public static double gaussiana(double desviacionEstandar, double valorMedio) {
+    public static double gaussian(double standardDeviation, double middleValue) {
 
         Random random = new Random();
-        return random.nextGaussian() * desviacionEstandar;
+        return random.nextGaussian() * standardDeviation;
     }
 
     public static double rayleigh(double phi) {
@@ -16,24 +16,24 @@ public class Distribution {
         return (phi * Math.sqrt(-2 * Math.log(1 - random.nextDouble())));
     }
 
-    public static double exponencial(double lambda) {
+    public static double exponential(double lambda) {
 
         Random random = new Random();
         return Math.log(1 - random.nextDouble()) / (-lambda);
     }
 
-    public static int salYPimienta(int valorOriginal, int p1, int p2) {
+    public static int saltAndPepper(int originalValue, int p1, int p2) {
 
-        int negro = 0;
-        int blanco = 255;
+        int black = 0;
+        int white = 255;
         double u = Math.random();
         if (u < (int) p1) {
-            return negro;
+            return black;
         }
         if (u > (int) p2) {
-            return blanco;
+            return white;
         }
-        return valorOriginal;
+        return originalValue;
 
     }
 }

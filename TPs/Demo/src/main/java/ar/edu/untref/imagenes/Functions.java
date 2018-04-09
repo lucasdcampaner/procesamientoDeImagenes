@@ -356,7 +356,7 @@ public class Functions {
 
         for (int i = 0; i < pixelsSelected.size(); i++) {
 
-            double value = Distribution.exponencial(lamda);
+            double value = Distribution.exponential(lamda);
 
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
@@ -373,7 +373,7 @@ public class Functions {
         for (int i = 0; i < pixelsSelected.size(); i++) {
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
-            int value = Distribution.salYPimienta(matrix[x][y], p1, p2);
+            int value = Distribution.saltAndPepper(matrix[x][y], p1, p2);
             matrix[x][y] = value;
         }
         return matrix;
