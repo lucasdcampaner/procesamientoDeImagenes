@@ -257,8 +257,8 @@ public class Program extends Application {
         Label averageLevelsOfGray = ui.createLabel("Average levels of gray: ");
         Label averageLevelsOfGrayValue = ui.createLabel("0");
 
-        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB,
-                numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
+        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG,
+                labelB, valueB, numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
 
         imageViewOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
@@ -406,9 +406,8 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                int[] valores = Modifiers.computeGrayHistogram(matrix1);
-                float[] cumulativeFunctionValues = Modifiers.getCumulativeFunctionValues(valores);
-                Image image = ui.equalizeToBetterImage(matrix1, cumulativeFunctionValues);
+                int[] valoresHistogramaGris = Modifiers.computeGrayHistogram(matrix1);
+                Image image = ui.equalizeToBetterImage(matrix1, valoresHistogramaGris);
                 setSizeImageViewResult(image);
             }
         }

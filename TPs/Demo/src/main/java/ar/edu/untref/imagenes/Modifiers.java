@@ -51,7 +51,7 @@ public class Modifiers {
                     matrixAux[i][j] = Math.round((m * matrix[i][j]));
 
                 } else if (matrix[i][j] >= r2 && r2 < 254) {
-                    
+
                     float s2 = r2 + 1;
                     float m = (float) (255f - s2) / (255f - r2);
                     matrixAux[i][j] = Math.round((m * matrix[i][j]));
@@ -175,30 +175,17 @@ public class Modifiers {
             int value = valores[key];
             sumaTotal = sumaTotal + valores[key];
             maxValue = Math.max(maxValue, value);
-
             arrayAux[key] = (float) valores[key];
         }
-
         for (int i = 0; i < arrayAux.length; i++) {
-            /*
-             * arrayAux[0] = arrayAux[0]/sumaTotal; //para el 0, esta bien
-             * arrayAux[1] = (arrayAux[1] + arrayAux[0]) /sumaTotal; //para el
-             * 1, esta bien arrayAux[2] = (arrayAux[2] + arrayAux[1] +
-             * arrayAux[0]) /sumaTotal; //para el 2, esta bien arrayAux[3] =
-             * (arrayAux[3] + arrayAux[2] + arrayAux[1] + arrayAux[0])
-             * /sumaTotal; //para el 2, esta bien arrayAux[i] = (arrayAux[i-1] +
-             * arrayAux[i]) /sumaTotal; // hacer recursiva
-             */
             arrayAux[i] = sumalista(arrayAux, i) / sumaTotal;
-
-            System.out.println(i + " vFuncACum con valor: " + arrayAux[i]);
+            // System.out.println(i + " vFuncACum con valor: " + arrayAux[i]);
         }
-
-        float ttt = 0f;
-        for (int i = 0; i < arrayAux.length; i++) {
-            ttt += arrayAux[i];
-        }
-        System.out.println("la suma 1 valor: " + ttt);
+        // float ttt = 0f;
+        // for (int i = 0; i < arrayAux.length; i++) {
+        // ttt += arrayAux[i];
+        // }
+        // System.out.println("la suma 1 valor: " + ttt);
         return arrayAux;
     }
 }

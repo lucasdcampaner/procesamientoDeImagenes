@@ -222,7 +222,8 @@ public class UI {
         // create a BufferedImage for mentioned image types.
         BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        // create a graphics2d object which can be used to draw into the buffered image
+        // create a graphics2d object which can be used to draw into the
+        // buffered image
         Graphics2D g2d = buffImg.createGraphics();
 
         g2d.setColor(java.awt.Color.WHITE);
@@ -233,11 +234,13 @@ public class UI {
             g2d.setColor(java.awt.Color.BLACK);
 
             int value = valores[key];
-            // Calculate the percentage that the given value uses compared to that of the
+            // Calculate the percentage that the given value uses compared to
+            // that of the
             // maximum value
             float percentage = (float) value / (float) maxValue;
 
-            // Calculate the line height based on the available vertical space...
+            // Calculate the line height based on the available vertical
+            // space...
             int barHeight = Math.round(percentage * height);
 
             int yPos = height + yOffset - barHeight;
@@ -247,7 +250,8 @@ public class UI {
             g2d.draw(bar);
             xPos += barWidth;
         }
-        // disposes of this graphics context and releases any system resources that it
+        // disposes of this graphics context and releases any system resources
+        // that it
         // is using
         g2d.dispose();
 
@@ -257,18 +261,33 @@ public class UI {
 
     }
 
-    public Image equalizeToBetterImage(int[][] matrix, float[] cumulativeFunctionValues) {
-        int w = matrix.length;
-        int h = matrix[0].length;
-        ImagePlus imageResult = new ImagePlus();
-        imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY));
+    public Image equalizeToBetterImage(int[][] matrix1, int[] valoresHistogramaGris) {
+        int ancho = matrix1.length;
+        int alto = matrix1[0].length;
 
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-                imageResult.getProcessor().putPixel(i, j, Math.round(cumulativeFunctionValues[matrix[i][j]] * 255));
+        ImagePlus imageResult = new ImagePlus();
+        imageResult.setImage(new BufferedImage(ancho, alto, BufferedImage.TYPE_BYTE_GRAY));
+
+        int cantPixels = ancho * alto;
+        int sumatoria = 0;
+        double valor = 0;
+        for (int i = 0; i < ancho; i++) {
+            for (int j = 0; j < alto; j++) {
+                valor = 255 * sumatoriaDePixeles(valoresHistogramaGris, matrix1[i][j], cantPixels);
+                sumatoria = (int) Math.round(valor);
+                imageResult.getProcessor().putPixel(i, j, sumatoria);
             }
         }
 
         return SwingFXUtils.toFXImage(imageResult.getBufferedImage(), null);
     }
+
+    private double sumatoriaDePixeles(int[] histograma, int valorNivel, int cantPixeles) {
+        double sumatoria = 0;
+        for (int i = 0; i <= valorNivel; i++) {
+            sumatoria = sumatoria + (((double) histograma[i]) / cantPixeles);
+        }
+        return sumatoria;
+    }
+
 }
