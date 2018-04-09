@@ -138,7 +138,15 @@ public class Program extends Application {
 
         menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial);
 
-        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise);
+        // Menu synthetic images
+        Menu menuSyntheticImages = new Menu("Synthetic images");
+        MenuItem generateSyntheticImages = new MenuItem("Generate");
+        generateSyntheticImages.setOnAction(listenerGenerateSyntheticImages);
+
+        menuSyntheticImages.getItems().addAll(generateSyntheticImages);
+
+        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
+                menuSyntheticImages);
 
         return menuBar;
     }
@@ -257,8 +265,8 @@ public class Program extends Application {
         Label averageLevelsOfGray = ui.createLabel("Average levels of gray: ");
         Label averageLevelsOfGrayValue = ui.createLabel("0");
 
-        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB,
-                numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
+        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG,
+                labelB, valueB, numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
 
         imageViewOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
@@ -617,6 +625,12 @@ public class Program extends Application {
                 int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
             });
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerGenerateSyntheticImages = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
         }
     };
 
