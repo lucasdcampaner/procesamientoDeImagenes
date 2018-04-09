@@ -614,7 +614,9 @@ public class Program extends Application {
                 List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
 
                 int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
-                setSizeImageViewResult(ui.getImageResult(matrixResult));
+                
+                int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                setSizeImageViewResult(ui.getImageResult(imageNormalized));
             });
         }
     };
