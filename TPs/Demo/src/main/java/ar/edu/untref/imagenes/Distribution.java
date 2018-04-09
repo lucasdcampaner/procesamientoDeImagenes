@@ -21,4 +21,19 @@ public class Distribution {
         Random random = new Random();
         return Math.log(1 - random.nextDouble()) / (-lambda);
     }
+
+    public static int salYPimienta(int valorOriginal, int p1, int p2) {
+
+        int negro = 0;
+        int blanco = 255;
+        double u = Math.random();
+        if (u < (int) p1) {
+            return negro;
+        }
+        if (u > (int) p2) {
+            return blanco;
+        }
+        return valorOriginal;
+
+    }
 }
