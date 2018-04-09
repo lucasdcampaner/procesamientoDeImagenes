@@ -122,10 +122,10 @@ public class Program extends Application {
         contrast.setOnAction(listenerContrast);
         MenuItem threshold = new MenuItem("Threshold");
         threshold.setOnAction(listenerThreshold);
-        MenuItem equalizeToBetterImage = new MenuItem("Equalize to better image");
-        equalizeToBetterImage.setOnAction(listenerEqualizeToBetterImage);
+        MenuItem equalizeImage = new MenuItem("Equalize image");
+        equalizeImage.setOnAction(listenerEqualizeImage);
 
-        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, threshold, equalizeToBetterImage);
+        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, threshold, equalizeImage);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
@@ -401,7 +401,7 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerEqualizeToBetterImage = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerEqualizeImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
 
