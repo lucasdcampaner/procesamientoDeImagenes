@@ -39,7 +39,7 @@ public class Dialogs {
             listenerDialog.accept(new String[] { resultString[0], resultString[1] });
         }
     }
-    
+
     public static void showConfigurationScalar(ListenerResultDialogs<Integer> listenerDialog) {
 
         TextInputDialog dialog = new TextInputDialog();
@@ -47,11 +47,11 @@ public class Dialogs {
         dialog.setHeaderText("Ingrese un número para multiplicar a la imagen");
 
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
+        if (result.isPresent()) {
             listenerDialog.accept(Integer.valueOf(result.get()));
         }
     }
-    
+
     public static void showConfigurationPercentNoise(ListenerResultDialogs<Integer> listenerDialog) {
 
         TextInputDialog dialog = new TextInputDialog();
@@ -59,15 +59,15 @@ public class Dialogs {
         dialog.setHeaderText("Ingrese el porcentaje con el que quiere contaminar la imagen");
 
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
+        if (result.isPresent()) {
             listenerDialog.accept(Integer.valueOf(result.get()));
         }
     }
-    
-    public static void showConfigureContrast(ListenerResultDialogs<Integer[]> listenerResultDialogs){
-        
+
+    public static void showConfigureContrast(ListenerResultDialogs<Integer[]> listenerResultDialogs) {
+
         Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Configurar contraste");
+        dialog.setTitle("Configurar valores");
         dialog.setHeaderText("Elija los valores de r1 y r2.\n\nr1 debe ser menor a r2");
 
         ButtonType loginButtonType = new ButtonType("Aceptar", ButtonData.OK_DONE);
@@ -92,7 +92,7 @@ public class Dialogs {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                Integer[] array = {Integer.valueOf(r1.getText()), Integer.valueOf(r2.getText())};
+                Integer[] array = { Integer.valueOf(r1.getText()), Integer.valueOf(r2.getText()) };
                 listenerResultDialogs.accept(array);
             }
             return null;
@@ -101,11 +101,11 @@ public class Dialogs {
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         result.ifPresent(value -> {
-            Integer[] array = {Integer.valueOf(value.getKey()), Integer.valueOf(value.getValue())};
+            Integer[] array = { Integer.valueOf(value.getKey()), Integer.valueOf(value.getValue()) };
             listenerResultDialogs.accept(array);
         });
     }
-    
+
     public static void showError(String errorText) {
 
         Alert alert = new Alert(AlertType.ERROR);

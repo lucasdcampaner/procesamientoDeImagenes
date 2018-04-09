@@ -36,8 +36,7 @@ public class Functions {
     public Image openImage(boolean mainImage) {
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters()
-                .add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
         File file = fileChooser.showOpenDialog(stage);
 
         if (file != null) {
@@ -321,7 +320,7 @@ public class Functions {
         int w = matrix.length;
         int h = matrix[0].length;
         int counter = 0;
-        
+
         int count = calculatePixelsToContaminate(matrix, percent);
 
         List<int[]> listValuesSelect = new ArrayList<>();
@@ -329,7 +328,7 @@ public class Functions {
         while (counter <= count) {
 
             Random random = new Random();
-            
+
             int[] valueSelect = new int[2];
 
             int firstValue = random.nextInt(w);
@@ -356,16 +355,27 @@ public class Functions {
     public int[][] applyExponencial(int[][] matrix, List<int[]> pixelsSelected, double lamda) {
 
         for (int i = 0; i < pixelsSelected.size(); i++) {
-            
+
             double value = Distribution.exponencial(lamda);
-            
+
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
             double valuePixel = matrix[x][y] * value;
-            
+
             matrix[x][y] = (int) valuePixel;
         }
-        
+
+        return matrix;
+    }
+
+    public int[][] applySalYPimienta(int[][] matrix, List<int[]> pixelsSelected, int p1, int p2) {
+
+        for (int i = 0; i < pixelsSelected.size(); i++) {
+            int x = pixelsSelected.get(i)[0];
+            int y = pixelsSelected.get(i)[1];
+            int value = Distribution.salYPimienta(matrix[x][y], p1, p2);
+            matrix[x][y] = value;
+        }
         return matrix;
     }
 
