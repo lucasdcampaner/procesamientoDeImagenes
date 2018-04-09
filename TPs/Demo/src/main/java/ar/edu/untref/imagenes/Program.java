@@ -375,7 +375,7 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             slider.setVisible(false);
-            Image image = ui.createRectangle();
+            Image image = ui.createSquare();
             setSizeImageViewOriginal(image);
         }
     };
