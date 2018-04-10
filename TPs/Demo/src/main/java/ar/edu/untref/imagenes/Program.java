@@ -149,12 +149,14 @@ public class Program extends Application {
         MenuItem generateSyntheticImagesRayleigh = new MenuItem("Rayleigh (phi = 25)");
         MenuItem generateSyntheticImagesSaltAndPepper = new MenuItem("Salt and pepper (p1 = 0.5; p2 = 0.6)");
         MenuItem generateSyntheticImagesGaussian = new MenuItem("Gaussian");
+        MenuItem generateSyntheticImagesExponential = new MenuItem("Exponential (lambda = 0.05)");
         generateSyntheticImagesRayleigh.setOnAction(listenerGenerateSyntheticImagesRayleigh);
         generateSyntheticImagesSaltAndPepper.setOnAction(listenerGenerateSyntheticImagesSaltAndPepper);
         generateSyntheticImagesGaussian.setOnAction(listenerGenerateSyntheticImagesGaussian);
+        generateSyntheticImagesExponential.setOnAction(listenerGenerateSyntheticImagesExponential);
 
         menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper,
-                generateSyntheticImagesGaussian);
+                generateSyntheticImagesGaussian, generateSyntheticImagesExponential);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSyntheticImages);
@@ -653,9 +655,7 @@ public class Program extends Application {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
 
                     int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
-
-                    int[][] imageNormalized = functions.dinamicRange(matrixResult);
-                    setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                    setSizeImageViewResult(ui.getImageResult(matrixResult));
                 });
             }
         }
@@ -674,6 +674,15 @@ public class Program extends Application {
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerGenerateSyntheticImagesExponential = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            double lambda = 0.05;
+            int[][] matrixExponential = generatorOfSyntheticImages.generateMatrixExponential(lambda);
+            setSizeImageViewOriginal(ui.getImageResult(matrixExponential));
         }
     };
 

@@ -360,9 +360,8 @@ public class Functions {
 
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
-            double valuePixel = matrix[x][y] * value;
 
-            matrix[x][y] = (int) valuePixel;
+            matrix[x][y] = (int) value;
         }
 
         return matrix;
