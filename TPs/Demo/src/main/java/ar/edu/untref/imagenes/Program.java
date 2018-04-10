@@ -146,10 +146,12 @@ public class Program extends Application {
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
-        MenuItem generateSyntheticImages = new MenuItem("Salt and pepper");
-        generateSyntheticImages.setOnAction(listenerGenerateSyntheticImages);
+        MenuItem generateSyntheticImagesRayleigh = new MenuItem("Rayleigh (phi = 25)");
+        MenuItem generateSyntheticImagesSaltAndPepper = new MenuItem("Salt and pepper (p1 = 0.5; p2 = 0.6)");
+        generateSyntheticImagesRayleigh.setOnAction(listenerGenerateSyntheticImagesRayleigh);
+        generateSyntheticImagesSaltAndPepper.setOnAction(listenerGenerateSyntheticImagesSaltAndPepper);
 
-        menuSyntheticImages.getItems().addAll(generateSyntheticImages);
+        menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSyntheticImages);
@@ -672,7 +674,16 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerGenerateSyntheticImages = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerGenerateSyntheticImagesRayleigh = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            double phi = 25;
+            int[][] matrixRayleigh = generatorOfSyntheticImages.generateMatrixRayleigh(phi);
+            setSizeImageViewOriginal(ui.getImageResult(matrixRayleigh));
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerGenerateSyntheticImagesSaltAndPepper = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
             int originalValue = 255;
