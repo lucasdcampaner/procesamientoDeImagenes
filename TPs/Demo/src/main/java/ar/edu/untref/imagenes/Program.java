@@ -36,6 +36,7 @@ public class Program extends Application {
     private Stage stage;
 
     private Functions functions;
+    private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
 
     private Group groupImageOriginal;
@@ -54,6 +55,7 @@ public class Program extends Application {
         try {
             stage = primaryStage;
             functions = new Functions(stage);
+            generatorOfSyntheticImages = new GeneratorOfSyntheticImages();
             ui = new UI();
 
             Scene scene = createWindow();
@@ -137,12 +139,20 @@ public class Program extends Application {
         noiseRayleigh.setOnAction(listenerNoiseRayleigh);
         MenuItem noiseExponencial = new MenuItem("Exponencial");
         noiseExponencial.setOnAction(listenerNoiseExponencial);
-        MenuItem salYPimienta = new MenuItem("Sal Y Pimienta");
-        salYPimienta.setOnAction(listenerSalYPimienta);
+        MenuItem saltAndPepper = new MenuItem("Salt and pepper");
+        saltAndPepper.setOnAction(listenerSaltAndPepper);
 
-        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, salYPimienta);
+        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper);
 
-        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise);
+        // Menu synthetic images
+        Menu menuSyntheticImages = new Menu("Synthetic images");
+        MenuItem generateSyntheticImages = new MenuItem("Salt and pepper");
+        generateSyntheticImages.setOnAction(listenerGenerateSyntheticImages);
+
+        menuSyntheticImages.getItems().addAll(generateSyntheticImages);
+
+        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
+                menuSyntheticImages);
 
         return menuBar;
     }
@@ -261,8 +271,8 @@ public class Program extends Application {
         Label averageLevelsOfGray = ui.createLabel("Average levels of gray: ");
         Label averageLevelsOfGrayValue = ui.createLabel("0");
 
-        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB, numberOfPixel,
-                numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
+        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG,
+                labelB, valueB, numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
 
         imageViewOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
@@ -271,12 +281,12 @@ public class Program extends Application {
                 posY.setText(String.valueOf((int) event.getY()));
 
                 Image image = imageViewOriginal.getImage();
-                valueR.setText(String.valueOf(
-                        functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
-                valueG.setText(String.valueOf(
-                        functions.getValuePixelGreenRGB(image, changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
-                valueB.setText(String.valueOf(
-                        functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
+                valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
+                        changePosYDoubleToInt(event.getY())).intValue()));
+                valueG.setText(String.valueOf(functions.getValuePixelGreenRGB(image,
+                        changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
+                valueB.setText(String.valueOf(functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()),
+                        changePosYDoubleToInt(event.getY())).intValue()));
             }
         });
 
@@ -305,7 +315,8 @@ public class Program extends Application {
                         imagePlus = functions.getImagePlusFromImage(imageResult, "cut_image");
                         int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
                         numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrixImageResult)));
-                        averageLevelsOfGrayValue.setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
+                        averageLevelsOfGrayValue
+                                .setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -348,7 +359,8 @@ public class Program extends Application {
         layoutImageOriginal.getChildren().add(imageViewOriginal);
         groupImageOriginal.getChildren().add(imageViewOriginal);
 
-        new SelectorImage(groupImageOriginal, imageViewOriginal.getX(), imageViewOriginal.getY(), image.getWidth(), image.getHeight());
+        new SelectorImage(groupImageOriginal, imageViewOriginal.getX(), imageViewOriginal.getY(), image.getWidth(),
+                image.getHeight());
     }
 
     private void setSizeImageViewResult(Image image) {
@@ -644,7 +656,7 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerSalYPimienta = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerSaltAndPepper = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
 
@@ -653,10 +665,21 @@ public class Program extends Application {
                     pixels_Selected = functions.getPixelsToContaminate(matrix1, resultP);
                 });
                 Dialogs.showConfigureContrast(result -> {
-                    int[][] matrixAdded = functions.applySalYPimienta(matrix1, pixels_Selected, result[0], result[1]);
+                    int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixels_Selected, result[0], result[1]);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerGenerateSyntheticImages = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            int originalValue = 255;
+            double p1 = 0.5;
+            double p2 = 0.6;
+            int[][] matrixSaltAndPepper = generatorOfSyntheticImages.generateMatrixSaltAndPepper(originalValue, p1, p2);
+            setSizeImageViewOriginal(ui.getImageResult(matrixSaltAndPepper));
         }
     };
 
