@@ -148,10 +148,13 @@ public class Program extends Application {
         Menu menuSyntheticImages = new Menu("Synthetic images");
         MenuItem generateSyntheticImagesRayleigh = new MenuItem("Rayleigh (phi = 25)");
         MenuItem generateSyntheticImagesSaltAndPepper = new MenuItem("Salt and pepper (p1 = 0.5; p2 = 0.6)");
+        MenuItem generateSyntheticImagesGaussian = new MenuItem("Gaussian");
         generateSyntheticImagesRayleigh.setOnAction(listenerGenerateSyntheticImagesRayleigh);
         generateSyntheticImagesSaltAndPepper.setOnAction(listenerGenerateSyntheticImagesSaltAndPepper);
+        generateSyntheticImagesGaussian.setOnAction(listenerGenerateSyntheticImagesGaussian);
 
-        menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper);
+        menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper,
+                generateSyntheticImagesGaussian);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSyntheticImages);
@@ -691,6 +694,16 @@ public class Program extends Application {
             double p2 = 0.6;
             int[][] matrixSaltAndPepper = generatorOfSyntheticImages.generateMatrixSaltAndPepper(originalValue, p1, p2);
             setSizeImageViewOriginal(ui.getImageResult(matrixSaltAndPepper));
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerGenerateSyntheticImagesGaussian = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            double standardDeviation = 0.1;
+            double middleValue = 0.1;
+            int[][] matrixGaussian = generatorOfSyntheticImages.generateMatrixGaussian(standardDeviation, middleValue);
+            setSizeImageViewOriginal(ui.getImageResult(matrixGaussian));
         }
     };
 
