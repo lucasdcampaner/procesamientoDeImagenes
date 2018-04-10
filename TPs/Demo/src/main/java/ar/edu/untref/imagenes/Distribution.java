@@ -22,15 +22,15 @@ public class Distribution {
         return Math.log(1 - random.nextDouble()) / (-lambda);
     }
 
-    public static int saltAndPepper(int originalValue, int p1, int p2) {
+    public static int saltAndPepper(int originalValue, double p1, double p2) {
 
         int black = 0;
         int white = 255;
         double u = Math.random();
-        if (u < (int) p1) {
+        if (u < p1) {
             return black;
         }
-        if (u > (int) p2) {
+        if (u > p2) {
             return white;
         }
         return originalValue;

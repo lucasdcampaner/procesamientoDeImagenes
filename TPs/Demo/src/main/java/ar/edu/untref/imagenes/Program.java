@@ -36,6 +36,7 @@ public class Program extends Application {
     private Stage stage;
 
     private Functions functions;
+    private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
 
     private Group groupImageOriginal;
@@ -54,6 +55,7 @@ public class Program extends Application {
         try {
             stage = primaryStage;
             functions = new Functions(stage);
+            generatorOfSyntheticImages = new GeneratorOfSyntheticImages();
             ui = new UI();
 
             Scene scene = createWindow();
@@ -137,14 +139,14 @@ public class Program extends Application {
         noiseRayleigh.setOnAction(listenerNoiseRayleigh);
         MenuItem noiseExponencial = new MenuItem("Exponencial");
         noiseExponencial.setOnAction(listenerNoiseExponencial);
-        MenuItem salYPimienta = new MenuItem("Sal Y Pimienta");
-        salYPimienta.setOnAction(listenerSalYPimienta);
+        MenuItem saltAndPepper = new MenuItem("Salt and pepper");
+        saltAndPepper.setOnAction(listenerSaltAndPepper);
 
-        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, salYPimienta);
+        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
-        MenuItem generateSyntheticImages = new MenuItem("Generate");
+        MenuItem generateSyntheticImages = new MenuItem("Salt and pepper");
         generateSyntheticImages.setOnAction(listenerGenerateSyntheticImages);
 
         menuSyntheticImages.getItems().addAll(generateSyntheticImages);
@@ -654,7 +656,7 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerSalYPimienta = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerSaltAndPepper = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
 
@@ -663,7 +665,7 @@ public class Program extends Application {
                     pixels_Selected = functions.getPixelsToContaminate(matrix1, resultP);
                 });
                 Dialogs.showConfigureContrast(result -> {
-                    int[][] matrixAdded = functions.applySalYPimienta(matrix1, pixels_Selected, result[0], result[1]);
+                    int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixels_Selected, result[0], result[1]);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -673,6 +675,11 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerGenerateSyntheticImages = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
+            int originalValue = 255;
+            double p1 = 0.5;
+            double p2 = 0.6;
+            int[][] matrixSaltAndPepper = generatorOfSyntheticImages.generateMatrixSaltAndPepper(originalValue, p1, p2);
+            setSizeImageViewOriginal(ui.getImageResult(matrixSaltAndPepper));
         }
     };
 

@@ -368,7 +368,7 @@ public class Functions {
         return matrix;
     }
 
-    public int[][] applySalYPimienta(int[][] matrix, List<int[]> pixelsSelected, int p1, int p2) {
+    public int[][] applySaltAndPepper(int[][] matrix, List<int[]> pixelsSelected, int p1, int p2) {
 
         for (int i = 0; i < pixelsSelected.size(); i++) {
             int x = pixelsSelected.get(i)[0];
