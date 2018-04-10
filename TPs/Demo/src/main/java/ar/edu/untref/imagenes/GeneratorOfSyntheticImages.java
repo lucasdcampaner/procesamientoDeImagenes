@@ -30,4 +30,18 @@ public class GeneratorOfSyntheticImages {
         return noiseMatrix;
     }
 
+    public int[][] generateMatrixGaussian(double standardDeviation, double middleValue) {
+
+        int[][] noiseMatrix = new int[CIEN][CIEN];
+
+        for (int i = 0; i < CIEN; i++) {
+            for (int j = 0; j < CIEN; j++) {
+                noiseMatrix[i][j] = (int) Distribution.gaussian(standardDeviation, middleValue);
+            }
+        }
+
+        return noiseMatrix;
+
+    }
+
 }
