@@ -597,10 +597,12 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                Dialogs.showConfigureContrast(result -> {
-                    int[][] matrixAdded = Modifiers.contrast(matrix1, result[0], result[1]);
-                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
-                });
+                Dialogs.showConfigureTwoParameters("Configurar valores",
+                        "Ingrese valores de r1 y r2 entre 0 y 255.\n\nSiendo r1 < r2", "R1", "R2", result -> {
+                            int[][] matrixAdded = Modifiers.contrast(matrix1, result[0].intValue(),
+                                    result[1].intValue());
+                            setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                        });
             }
         }
     };
@@ -634,6 +636,17 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
+                Dialogs.showConfigurationPercentNoise(result -> {
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+
+                    Dialogs.showConfigureTwoParameters("Distribución Gaussiana",
+                            "Ingrese los valores de la media y la desviación estandar entre 0 y 255",
+                            "Desviación estandar", "Media", resultGuassian -> {
+                                int[][] matrixResult = functions.applyGaussian(matrix1, pixelsSelected,
+                                        resultGuassian[0], resultGuassian[1]);
+                                setSizeImageViewResult(ui.getImageResult(matrixResult));
+                            });
+                });
             }
         }
     };
@@ -642,6 +655,14 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
+                Dialogs.showConfigurationPercentNoise(result -> {
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+
+                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh", "Ingrese un phi entre 0 y 255", phi -> {
+                        int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi);
+                        setSizeImageViewResult(ui.getImageResult(matrixResult));
+                    });
+                });
             }
         }
     };
@@ -654,8 +675,11 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(result -> {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
 
-                    int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, 0.1);
-                    setSizeImageViewResult(ui.getImageResult(matrixResult));
+                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial", "Ingrese un lambda entre 0 y 1",
+                            lambda -> {
+                                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, lambda);
+                                setSizeImageViewResult(ui.getImageResult(matrixResult));
+                            });
                 });
             }
         }
@@ -669,14 +693,16 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(resultP -> {
                     pixels_Selected = functions.getPixelsToContaminate(matrix1, resultP);
                 });
-                Dialogs.showConfigureContrast(result -> {
-                    int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixels_Selected, result[0], result[1]);
-                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
-                });
+                Dialogs.showConfigureTwoParameters("Distribución Sal y pimienta",
+                        "Ingrese valores de p1 y p2 entre 0 y 1.\n\nSiendo p1 < p2", "P1", "P2", result -> {
+                            int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixels_Selected,
+                                    result[0].intValue(), result[1].intValue());
+                            setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                        });
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerGenerateSyntheticImagesExponential = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {

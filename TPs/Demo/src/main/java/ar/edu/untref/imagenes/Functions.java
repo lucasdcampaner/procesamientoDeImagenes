@@ -352,30 +352,71 @@ public class Functions {
         return listValuesSelect;
     }
 
-    public int[][] applyExponencial(int[][] matrix, List<int[]> pixelsSelected, double lamda) {
+    public int[][] applyExponencial(int[][] matrix, List<int[]> pixelsSelected, double lambda) {
 
+        int[][] matrixResult = matrix;
+        
         for (int i = 0; i < pixelsSelected.size(); i++) {
 
-            double value = Distribution.exponential(lamda);
+            double value = Distribution.exponential(lambda);
 
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
 
-            matrix[x][y] = (int) value;
+            matrixResult[x][y] = (int) value;
         }
 
-        return matrix;
+        return matrixResult;
+    }
+    
+    public int[][] applyGaussian(int[][] matrix, List<int[]> pixelsSelected, double standardDeviation, double middleValue) {
+
+        int[][] matrixResult = matrix;
+        
+        for (int i = 0; i < pixelsSelected.size(); i++) {
+
+            double value = Distribution.gaussian(standardDeviation, middleValue);
+
+            int x = pixelsSelected.get(i)[0];
+            int y = pixelsSelected.get(i)[1];
+
+            matrixResult[x][y] = (int) value;
+        }
+
+        return matrixResult;
+    }
+    
+    public int[][] applyRayleigh(int[][] matrix, List<int[]> pixelsSelected, double phi) {
+
+        int[][] matrixResult = matrix;
+        
+        for (int i = 0; i < pixelsSelected.size(); i++) {
+
+            double value = Distribution.rayleigh(phi);
+
+            int x = pixelsSelected.get(i)[0];
+            int y = pixelsSelected.get(i)[1];
+
+            matrixResult[x][y] = (int) value;
+        }
+
+        return matrixResult;
     }
 
     public int[][] applySaltAndPepper(int[][] matrix, List<int[]> pixelsSelected, int p1, int p2) {
 
+        int[][] matrixResult = matrix;
+        
         for (int i = 0; i < pixelsSelected.size(); i++) {
+          
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
+            
             int value = Distribution.saltAndPepper(matrix[x][y], p1, p2);
-            matrix[x][y] = value;
+            
+            matrixResult[x][y] = value;
         }
-        return matrix;
+        return matrixResult;
     }
 
     public ImagePlus getImagePlusFromImage(Image image, String name) throws IOException {

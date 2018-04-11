@@ -64,11 +64,25 @@ public class Dialogs {
         }
     }
 
-    public static void showConfigureContrast(ListenerResultDialogs<Integer[]> listenerResultDialogs) {
+    public static void showConfigurationParameterDistribution(String title, String message,
+            ListenerResultDialogs<Double> listenerDialog) {
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(title);
+        dialog.setHeaderText(message);
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            listenerDialog.accept(Double.valueOf(result.get()));
+        }
+    }
+
+    public static void showConfigureTwoParameters(String title, String message, String label1, String label2,
+            ListenerResultDialogs<Double[]> listenerResultDialogs) {
 
         Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Configurar valores");
-        dialog.setHeaderText("Elija los valores de r1 y r2.\n\nr1 debe ser menor a r2");
+        dialog.setTitle(title);
+        dialog.setHeaderText(message);
 
         ButtonType loginButtonType = new ButtonType("Aceptar", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
@@ -81,9 +95,9 @@ public class Dialogs {
         TextField r1 = new TextField();
         TextField r2 = new TextField();
 
-        grid.add(new Label("r1:"), 0, 0);
+        grid.add(new Label(label1), 0, 0);
         grid.add(r1, 1, 0);
-        grid.add(new Label("r2:"), 0, 1);
+        grid.add(new Label(label2), 0, 1);
         grid.add(r2, 1, 1);
 
         dialog.getDialogPane().setContent(grid);
@@ -92,7 +106,7 @@ public class Dialogs {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                Integer[] array = { Integer.valueOf(r1.getText()), Integer.valueOf(r2.getText()) };
+                Double[] array = { Double.valueOf(r1.getText()), Double.valueOf(r2.getText()) };
                 listenerResultDialogs.accept(array);
             }
             return null;
@@ -101,7 +115,7 @@ public class Dialogs {
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         result.ifPresent(value -> {
-            Integer[] array = { Integer.valueOf(value.getKey()), Integer.valueOf(value.getValue()) };
+            Double[] array = { Double.valueOf(value.getKey()), Double.valueOf(value.getValue()) };
             listenerResultDialogs.accept(array);
         });
     }
