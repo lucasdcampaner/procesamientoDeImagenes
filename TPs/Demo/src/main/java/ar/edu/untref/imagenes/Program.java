@@ -148,7 +148,7 @@ public class Program extends Application {
         Menu menuSyntheticImages = new Menu("Synthetic images");
         MenuItem generateSyntheticImagesRayleigh = new MenuItem("Rayleigh (phi = 25)");
         MenuItem generateSyntheticImagesSaltAndPepper = new MenuItem("Salt and pepper (p1 = 0.5; p2 = 0.6)");
-        MenuItem generateSyntheticImagesGaussian = new MenuItem("Gaussian");
+        MenuItem generateSyntheticImagesGaussian = new MenuItem("Gaussian (mean = 127; desviation = 25)");
         MenuItem generateSyntheticImagesExponential = new MenuItem("Exponential (lambda = 0.05)");
         generateSyntheticImagesRayleigh.setOnAction(listenerGenerateSyntheticImagesRayleigh);
         generateSyntheticImagesSaltAndPepper.setOnAction(listenerGenerateSyntheticImagesSaltAndPepper);
@@ -709,8 +709,8 @@ public class Program extends Application {
     private EventHandler<ActionEvent> listenerGenerateSyntheticImagesGaussian = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            double standardDeviation = 0.1;
-            double middleValue = 0.1;
+            double standardDeviation = 25;
+            double middleValue = 127;
             int[][] matrixGaussian = generatorOfSyntheticImages.generateMatrixGaussian(standardDeviation, middleValue);
             setSizeImageViewOriginal(ui.getImageResult(matrixGaussian));
         }

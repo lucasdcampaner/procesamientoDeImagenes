@@ -7,7 +7,7 @@ public class Distribution {
     public static double gaussian(double standardDeviation, double middleValue) {
 
         Random random = new Random();
-        return random.nextGaussian() * standardDeviation;
+        return random.nextGaussian() * standardDeviation + middleValue;
     }
 
     public static double rayleigh(double phi) {
