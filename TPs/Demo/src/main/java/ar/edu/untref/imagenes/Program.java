@@ -124,12 +124,14 @@ public class Program extends Application {
         grayHistogram.setOnAction(listenerGrayHistogram);
         MenuItem contrast = new MenuItem("Contrast");
         contrast.setOnAction(listenerContrast);
+        MenuItem contrastGamma = new MenuItem("Gamma Contrast");
+        contrastGamma.setOnAction(listenerContrastGamma);
         MenuItem threshold = new MenuItem("Threshold");
         threshold.setOnAction(listenerThreshold);
         MenuItem equalizeImage = new MenuItem("Equalize image");
         equalizeImage.setOnAction(listenerEqualizeImage);
 
-        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, threshold, equalizeImage);
+        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, equalizeImage);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
@@ -606,6 +608,20 @@ public class Program extends Application {
             }
         }
     };
+
+    private EventHandler<ActionEvent> listenerContrastGamma = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigureContrastGamma(result -> {
+                    int[][] matrixAdded = Modifiers.contrastGamma(matrix1, result);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
+            }
+        }
+    };
+
 
     private EventHandler<ActionEvent> listenerScalarByImage = new EventHandler<ActionEvent>() {
         @Override

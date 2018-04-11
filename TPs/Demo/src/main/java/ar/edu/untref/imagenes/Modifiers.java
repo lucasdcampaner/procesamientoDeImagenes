@@ -192,4 +192,23 @@ public class Modifiers {
         // System.out.println("la suma 1 valor: " + ttt);
         return arrayAux;
     }
+
+    public static int[][] contrastGamma(int[][] matrix, double valorGamma) {
+
+        int[][] matrixAux = new int[matrix.length][matrix[0].length];
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+
+                //Corrected = 255 * (Image/255)^(1/2.2).
+                double corrected = 255 *  Math.pow( (double)(matrix[i][j]/255), 1/valorGamma);
+                        
+               // resultado = (int) (255*Math.pow(division, potencia));
+                
+                    matrixAux[i][j] = (int) Math.round(corrected);
+                }
+            }
+        
+        return matrixAux;
+    }
 }

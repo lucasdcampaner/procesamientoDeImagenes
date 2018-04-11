@@ -137,4 +137,21 @@ public class Dialogs {
         alert.setContentText(infoText);
         alert.showAndWait();
     }
+
+    public static void showConfigureContrastGamma(ListenerResultDialogs<Double> listenerDialog) {
+
+        Double valor = null;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Contraste Función Gamma");
+        dialog.setHeaderText("Ingrese el valor de gamma (distinto a 1 y entre [0,2]");
+        do {
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                valor = Double.valueOf(result.get());
+            }
+        } while (valor <= 0.0 || valor >= 2.0 || valor == 1.0);
+
+        listenerDialog.accept(valor);
+
+    }
 }
