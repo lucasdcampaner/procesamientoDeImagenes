@@ -441,7 +441,15 @@ public class Functions {
         media = media / array.length;
         return media;
     }
-    
+
+    private double calcularSumaValores(int[] array) {
+        double media = 0.0;
+        for (int i = 0; i < array.length; i++) {
+            media += array[i];
+        }
+        return media;
+    }
+
     public int[][] applyFiltroMedia(int[][] matrizOriginal, int tamanoMascara) {
 
         // creo mascara para hacer el filtro
@@ -454,7 +462,7 @@ public class Functions {
         int tope = tamanoMascara / 2; // control desborde de mascara
         int ancho = matrizOriginal.length;
         int alto = matrizOriginal[0].length;
-
+        double multiplicador = 1 / (Math.pow(tamanoMascara, 2.0));
         for (int i = tope; i < ancho - tope; i++) {
             for (int j = tope; j < alto - tope; j++) {
                 // for para llenar mascara
@@ -471,11 +479,17 @@ public class Functions {
                         posicion++;
                     }
                 }
-                // escritura de pixel (i, j ) con la media (promedio) de la mascara
-                double valorPromedio = calcularPromedio(mascaraOrdena);
-                matrizResult[i][j] = (int) Math.round(valorPromedio);
+                // VERSION ANTERIOR CREO MAL escritura de pixel (i, j ) con promedio de la mascara
+                // double valorPromedio = calcularPromedio(mascaraOrdena);
+                // matrizResult[i][j] = (int) Math.round(valorPromedio);
+
+                // deberia usar S = (1 / Math.pow(tamanoMascara, 2)) * (I1 a I(tamanoMascara))
+                double valorSumados = calcularSumaValores(mascaraOrdena);
+                int nuevoValorListo = (int) Math.round(multiplicador * valorSumados);// falta normalizar?
+                matrizResult[i][j] = nuevoValorListo;
             }
         }
+        matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
         return matrizResult;
     }
 
