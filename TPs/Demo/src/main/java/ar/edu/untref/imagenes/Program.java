@@ -143,14 +143,19 @@ public class Program extends Application {
         noiseExponencial.setOnAction(listenerNoiseExponencial);
         MenuItem saltAndPepper = new MenuItem("Salt and pepper");
         saltAndPepper.setOnAction(listenerSaltAndPepper);
-        // no se si va aca
+
+        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper);
+
+        // Menu Suavizado
+        Menu menuSuavizado = new Menu("Suavizado");
         MenuItem filtroMedia = new MenuItem("Aplicar Filtro Media");
         filtroMedia.setOnAction(listenerFiltroMedia);
         MenuItem filtroMediana = new MenuItem("Aplicar Filtro Mediana");
         filtroMediana.setOnAction(listenerFiltroMediana);
+        MenuItem filtroMedianaPonderada = new MenuItem("Aplicar Filtro Mediana Ponderada 3x3");
+        filtroMedianaPonderada.setOnAction(listenerFiltroMedianaPonderada);
 
-        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper, filtroMedia,
-                filtroMediana);
+        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -167,7 +172,7 @@ public class Program extends Application {
                 generateSyntheticImagesGaussian, generateSyntheticImagesExponential);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
-                menuSyntheticImages);
+                menuSuavizado, menuSyntheticImages);
 
         return menuBar;
     }
@@ -786,6 +791,20 @@ public class Program extends Application {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
                     int[][] matrixAdded = functions.applyFiltroMediana(matrix1, resultP);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
+            }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerFiltroMedianaPonderada = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationTamanoMascara(resultP -> {
+
+                    int[][] matrixAdded = functions.applyFiltroMedianaPonderada(matrix1, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }

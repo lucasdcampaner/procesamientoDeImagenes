@@ -490,11 +490,11 @@ public class Functions {
             }
         }
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
-        matrizResult = repeatOnePixelBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
+        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
         return matrizResult;
     }
 
-    private int[][] repeatOnePixelBorder(int[][] matrix, int tope) {
+    private int[][] repeatNPixelsBorder(int[][] matrix, int tope) {
 
         int ancho = matrix.length;
         int alto = matrix[0].length;
@@ -562,8 +562,57 @@ public class Functions {
             }
         }
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
-        matrizResult = repeatOnePixelBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
+        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
         return matrizResult;
     }
 
+    public int[][] applyFiltroMedianaPonderada(int[][] matrizOriginal, int tamanoMascara) {
+
+        // me piden de 3 x 3 1 2 1 2 4 2 1 2 1
+        int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
+        tamanoMascara = 3; // forzado
+        // creo mascara para hacer el filtro
+        int[][] mascara = new int[tamanoMascara][tamanoMascara];
+        // array para los pixeles tomados de la mascara, y seran ordenados
+        int[] mascaraOrdena = new int[tamanoMascara * tamanoMascara];
+
+        int[][] matrizResult = matrizOriginal;
+
+        int tope = tamanoMascara / 2; // control desborde de mascara
+        int ancho = matrizOriginal.length;
+        int alto = matrizOriginal[0].length;
+
+        for (int i = tope; i < ancho - tope; i++) {
+            for (int j = tope; j < alto - tope; j++) {
+                // for para llenar mascara
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        mascara[y][x] = matrizOriginal[i - tope + y][j - tope + x];
+                    }
+                }
+                // System.out.println(Arrays.deepToString(mascara));
+                mascara = Modifiers.multiplyImage(mascara, matrizDePonderacion);
+                // System.out.println(Arrays.deepToString(mascara));
+
+                // for para llenar array mascaraOrdenada a partir de la mascara
+                int posicion = 0;
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        mascaraOrdena[posicion] = mascara[y][x];
+                        posicion++;
+                    }
+                }
+                // for (int x=0; x<mascaraOrdena.length; x++)
+                // System.out.print(mascaraOrdena[x] + ", ");
+                Arrays.sort(mascaraOrdena);
+                // escritura de pixel con la mediana de la mascara
+                matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
+            }
+        }
+        System.out.println(Arrays.deepToString(matrizResult));
+        matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
+        // System.out.println(Arrays.deepToString(matrizResult));
+        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
+        return matrizResult;
+    }
 }
