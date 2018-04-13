@@ -35,5 +35,11 @@ public class ModifiersTest {
 
 		Assert.assertEquals(intZero.intValue(), modifiedImage.getPixelReader().getArgb(intZero, intZero));
 	}
+	
+	@Test
+    public void testDivisionEntera() throws IOException {
+
+               Assert.assertEquals(2, 5/2);
+    }
 
 }

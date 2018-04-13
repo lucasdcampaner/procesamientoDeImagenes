@@ -490,7 +490,41 @@ public class Functions {
             }
         }
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
+        matrizResult = repeatOnePixelBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
         return matrizResult;
+    }
+
+    private int[][] repeatOnePixelBorder(int[][] matrix, int tope) {
+
+        int ancho = matrix.length;
+        int alto = matrix[0].length;
+        int[][] result = matrix;
+
+        for (int i = 0; i < ancho; i++) { // fila 0 a ancho-1
+            for (int j = 0; j < alto; j++) { // columna 0 alto-1
+
+                for (int n = 0; n < tope; n++) {
+                    result[n][j] = matrix[tope][j]; // fila 0 tomada de fila 1,
+                    result[i][n] = matrix[i][tope]; // columna 0 tomada de columna 1
+                    result[ancho - 1 - n][j] = matrix[ancho - 1 - tope][j]; // fila n tomada de fila n-1
+                    result[i][alto - 1 - n] = matrix[i][alto - 1 - tope]; // columna n tomada de columna n-1
+                }
+                // 1 result[0][j] = matrix[1][j]; // fila 0 tomada de fila 1, funciono esto con n=3 (tope=1)
+
+                // 1 result[0][j] = matrix[2][j]; // fila 0 tomada de fila 2
+                // 1 result[1][j] = matrix[2][j]; // fila 1 tomada de fila 2 , funciono esto con n=5 (tope=2)
+
+                // 1 result[0][j] = matrix[3][j]; // fila 0 tomada de fila 3
+                // 1 result[1][j] = matrix[3][j]; // fila 1 tomada de fila 3 , funciono esto con n=7 (tope=3)
+                // 1 result[2][j] = matrix[3][j]; // fila 2 tomada de fila 3 , funciono esto con n=7 (tope=3)
+
+                // no se si pueden ir todos en el mismo for, ademas depende el tamaño de ventana
+                // 2 result[ancho - 1][j] = matrix[ancho - 2][j]; // fila n tomada de fila n-1
+                // 3 result[i][0] = matrix[i][1]; // columna 0 tomada de columna 1
+                // 4 result[i][alto - 1] = matrix[i][alto - 2]; // columna n tomada de columna n-1
+            }
+        }
+        return result;
     }
 
     public int[][] applyFiltroMediana(int[][] matrizOriginal, int tamanoMascara) {
@@ -527,6 +561,8 @@ public class Functions {
                 matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
             }
         }
+        matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
+        matrizResult = repeatOnePixelBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
         return matrizResult;
     }
 
