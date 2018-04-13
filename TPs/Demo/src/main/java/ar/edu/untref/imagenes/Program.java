@@ -143,8 +143,14 @@ public class Program extends Application {
         noiseExponencial.setOnAction(listenerNoiseExponencial);
         MenuItem saltAndPepper = new MenuItem("Salt and pepper");
         saltAndPepper.setOnAction(listenerSaltAndPepper);
+        // no se si va aca
+        MenuItem filtroMedia = new MenuItem("Aplicar Filtro Media");
+        filtroMedia.setOnAction(listenerFiltroMedia);
+        MenuItem filtroMediana = new MenuItem("Aplicar Filtro Mediana");
+        filtroMediana.setOnAction(listenerFiltroMediana);
 
-        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper);
+        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper, filtroMedia,
+                filtroMediana);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -622,7 +628,6 @@ public class Program extends Application {
         }
     };
 
-
     private EventHandler<ActionEvent> listenerScalarByImage = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -674,10 +679,11 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(result -> {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
 
-                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh", "Ingrese un phi entre 0 y 255", phi -> {
-                        int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi);
-                        setSizeImageViewResult(ui.getImageResult(matrixResult));
-                    });
+                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
+                            "Ingrese un phi entre 0 y 255", phi -> {
+                                int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi);
+                                setSizeImageViewResult(ui.getImageResult(matrixResult));
+                            });
                 });
             }
         }
@@ -691,8 +697,8 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(result -> {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
 
-                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial", "Ingrese un lambda entre 0 y 1",
-                            lambda -> {
+                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial",
+                            "Ingrese un lambda entre 0 y 1", lambda -> {
                                 int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, lambda);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             });
@@ -755,6 +761,34 @@ public class Program extends Application {
             double middleValue = 127;
             int[][] matrixGaussian = generatorOfSyntheticImages.generateMatrixGaussian(standardDeviation, middleValue);
             setSizeImageViewOriginal(ui.getImageResult(matrixGaussian));
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerFiltroMedia = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationTamanoMascara(resultP -> {
+
+                    int[][] matrixAdded = functions.applyFiltroMedia(matrix1, resultP);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerFiltroMediana = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationTamanoMascara(resultP -> {
+
+                    int[][] matrixAdded = functions.applyFiltroMediana(matrix1, resultP);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
+            }
         }
     };
 

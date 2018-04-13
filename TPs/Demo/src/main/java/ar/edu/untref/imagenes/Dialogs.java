@@ -154,4 +154,21 @@ public class Dialogs {
         listenerDialog.accept(valor);
 
     }
+
+    public static void showConfigurationTamanoMascara(ListenerResultDialogs<Integer> listenerDialog) {
+
+        Integer valor = null;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Tamaño mascara");
+        dialog.setHeaderText("Ingrese el valor de tamaño mascara");
+        do {
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                valor = Integer.valueOf(result.get());
+            }
+        } while (valor <= 0 || valor >= 50);
+
+        listenerDialog.accept(valor);
+
+    }
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -36,7 +37,8 @@ public class Functions {
     public Image openImage(boolean mainImage) {
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
+        fileChooser.getExtensionFilters()
+                .add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
         File file = fileChooser.showOpenDialog(stage);
 
         if (file != null) {
@@ -355,7 +357,7 @@ public class Functions {
     public int[][] applyExponencial(int[][] matrix, List<int[]> pixelsSelected, double lambda) {
 
         int[][] matrixResult = matrix;
-        
+
         for (int i = 0; i < pixelsSelected.size(); i++) {
 
             double value = Distribution.exponential(lambda);
@@ -368,11 +370,12 @@ public class Functions {
 
         return matrixResult;
     }
-    
-    public int[][] applyGaussian(int[][] matrix, List<int[]> pixelsSelected, double standardDeviation, double middleValue) {
+
+    public int[][] applyGaussian(int[][] matrix, List<int[]> pixelsSelected, double standardDeviation,
+            double middleValue) {
 
         int[][] matrixResult = matrix;
-        
+
         for (int i = 0; i < pixelsSelected.size(); i++) {
 
             double value = Distribution.gaussian(standardDeviation, middleValue);
@@ -385,11 +388,11 @@ public class Functions {
 
         return matrixResult;
     }
-    
+
     public int[][] applyRayleigh(int[][] matrix, List<int[]> pixelsSelected, double phi) {
 
         int[][] matrixResult = matrix;
-        
+
         for (int i = 0; i < pixelsSelected.size(); i++) {
 
             double value = Distribution.rayleigh(phi);
@@ -406,14 +409,14 @@ public class Functions {
     public int[][] applySaltAndPepper(int[][] matrix, List<int[]> pixelsSelected, int p1, int p2) {
 
         int[][] matrixResult = matrix;
-        
+
         for (int i = 0; i < pixelsSelected.size(); i++) {
-          
+
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
-            
+
             int value = Distribution.saltAndPepper(matrix[x][y], p1, p2);
-            
+
             matrixResult[x][y] = value;
         }
         return matrixResult;
@@ -428,6 +431,89 @@ public class Functions {
         ImagePlus imagePlus = new ImagePlus();
         imagePlus.setImage(ImageIO.read(new File(name + ".png")));
         return imagePlus;
+    }
+
+    public int[][] applyFiltroMedia(int[][] matrizOriginal, int tamanoMascara) {
+
+        // creo mascara para hacer el filtro
+        int[][] mascara = new int[tamanoMascara][tamanoMascara];
+        // array para los pixeles tomados de la mascara, y seran ordenados
+        int[] mascaraOrdena = new int[tamanoMascara * tamanoMascara];
+
+        int[][] matrizResult = matrizOriginal;
+
+        int tope = tamanoMascara / 2; // control desborde de mascara
+        int ancho = matrizOriginal.length;
+        int alto = matrizOriginal[0].length;
+
+        for (int i = tope; i < ancho - tope; i++) {
+            for (int j = tope; j < alto - tope; j++) {
+                // for para llenar mascara
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        mascara[y][x] = matrizOriginal[i - tope + y][j - tope + x];
+                    }
+                }
+                // for para llenar array mascaraOrdenada a partir de la mascara
+                int posicion = 0;
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        mascaraOrdena[posicion] = mascara[y][x];
+                        posicion++;
+                    }
+                }
+                // escritura de pixel con la media (promedio) de la mascara
+                double promedio = calcularPromedio(mascaraOrdena);
+                matrizResult[i][j] = (int) Math.round(matrizOriginal[i][j] * promedio);
+            }
+        }
+        return matrizResult;
+    }
+
+    private double calcularPromedio(int[] array) {
+        double media = 0.0;
+        for (int i = 0; i < array.length; i++) {
+            media = media + array[i];
+        }
+        media = media / array.length;
+        return media;
+    }
+
+    public int[][] applyFiltroMediana(int[][] matrizOriginal, int tamanoMascara) {
+
+        // creo mascara para hacer el filtro
+        int[][] mascara = new int[tamanoMascara][tamanoMascara];
+        // array para los pixeles tomados de la mascara, y seran ordenados
+        int[] mascaraOrdena = new int[tamanoMascara * tamanoMascara];
+
+        int[][] matrizResult = matrizOriginal;
+
+        int tope = tamanoMascara / 2; // control desborde de mascara
+        int ancho = matrizOriginal.length;
+        int alto = matrizOriginal[0].length;
+
+        for (int i = tope; i < ancho - tope; i++) {
+            for (int j = tope; j < alto - tope; j++) {
+                // for para llenar mascara
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        mascara[y][x] = matrizOriginal[i - tope + y][j - tope + x];
+                    }
+                }
+                // for para llenar array mascaraOrdenada a partir de la mascara
+                int posicion = 0;
+                for (int y = 0; y < mascara.length; y++) {
+                    for (int x = 0; x < mascara[0].length; x++) {
+                        mascaraOrdena[posicion] = mascara[y][x];
+                        posicion++;
+                    }
+                }
+                Arrays.sort(mascaraOrdena);
+                // escritura de pixel con la mediana de la mascara
+                matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
+            }
+        }
+        return matrizResult;
     }
 
 }
