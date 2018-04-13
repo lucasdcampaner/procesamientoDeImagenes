@@ -433,11 +433,20 @@ public class Functions {
         return imagePlus;
     }
 
+    private double calcularPromedio(int[] array) {
+        double media = 0.0;
+        for (int i = 0; i < array.length; i++) {
+            media = media + array[i];
+        }
+        media = media / array.length;
+        return media;
+    }
+    
     public int[][] applyFiltroMedia(int[][] matrizOriginal, int tamanoMascara) {
 
         // creo mascara para hacer el filtro
         int[][] mascara = new int[tamanoMascara][tamanoMascara];
-        // array para los pixeles tomados de la mascara, y seran ordenados
+        // array para los pixeles tomados de la mascara
         int[] mascaraOrdena = new int[tamanoMascara * tamanoMascara];
 
         int[][] matrizResult = matrizOriginal;
@@ -462,21 +471,12 @@ public class Functions {
                         posicion++;
                     }
                 }
-                // escritura de pixel con la media (promedio) de la mascara
-                double promedio = calcularPromedio(mascaraOrdena);
-                matrizResult[i][j] = (int) Math.round(matrizOriginal[i][j] * promedio);
+                // escritura de pixel (i, j ) con la media (promedio) de la mascara
+                double valorPromedio = calcularPromedio(mascaraOrdena);
+                matrizResult[i][j] = (int) Math.round(valorPromedio);
             }
         }
         return matrizResult;
-    }
-
-    private double calcularPromedio(int[] array) {
-        double media = 0.0;
-        for (int i = 0; i < array.length; i++) {
-            media = media + array[i];
-        }
-        media = media / array.length;
-        return media;
     }
 
     public int[][] applyFiltroMediana(int[][] matrizOriginal, int tamanoMascara) {
