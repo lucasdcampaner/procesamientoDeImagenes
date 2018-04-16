@@ -137,14 +137,21 @@ public class Program extends Application {
         Menu menuNoise = new Menu("Noise");
         MenuItem noiseGaussiano = new MenuItem("Gaussiano");
         noiseGaussiano.setOnAction(listenerNoiseGaussiano);
+        MenuItem noiseGaussianoAditive = new MenuItem("Gaussiano additive");
+        noiseGaussianoAditive.setOnAction(listenerNoiseGaussianoAdditive);
         MenuItem noiseRayleigh = new MenuItem("Rayleigh");
         noiseRayleigh.setOnAction(listenerNoiseRayleigh);
+        MenuItem noiseRayleighMultiplicative = new MenuItem("Rayleigh multiplicative");
+        noiseRayleighMultiplicative.setOnAction(listenerNoiseRayleighMultiplicative);
         MenuItem noiseExponencial = new MenuItem("Exponencial");
         noiseExponencial.setOnAction(listenerNoiseExponencial);
+        MenuItem noiseExponencialMultiplicative = new MenuItem("Exponencial multiplicative");
+        noiseExponencialMultiplicative.setOnAction(listenerNoiseExponencialMultiplicative);
         MenuItem saltAndPepper = new MenuItem("Salt and pepper");
         saltAndPepper.setOnAction(listenerSaltAndPepper);
 
-        menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper);
+        menuNoise.getItems().addAll(noiseGaussiano, noiseGaussianoAditive, noiseRayleigh, noiseRayleighMultiplicative, noiseExponencial,
+                noiseExponencialMultiplicative, saltAndPepper);
 
         // Menu Suavizado
         Menu menuSuavizado = new Menu("Smoothing");
@@ -669,8 +676,29 @@ public class Program extends Application {
                             "Ingrese los valores de la media y la desviación estandar entre 0 y 255",
                             "Desviación estandar", "Media", resultGuassian -> {
                                 int[][] matrixResult = functions.applyGaussian(matrix1, pixelsSelected,
-                                        resultGuassian[0], resultGuassian[1]);
+                                        resultGuassian[0], resultGuassian[1], false);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
+                            });
+                });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerNoiseGaussianoAdditive = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationPercentNoise(result -> {
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+
+                    Dialogs.showConfigureTwoParameters("Distribución Gaussiana",
+                            "Ingrese los valores de la media y la desviación estandar entre 0 y 255",
+                            "Desviación estandar", "Media", resultGuassian -> {
+                                int[][] matrixResult = functions.applyGaussian(matrix1, pixelsSelected,
+                                        resultGuassian[0], resultGuassian[1], true);
+
+                                int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                                setSizeImageViewResult(ui.getImageResult(imageNormalized));
                             });
                 });
             }
@@ -686,8 +714,27 @@ public class Program extends Application {
 
                     Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
                             "Ingrese un phi entre 0 y 255", phi -> {
-                                int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi);
+                                int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi, false);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
+                            });
+                });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerNoiseRayleighMultiplicative = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationPercentNoise(result -> {
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+
+                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
+                            "Ingrese un phi entre 0 y 255", phi -> {
+                                int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi, true);
+
+                                int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                                setSizeImageViewResult(ui.getImageResult(imageNormalized));
                             });
                 });
             }
@@ -704,8 +751,30 @@ public class Program extends Application {
 
                     Dialogs.showConfigurationParameterDistribution("Distribución Exponencial",
                             "Ingrese un lambda entre 0 y 1", lambda -> {
-                                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, lambda);
+                                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, lambda,
+                                        false);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
+                            });
+                });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerNoiseExponencialMultiplicative = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationPercentNoise(result -> {
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+
+                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial",
+                            "Ingrese un lambda entre 0 y 1", lambda -> {
+                                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, lambda,
+                                        true);
+
+                                int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                                setSizeImageViewResult(ui.getImageResult(imageNormalized));
                             });
                 });
             }
@@ -796,7 +865,7 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerFiltroMedianaPonderada = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
