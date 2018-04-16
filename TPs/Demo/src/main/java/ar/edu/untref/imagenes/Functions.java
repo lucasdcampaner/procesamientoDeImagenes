@@ -568,9 +568,8 @@ public class Functions {
 
     public int[][] applyFiltroMedianaPonderada(int[][] matrizOriginal, int tamanoMascara) {
 
-        // me piden de 3 x 3 1 2 1 2 4 2 1 2 1
+        // me piden de 3 x 3
         int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-        tamanoMascara = 3; // forzado
         // creo mascara para hacer el filtro
         int[][] mascara = new int[tamanoMascara][tamanoMascara];
         // array para los pixeles tomados de la mascara, y seran ordenados
@@ -591,7 +590,7 @@ public class Functions {
                     }
                 }
                 // System.out.println(Arrays.deepToString(mascara));
-                mascara = Modifiers.multiplyImage(mascara, matrizDePonderacion);
+                mascara = Modifiers.multiplyEspecial(mascara, matrizDePonderacion);
                 // System.out.println(Arrays.deepToString(mascara));
 
                 // for para llenar array mascaraOrdenada a partir de la mascara
@@ -609,7 +608,7 @@ public class Functions {
                 matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
             }
         }
-        System.out.println(Arrays.deepToString(matrizResult));
+        // System.out.println(Arrays.deepToString(matrizResult));
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
         // System.out.println(Arrays.deepToString(matrizResult));
         matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes

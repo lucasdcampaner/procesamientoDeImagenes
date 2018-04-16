@@ -208,4 +208,19 @@ public class Modifiers {
 
         return matrixAux;
     }
+
+    public static int[][] multiplyEspecial(int[][] mascara, int[][] matrizDePonderacion) {
+
+        int w = mascara.length;
+        int h = mascara[0].length;
+
+        int[][] matrixAux = new int[w][h];
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                matrixAux[i][j] = mascara[i][j] * matrizDePonderacion[i][j];
+            }
+        }
+        return matrixAux;
+    }
 }

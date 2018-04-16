@@ -796,17 +796,16 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerFiltroMedianaPonderada = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyFiltroMedianaPonderada(matrix1, resultP);
-                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
-                });
+                int[][] matrixAdded = functions.applyFiltroMedianaPonderada(matrix1, 3);
+                setSizeImageViewResult(ui.getImageResult(matrixAdded));
+
             }
         }
     };
