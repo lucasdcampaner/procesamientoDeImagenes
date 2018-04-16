@@ -609,7 +609,7 @@ public class Functions {
                 matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
             }
         }
-        System.out.println(Arrays.deepToString(matrizResult));
+//        System.out.println(Arrays.deepToString(matrizResult));
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
         // System.out.println(Arrays.deepToString(matrizResult));
         matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes

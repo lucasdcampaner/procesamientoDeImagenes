@@ -147,12 +147,12 @@ public class Program extends Application {
         menuNoise.getItems().addAll(noiseGaussiano, noiseRayleigh, noiseExponencial, saltAndPepper);
 
         // Menu Suavizado
-        Menu menuSuavizado = new Menu("Suavizado");
-        MenuItem filtroMedia = new MenuItem("Aplicar Filtro Media");
+        Menu menuSuavizado = new Menu("Smoothing");
+        MenuItem filtroMedia = new MenuItem("Average Filter");
         filtroMedia.setOnAction(listenerFiltroMedia);
-        MenuItem filtroMediana = new MenuItem("Aplicar Filtro Mediana");
+        MenuItem filtroMediana = new MenuItem("Medium Filter");
         filtroMediana.setOnAction(listenerFiltroMediana);
-        MenuItem filtroMedianaPonderada = new MenuItem("Aplicar Filtro Mediana Ponderada 3x3");
+        MenuItem filtroMedianaPonderada = new MenuItem("Weighted Medium Filter 3x3");
         filtroMedianaPonderada.setOnAction(listenerFiltroMedianaPonderada);
 
         menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada);
