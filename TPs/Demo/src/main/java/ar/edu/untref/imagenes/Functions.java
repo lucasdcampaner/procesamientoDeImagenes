@@ -354,7 +354,7 @@ public class Functions {
         return listValuesSelect;
     }
 
-    public int[][] applyExponencial(int[][] matrix, List<int[]> pixelsSelected, double lambda) {
+    public int[][] applyExponencial(int[][] matrix, List<int[]> pixelsSelected, double lambda, boolean multiplicative) {
 
         int[][] matrixResult = matrix;
 
@@ -365,14 +365,18 @@ public class Functions {
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
 
-            matrixResult[x][y] = (int) value;
+            if (multiplicative) {
+                matrixResult[x][y] *= (int) value;
+            } else {
+                matrixResult[x][y] = (int) value;
+            }
         }
 
         return matrixResult;
     }
 
     public int[][] applyGaussian(int[][] matrix, List<int[]> pixelsSelected, double standardDeviation,
-            double middleValue) {
+            double middleValue, boolean additive) {
 
         int[][] matrixResult = matrix;
 
@@ -383,13 +387,17 @@ public class Functions {
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
 
-            matrixResult[x][y] = (int) value;
+            if (additive) {
+                matrixResult[x][y] += (int) value;
+            } else {
+                matrixResult[x][y] = (int) value;
+            }
         }
 
         return matrixResult;
     }
 
-    public int[][] applyRayleigh(int[][] matrix, List<int[]> pixelsSelected, double phi) {
+    public int[][] applyRayleigh(int[][] matrix, List<int[]> pixelsSelected, double phi, boolean multiplicative) {
 
         int[][] matrixResult = matrix;
 
@@ -400,7 +408,11 @@ public class Functions {
             int x = pixelsSelected.get(i)[0];
             int y = pixelsSelected.get(i)[1];
 
-            matrixResult[x][y] = (int) value;
+            if (multiplicative) {
+                matrixResult[x][y] *= (int) value;
+            } else {
+                matrixResult[x][y] = (int) value;
+            }
         }
 
         return matrixResult;
@@ -479,18 +491,23 @@ public class Functions {
                         posicion++;
                     }
                 }
-                // VERSION ANTERIOR CREO MAL escritura de pixel (i, j ) con promedio de la mascara
+                // VERSION ANTERIOR CREO MAL escritura de pixel (i, j ) con
+                // promedio de la mascara
                 // double valorPromedio = calcularPromedio(mascaraOrdena);
                 // matrizResult[i][j] = (int) Math.round(valorPromedio);
 
-                // deberia usar S = (1 / Math.pow(tamanoMascara, 2)) * (I1 a I(tamanoMascara))
+                // deberia usar S = (1 / Math.pow(tamanoMascara, 2)) * (I1 a
+                // I(tamanoMascara))
                 double valorSumados = calcularSumaValores(mascaraOrdena);
-                int nuevoValorListo = (int) Math.round(multiplicador * valorSumados);// falta normalizar?
+                int nuevoValorListo = (int) Math.round(multiplicador * valorSumados);// falta
+                                                                                     // normalizar?
                 matrizResult[i][j] = nuevoValorListo;
             }
         }
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
-        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
+        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1
+                                                                // pixel en los
+                                                                // 4 bordes
         return matrizResult;
     }
 
@@ -505,23 +522,42 @@ public class Functions {
 
                 for (int n = 0; n < tope; n++) {
                     result[n][j] = matrix[tope][j]; // fila 0 tomada de fila 1,
-                    result[i][n] = matrix[i][tope]; // columna 0 tomada de columna 1
-                    result[ancho - 1 - n][j] = matrix[ancho - 1 - tope][j]; // fila n tomada de fila n-1
-                    result[i][alto - 1 - n] = matrix[i][alto - 1 - tope]; // columna n tomada de columna n-1
+                    result[i][n] = matrix[i][tope]; // columna 0 tomada de
+                                                    // columna 1
+                    result[ancho - 1 - n][j] = matrix[ancho - 1 - tope][j]; // fila
+                                                                            // n
+                                                                            // tomada
+                                                                            // de
+                                                                            // fila
+                                                                            // n-1
+                    result[i][alto - 1 - n] = matrix[i][alto - 1 - tope]; // columna
+                                                                          // n
+                                                                          // tomada
+                                                                          // de
+                                                                          // columna
+                                                                          // n-1
                 }
-                // 1 result[0][j] = matrix[1][j]; // fila 0 tomada de fila 1, funciono esto con n=3 (tope=1)
+                // 1 result[0][j] = matrix[1][j]; // fila 0 tomada de fila 1,
+                // funciono esto con n=3 (tope=1)
 
                 // 1 result[0][j] = matrix[2][j]; // fila 0 tomada de fila 2
-                // 1 result[1][j] = matrix[2][j]; // fila 1 tomada de fila 2 , funciono esto con n=5 (tope=2)
+                // 1 result[1][j] = matrix[2][j]; // fila 1 tomada de fila 2 ,
+                // funciono esto con n=5 (tope=2)
 
                 // 1 result[0][j] = matrix[3][j]; // fila 0 tomada de fila 3
-                // 1 result[1][j] = matrix[3][j]; // fila 1 tomada de fila 3 , funciono esto con n=7 (tope=3)
-                // 1 result[2][j] = matrix[3][j]; // fila 2 tomada de fila 3 , funciono esto con n=7 (tope=3)
+                // 1 result[1][j] = matrix[3][j]; // fila 1 tomada de fila 3 ,
+                // funciono esto con n=7 (tope=3)
+                // 1 result[2][j] = matrix[3][j]; // fila 2 tomada de fila 3 ,
+                // funciono esto con n=7 (tope=3)
 
-                // no se si pueden ir todos en el mismo for, ademas depende el tamaño de ventana
-                // 2 result[ancho - 1][j] = matrix[ancho - 2][j]; // fila n tomada de fila n-1
-                // 3 result[i][0] = matrix[i][1]; // columna 0 tomada de columna 1
-                // 4 result[i][alto - 1] = matrix[i][alto - 2]; // columna n tomada de columna n-1
+                // no se si pueden ir todos en el mismo for, ademas depende el
+                // tamaño de ventana
+                // 2 result[ancho - 1][j] = matrix[ancho - 2][j]; // fila n
+                // tomada de fila n-1
+                // 3 result[i][0] = matrix[i][1]; // columna 0 tomada de columna
+                // 1
+                // 4 result[i][alto - 1] = matrix[i][alto - 2]; // columna n
+                // tomada de columna n-1
             }
         }
         return result;
@@ -562,7 +598,9 @@ public class Functions {
             }
         }
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
-        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
+        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1
+                                                                // pixel en los
+                                                                // 4 bordes
         return matrizResult;
     }
 
@@ -611,7 +649,9 @@ public class Functions {
 
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
         // System.out.println(Arrays.deepToString(matrizResult));
-        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1 pixel en los 4 bordes
+        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1
+                                                                // pixel en los
+                                                                // 4 bordes
         return matrizResult;
     }
 }
