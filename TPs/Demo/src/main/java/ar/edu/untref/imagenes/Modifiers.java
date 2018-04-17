@@ -43,22 +43,19 @@ public class Modifiers {
             for (int j = 0; j < matrix[i].length; j++) {
 
                 if (matrix[i][j] <= r1) {
-                    float s1;
-
-                    if (r1 <= 1) {
-                        s1 = 1 / 2;
-                    } else {
-                        s1 = 1 / r1;
-                    }
+                    float s1 = r1 / 2;
 
                     float m = (float) s1 / r1;
+
                     matrixAux[i][j] = Math.round((m * matrix[i][j]));
 
                 } else if (matrix[i][j] >= r2 && r2 < 255) {
 
-                    float s2 = r2 - (1 / r1);
+                    float s2 = r2 * 0.8f;
                     float m = (float) (255f - s2) / (255f - r2);
-                    matrixAux[i][j] = Math.round((m * matrix[i][j]));
+                    float b = s2 - m * r2;
+
+                    matrixAux[i][j] = Math.round((m * matrix[i][j] + b));
                 }
             }
         }

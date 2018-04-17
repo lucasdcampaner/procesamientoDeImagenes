@@ -654,4 +654,30 @@ public class Functions {
                                                                 // 4 bordes
         return matrizResult;
     }
+
+    public int[][] applyGaussianFilter(int[][] matrizOriginal, int size, double sigma) {
+
+        int sizeMask = size * 2 + 1;
+        
+        double[][] mascara = new double[sizeMask][sizeMask];
+        
+        for (int x = 0; x < sizeMask; x++) {
+            for (int y = 0; y < sizeMask; y++) {
+                mascara[x][y] = getGaussianValue(x, y, size, sigma);
+            }
+        }
+
+        return null;
+    }
+
+    private double getGaussianValue(int x, int y, int center, double sigma) {
+
+        // G(x,y) = (1/2.π.Ω^2) * e^-[(x^2 + y^2) / 2*Ω^2]
+
+        int x_mascara = x - center;
+        int y_mascara = y - center;
+
+        return (1 / (2 * Math.PI * Math.pow(sigma, 2)))
+                * Math.exp(-((Math.pow(x_mascara, 2) + Math.pow(y_mascara, 2)) / (Math.pow(sigma, 2))));
+    }
 }
