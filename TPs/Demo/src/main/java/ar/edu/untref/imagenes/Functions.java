@@ -445,15 +445,6 @@ public class Functions {
         return imagePlus;
     }
 
-    private double calcularPromedio(int[] array) {
-        double media = 0.0;
-        for (int i = 0; i < array.length; i++) {
-            media = media + array[i];
-        }
-        media = media / array.length;
-        return media;
-    }
-
     private double calcularSumaValores(int[] array) {
         double media = 0.0;
         for (int i = 0; i < array.length; i++) {
@@ -475,7 +466,7 @@ public class Functions {
         int width = matrizOriginal.length;
         int height = matrizOriginal[0].length;
 
-        double multiplier = 1 / (Math.pow(sizeMask, 2.0));
+        double weight = 1 / (Math.pow(sizeMask, 2.0));
 
         for (int i = top; i < width - top; i++) {
             for (int j = top; j < height - top; j++) {
@@ -503,19 +494,19 @@ public class Functions {
                 // ----------------------------------------------
                 // | 50 | 49 | 48 | 47 | 54 | 44 | 51 | 59 | 48 |
                 // ----------------------------------------------
-                int posicion = 0;
+                int position = 0;
                 for (int x = 0; x < mask.length; x++) {
                     for (int y = 0; y < mask[0].length; y++) {
-                        arrayValuesPixels[posicion] = mask[y][x];
-                        posicion++;
+                        arrayValuesPixels[position] = mask[y][x];
+                        position++;
                     }
                 }
 
                 // Realiza el calculo de la media
-                double valorSumados = calcularSumaValores(arrayValuesPixels);
-                int nuevoValorListo = (int) Math.round(multiplier * valorSumados); // 450 * (1/9)
+                double adderValues = calcularSumaValores(arrayValuesPixels);
+                int valuePixel = (int) Math.round(weight * adderValues); // 450 * (1/9)
 
-                matrizResult[i][j] = nuevoValorListo;
+                matrizResult[i][j] = valuePixel;
             }
         }
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
@@ -671,25 +662,78 @@ public class Functions {
 
         int sizeMask = size * 2 + 1;
 
-        double[][] mascara = new double[sizeMask][sizeMask];
+        int top = sizeMask / 2; // control desborde de mascara
+        int width = matrizOriginal.length;
+        int height = matrizOriginal[0].length;
 
-        for (int x = 0; x < sizeMask; x++) {
-            for (int y = 0; y < sizeMask; y++) {
-                mascara[x][y] = getGaussianValue(x, y, size, sigma);
+        int[][] matrizResult = matrizOriginal;
+
+        double[][] mask = new double[sizeMask][sizeMask];
+        double[][] maskWeight = new double[sizeMask][sizeMask];
+
+        for (int i = top; i < width - top; i++) {
+            for (int j = top; j < height - top; j++) {
+
+                // Rellena la mascara con los pesos de la distribucion gaussiana
+
+                // Mascara gaussiana o mascara de pesos
+                // ----------------
+                // | 0.4 | 0.7 | 1.2 |
+                // -------------------
+                // | 0.1 | 0.3 | 0.4 |
+                // -------------------
+                // | 0.6 | 0.2 | 0.8 |
+                // -------------------
+                double adderWeight = 0;
+                for (int x = 0; x < sizeMask; x++) {
+                    for (int y = 0; y < sizeMask; y++) {
+                        double value = getGaussianValue(x, y, size, sigma);
+                        maskWeight[y][x] = value;
+                        adderWeight += value; // suma todos los pesos
+                    }
+                }
+
+                // Rellena la mascara con los valores de la matriz original
+                // multiplicados por los pesos gaussianos
+
+                // Mascara
+                // ----------------------------
+                // | 50*0.4 | 49*0.7 | 48*1.2 |
+                // ----------------------------
+                // | 47*0.1 | 54*0.3 | 44*0.4 |
+                // ----------------------------
+                // | 51*0.6 | 59*0.2 | 48*0.8 |
+                // ----------------------------
+
+                double adderValues = 0;
+                for (int x = 0; x < mask.length; x++) {
+                    for (int y = 0; y < mask[0].length; y++) {
+                        int valueMask = matrizOriginal[i - top + y][j - top + x];
+                        double valueWeight = maskWeight[y][x];
+                        mask[y][x] = valueMask * valueWeight;
+                        adderValues += valueMask * valueWeight; // suma los valores de la mascara
+                    }
+                }
+
+                int valuePixel = (int) Math.round(adderValues / adderWeight); // determina el valor del pixel dividiendo
+                                                                              // la sumatora de valores sobre la
+                                                                              // sumatoria de pesos
+                matrizResult[i][j] = valuePixel;
             }
         }
-
-        return null;
+        matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
+        matrizResult = repeatNPixelsBorder(matrizResult, top); // repito 1 pixel en los 4 bordes
+        return matrizResult;
     }
 
-    private double getGaussianValue(int x, int y, int center, double sigma) {
+    public double getGaussianValue(int x, int y, int center, double sigma) {
 
         // G(x,y) = (1/2.π.Ω^2) * e^-[(x^2 + y^2) / 2*Ω^2]
 
-        int x_mascara = x - center;
-        int y_mascara = y - center;
+        int x_mask = x - center;
+        int y_mask = y - center;
 
         return (1 / (2 * Math.PI * Math.pow(sigma, 2)))
-                * Math.exp(-((Math.pow(x_mascara, 2) + Math.pow(y_mascara, 2)) / (Math.pow(sigma, 2))));
+                * Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
     }
 }

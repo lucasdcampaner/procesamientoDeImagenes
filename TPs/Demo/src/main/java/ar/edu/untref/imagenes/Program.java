@@ -150,8 +150,8 @@ public class Program extends Application {
         MenuItem saltAndPepper = new MenuItem("Salt and pepper");
         saltAndPepper.setOnAction(listenerSaltAndPepper);
 
-        menuNoise.getItems().addAll(noiseGaussiano, noiseGaussianoAditive, noiseRayleigh, noiseRayleighMultiplicative, noiseExponencial,
-                noiseExponencialMultiplicative, saltAndPepper);
+        menuNoise.getItems().addAll(noiseGaussiano, noiseGaussianoAditive, noiseRayleigh, noiseRayleighMultiplicative,
+                noiseExponencial, noiseExponencialMultiplicative, saltAndPepper);
 
         // Menu Suavizado
         Menu menuSuavizado = new Menu("Smoothing");
@@ -161,8 +161,10 @@ public class Program extends Application {
         filtroMediana.setOnAction(listenerFiltroMediana);
         MenuItem filtroMedianaPonderada = new MenuItem("Weighted Medium Filter 3x3");
         filtroMedianaPonderada.setOnAction(listenerFiltroMedianaPonderada);
+        MenuItem gaussianFilter = new MenuItem("Gaussian Filter");
+        gaussianFilter.setOnAction(listenerGaussianFilter);
 
-        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada);
+        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -586,9 +588,9 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerMultiplyImage = new EventHandler<ActionEvent>() { 
+    private EventHandler<ActionEvent> listenerMultiplyImage = new EventHandler<ActionEvent>() {
         @Override
-        public void handle(ActionEvent event) { 
+        public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
                 slider.setVisible(false);
@@ -875,6 +877,21 @@ public class Program extends Application {
                 int[][] matrixAdded = functions.applyFiltroMedianaPonderada(matrix1, 3);
                 setSizeImageViewResult(ui.getImageResult(matrixAdded));
 
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerGaussianFilter = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana", "Ingrese un valor de sigma entre 1 y 10", resultP -> {
+
+                    int[][] matrixAdded = functions.applyGaussianFilter(matrix1, 3, resultP);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
             }
         }
     };
