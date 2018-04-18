@@ -462,52 +462,64 @@ public class Functions {
         return media;
     }
 
-    public int[][] applyFiltroMedia(int[][] matrizOriginal, int tamanoMascara) {
+    public int[][] applyAverageFilter(int[][] matrizOriginal, int sizeMask) {
 
-        // creo mascara para hacer el filtro
-        int[][] mascara = new int[tamanoMascara][tamanoMascara];
+        int[][] mask = new int[sizeMask][sizeMask];
+
         // array para los pixeles tomados de la mascara
-        int[] mascaraOrdena = new int[tamanoMascara * tamanoMascara];
+        int[] arrayValuesPixels = new int[sizeMask * sizeMask];
 
         int[][] matrizResult = matrizOriginal;
 
-        int tope = tamanoMascara / 2; // control desborde de mascara
-        int ancho = matrizOriginal.length;
-        int alto = matrizOriginal[0].length;
-        double multiplicador = 1 / (Math.pow(tamanoMascara, 2.0));
-        for (int i = tope; i < ancho - tope; i++) {
-            for (int j = tope; j < alto - tope; j++) {
-                // for para llenar mascara
-                for (int y = 0; y < mascara.length; y++) {
-                    for (int x = 0; x < mascara[0].length; x++) {
-                        mascara[y][x] = matrizOriginal[i - tope + y][j - tope + x];
+        int top = sizeMask / 2; // control desborde de mascara
+        int width = matrizOriginal.length;
+        int height = matrizOriginal[0].length;
+
+        double multiplier = 1 / (Math.pow(sizeMask, 2.0));
+
+        for (int i = top; i < width - top; i++) {
+            for (int j = top; j < height - top; j++) {
+
+                // Rellena la mascara con los valores de la matriz original
+
+                // Mascara
+                // ----------------
+                // | 50 | 49 | 48 |
+                // ----------------
+                // | 47 | 54 | 44 |
+                // ----------------
+                // | 51 | 59 | 48 |
+                // ----------------
+                for (int x = 0; x < mask.length; x++) {
+                    for (int y = 0; y < mask[0].length; y++) {
+                        int valueMask = matrizOriginal[i - top + y][j - top + x];
+                        mask[y][x] = valueMask;
                     }
                 }
-                // for para llenar array mascaraOrdenada a partir de la mascara
+
+                // Pasa los valores de la mascara a un array
+
+                // Array
+                // ----------------------------------------------
+                // | 50 | 49 | 48 | 47 | 54 | 44 | 51 | 59 | 48 |
+                // ----------------------------------------------
                 int posicion = 0;
-                for (int y = 0; y < mascara.length; y++) {
-                    for (int x = 0; x < mascara[0].length; x++) {
-                        mascaraOrdena[posicion] = mascara[y][x];
+                for (int x = 0; x < mask.length; x++) {
+                    for (int y = 0; y < mask[0].length; y++) {
+                        arrayValuesPixels[posicion] = mask[y][x];
                         posicion++;
                     }
                 }
-                // VERSION ANTERIOR CREO MAL escritura de pixel (i, j ) con
-                // promedio de la mascara
-                // double valorPromedio = calcularPromedio(mascaraOrdena);
-                // matrizResult[i][j] = (int) Math.round(valorPromedio);
 
-                // deberia usar S = (1 / Math.pow(tamanoMascara, 2)) * (I1 a
-                // I(tamanoMascara))
-                double valorSumados = calcularSumaValores(mascaraOrdena);
-                int nuevoValorListo = (int) Math.round(multiplicador * valorSumados);// falta
-                                                                                     // normalizar?
+                // Realiza el calculo de la media
+                double valorSumados = calcularSumaValores(arrayValuesPixels);
+                int nuevoValorListo = (int) Math.round(multiplier * valorSumados); // 450 * (1/9)
+
                 matrizResult[i][j] = nuevoValorListo;
             }
         }
         matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
-        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1
-                                                                // pixel en los
-                                                                // 4 bordes
+        matrizResult = repeatNPixelsBorder(matrizResult, top); // repito 1 pixel en los 4 bordes
         return matrizResult;
     }
 
@@ -658,9 +670,9 @@ public class Functions {
     public int[][] applyGaussianFilter(int[][] matrizOriginal, int size, double sigma) {
 
         int sizeMask = size * 2 + 1;
-        
+
         double[][] mascara = new double[sizeMask][sizeMask];
-        
+
         for (int x = 0; x < sizeMask; x++) {
             for (int y = 0; y < sizeMask; y++) {
                 mascara[x][y] = getGaussianValue(x, y, size, sigma);

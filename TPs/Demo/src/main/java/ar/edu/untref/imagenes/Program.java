@@ -845,7 +845,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyFiltroMedia(matrix1, resultP);
+                    int[][] matrixAdded = functions.applyAverageFilter(matrix1, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
