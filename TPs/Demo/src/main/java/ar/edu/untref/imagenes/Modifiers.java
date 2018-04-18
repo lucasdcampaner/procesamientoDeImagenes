@@ -133,16 +133,14 @@ public class Modifiers {
         int w = firstImage.length;
         int h = firstImage[0].length;
 
-        int[][] matrixAux = new int[w][h];
+        int[][] matrixResult = new int[w][h];
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                for (int k = 0; k < h; k++) {
-                    matrixAux[i][j] += firstImage[i][k] * secondImage[k][j];
-                }
+                matrixResult[i][j] = firstImage[i][j] * secondImage[i][j];
             }
         }
-        return matrixAux;
+        return matrixResult;
     }
 
     public static int[][] scalarByMatrix(int scalar, int[][] matrix) {

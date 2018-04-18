@@ -586,9 +586,9 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerMultiplyImage = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerMultiplyImage = new EventHandler<ActionEvent>() { 
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(ActionEvent event) { 
 
             if (getImageOriginal() != null) {
                 slider.setVisible(false);
