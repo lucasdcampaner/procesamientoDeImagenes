@@ -171,4 +171,30 @@ public class Dialogs {
         listenerDialog.accept(valor);
 
     }
+
+    public static void showConfigureOneParameter(String title, String message,
+            ListenerResultDialogs<Double[]> listenerResultDialogs) {
+
+        Double valor = null;
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(title);
+        dialog.setHeaderText(message);
+        do {
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                valor = Double.valueOf(result.get());
+            }
+        } while (valor <= 0.0 || valor >= 1.0);
+        Double[] array = new Double[2];
+        Double ingresado = valor;
+        if (ingresado <= 0.5f) {
+            array[0] = ingresado;
+            array[1] = 1 - ingresado;
+        } else {
+            array[0] = 1 - ingresado;
+            array[1] = ingresado;
+        }
+        listenerResultDialogs.accept(array);
+    }
 }

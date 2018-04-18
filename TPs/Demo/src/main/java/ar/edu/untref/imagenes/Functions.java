@@ -418,7 +418,7 @@ public class Functions {
         return matrixResult;
     }
 
-    public int[][] applySaltAndPepper(int[][] matrix, List<int[]> pixelsSelected, int p1, int p2) {
+    public int[][] applySaltAndPepper(int[][] matrix, List<int[]> pixelsSelected, double p1, double p2) {
 
         int[][] matrixResult = matrix;
 

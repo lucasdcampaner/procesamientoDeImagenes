@@ -791,10 +791,10 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(resultP -> {
                     pixels_Selected = functions.getPixelsToContaminate(matrix1, resultP);
                 });
-                Dialogs.showConfigureTwoParameters("Distribución Sal y pimienta",
-                        "Ingrese valores de p1 y p2 entre 0 y 1.\n\nSiendo p1 < p2", "P1", "P2", result -> {
+                Dialogs.showConfigureOneParameter("Distribución Sal y pimienta",
+                        "Ingrese el valor de p1 entre 0 y 1 (p2 será: 1-p1).\n", result -> {
                             int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixels_Selected,
-                                    result[0].intValue(), result[1].intValue());
+                                    result[0].doubleValue(), result[1].doubleValue());
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
             }
@@ -887,11 +887,12 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana", "Ingrese un valor de sigma entre 1 y 10", resultP -> {
+                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana",
+                        "Ingrese un valor de sigma entre 1 y 10", resultP -> {
 
-                    int[][] matrixAdded = functions.applyGaussianFilter(matrix1, 3, resultP);
-                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
-                });
+                            int[][] matrixAdded = functions.applyGaussianFilter(matrix1, 3, resultP);
+                            setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                        });
             }
         }
     };
