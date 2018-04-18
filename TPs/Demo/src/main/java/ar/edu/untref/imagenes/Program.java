@@ -163,8 +163,13 @@ public class Program extends Application {
         filtroMedianaPonderada.setOnAction(listenerFiltroMedianaPonderada);
         MenuItem gaussianFilter = new MenuItem("Gaussian Filter");
         gaussianFilter.setOnAction(listenerGaussianFilter);
+        MenuItem filtroPasaAltos = new MenuItem("Pasa Altos Filter 3x3");
+        filtroPasaAltos.setOnAction(listenerFiltroPasaAltos);
+        MenuItem filtroPrewitt = new MenuItem("Prewitt Filter 3x3");
+        filtroPrewitt.setOnAction(listenerFiltroPrewitt);
 
-        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter);
+        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
+                filtroPasaAltos, filtroPrewitt);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -874,9 +879,43 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixAdded = functions.applyFiltroMedianaPonderada(matrix1, 3);
+                int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
+                int[][] matrixAdded = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
+                        matrizDePonderacion);
                 setSizeImageViewResult(ui.getImageResult(matrixAdded));
+            }
+        }
+    };
 
+    private EventHandler<ActionEvent> listenerFiltroPasaAltos = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrizDePonderacion = { { -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 } };
+                int[][] matrixAdded = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
+                        matrizDePonderacion);
+                setSizeImageViewResult(ui.getImageResult(matrixAdded));
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerFiltroPrewitt = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrizDePonderacionH = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+                int[][] matrixAddedH = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
+                        matrizDePonderacionH);
+                int[][] matrizDePonderacionV = { { -1, -1, -1 }, { 0, 0, 0 }, { 1, 1, 1 } };
+                int[][] matrixAddedV = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
+                        matrizDePonderacionV);
+                int[][] matrixAddedFusionada = Modifiers.addImage(matrixAddedH, matrixAddedV);
+                matrixAddedFusionada = functions.normalizeMatrix(matrixAddedFusionada);
+                setSizeImageViewResult(ui.getImageResult(matrixAddedFusionada));
             }
         }
     };

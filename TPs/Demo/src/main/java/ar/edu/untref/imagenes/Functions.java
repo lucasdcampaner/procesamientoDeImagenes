@@ -607,10 +607,11 @@ public class Functions {
         return matrizResult;
     }
 
-    public int[][] applyFiltroMedianaPonderada(int[][] matrizOriginal, int tamanoMascara) {
+    public int[][] applyFiltroEstiloMedianaConMatrizPonderada(int[][] matrizOriginal, int tamanoMascara,
+            int[][] matrizDePonderacion) {
 
         // me piden de 3 x 3
-        int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
+        // int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
         // creo mascara para hacer el filtro
         int[][] mascara = new int[tamanoMascara][tamanoMascara];
         // array para los pixeles tomados de la mascara, y seran ordenados
@@ -735,5 +736,10 @@ public class Functions {
 
         return (1 / (2 * Math.PI * Math.pow(sigma, 2)))
                 * Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
+    }
+
+    public int[][] applyFiltroPasaAltos(int[][] matrix1, int i) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
