@@ -219,21 +219,21 @@ public class Modifiers {
         return matrixAux;
     }
 
-    public static int[][] calcularGradiente(int[][] matrixAddedH, int[][] matrixAddedV) {
+    public static int[][] calculateGradient(int[][] matrixDX, int[][] matrixDY) {
 
         double valueXMag = 0;
         double valueYMag = 0;
         double magnitudeValue = 0;
 
-        int w = matrixAddedH.length;
-        int h = matrixAddedH[0].length;
+        int w = matrixDX.length;
+        int h = matrixDX[0].length;
 
         int[][] matrixAux = new int[w][h];
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                valueXMag = (double) Math.pow(matrixAddedH[i][j], 2);
-                valueYMag = (double) Math.pow(matrixAddedV[i][j], 2);
+                valueXMag = (double) Math.pow(matrixDX[i][j], 2);
+                valueYMag = (double) Math.pow(matrixDY[i][j], 2);
                 magnitudeValue = (double) Math.sqrt(valueXMag + valueYMag);
                 matrixAux[i][j] = (int) Math.round(magnitudeValue);
             }

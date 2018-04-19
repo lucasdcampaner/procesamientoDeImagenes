@@ -880,8 +880,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-                int[][] matrixAdded = functions.applyWeightedMedianFilter(matrix1, 3,
-                        matrizDePonderacion);
+                int[][] matrixAdded = functions.applyWeightedMedianFilter(matrix1, 3, matrizDePonderacion);
                 setSizeImageViewResult(ui.getImageResult(matrixAdded));
             }
         }
@@ -902,20 +901,17 @@ public class Program extends Application {
     };
 
     private EventHandler<ActionEvent> listenerFiltroPrewitt = new EventHandler<ActionEvent>() {
+
         @Override
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
 
-                // int[][] matrizDePonderacionH = {{ -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                // int[][] matrixAddedH = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
-                // matrizDePonderacionH, 0);
-                // int[][] matrizDePonderacionV = { { -1, -1, -1 }, { 0, 0, 0 }, { 1, 1, 1 } };
-                // int[][] matrixAddedV = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
-                // matrizDePonderacionV, 0);
-                // int[][] matrixAddedFusionada = Modifiers.calcularGradiente(matrixAddedH, matrixAddedV);
-                // matrixAddedFusionada = functions.normalizeMatrix(matrixAddedFusionada);
-                // setSizeImageViewResult(ui.getImageResult(matrixAddedFusionada));
+                int[][] matrixDX = functions.applyPrewitFilter(matrix1, true);
+                int[][] matrixDY = functions.applyPrewitFilter(matrix1, false);
+                
+                int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
+                setSizeImageViewResult(ui.getImageResult(matrixResult));
             }
         }
     };

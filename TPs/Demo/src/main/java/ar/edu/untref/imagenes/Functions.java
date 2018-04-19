@@ -606,8 +606,7 @@ public class Functions {
         return matrizResult;
     }
 
-    public int[][] applyWeightedMedianFilter(int[][] matrizOriginal, int tamanoMascara,
-            int[][] matrizDePonderacion) {
+    public int[][] applyWeightedMedianFilter(int[][] matrizOriginal, int tamanoMascara, int[][] matrizDePonderacion) {
 
         // creo mascara para hacer el filtro
         int[][] mascara = new int[tamanoMascara][tamanoMascara];
@@ -622,7 +621,7 @@ public class Functions {
 
         for (int i = tope; i < ancho - tope; i++) {
             for (int j = tope; j < alto - tope; j++) {
-                
+
                 // for para llenar mascara
                 for (int y = 0; y < mascara.length; y++) {
                     for (int x = 0; x < mascara[0].length; x++) {
@@ -630,7 +629,7 @@ public class Functions {
                     }
                 }
                 mascara = Modifiers.multiplyEspecial(mascara, matrizDePonderacion);
-                
+
                 // for para llenar array mascaraOrdenada a partir de la mascara
                 int posicion = 0;
                 for (int y = 0; y < mascara.length; y++) {
@@ -680,7 +679,7 @@ public class Functions {
                 for (int x = 0; x < sizeMask; x++) {
                     for (int y = 0; y < sizeMask; y++) {
                         double value = getGaussianValue(x, y, size, sigma);
-                        maskWeight[y][x] = value;
+                        maskWeight[x][y] = value;
                         adderWeight += value; // suma todos los pesos
                     }
                 }
@@ -700,9 +699,9 @@ public class Functions {
                 double adderValues = 0;
                 for (int x = 0; x < mask.length; x++) {
                     for (int y = 0; y < mask[0].length; y++) {
-                        int valueMask = matrizOriginal[i - top + y][j - top + x];
-                        double valueWeight = maskWeight[y][x];
-                        mask[y][x] = valueMask * valueWeight;
+                        int valueMask = matrizOriginal[i - top + x][j - top + y];
+                        double valueWeight = maskWeight[x][y];
+                        mask[x][y] = valueMask * valueWeight;
                         adderValues += valueMask * valueWeight; // suma los valores de la mascara
                     }
                 }
@@ -727,6 +726,56 @@ public class Functions {
 
         return (1 / (2 * Math.PI * Math.pow(sigma, 2)))
                 * Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
+    }
+
+    public int[][] applyPrewitFilter(int[][] matrizOriginal, boolean derivateX) {
+
+        int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+
+        int top = 1; // control desborde de mascara
+        int width = matrizOriginal.length;
+        int height = matrizOriginal[0].length;
+
+        int[][] matrixResult = new int[width][height];
+
+        for (int i = top; i < width - top; i++) {
+            for (int j = top; j < height - top; j++) {
+
+                // Rellena la mascara con los valores de la matriz original
+                // multiplicados por los pesos de la derivada en X (dx)
+
+                // Mascara
+                // -----------------------------
+                // | 50 * -1 | 49 * 0 | 48 * 1 |
+                // -----------------------------
+                // | 43 * -1 | 55 * 0 | 40 * 1 |
+                // -----------------------------
+                // | 53 * -1 | 54 * 0 | 41 * 1 |
+                // -----------------------------
+
+                int adderValues = 0;
+                for (int x = 0; x < matrixWeight.length; x++) {
+                    for (int y = 0; y < matrixWeight[0].length; y++) {
+
+                        int valueMask = matrizOriginal[i - top + x][j - top + y];
+                        int valueWeight;
+                        if (derivateX) {
+                            valueWeight = matrixWeight[x][y];
+                        } else {
+                            valueWeight = matrixWeight[y][x];
+                        }
+
+                        adderValues += valueMask * valueWeight; // suma los valores de la mascara
+                    }
+                }
+
+                int valuePixel = (int) Math.round(adderValues);
+                matrixResult[i][j] = valuePixel;
+            }
+        }
+
+        matrixResult = repeatNPixelsBorder(matrixResult, top); // repito 1 pixel en los 4 bordes
+        return matrixResult;
     }
 
     public int[][] applyFiltroPasaAltos(int[][] matrix1, int i) {
