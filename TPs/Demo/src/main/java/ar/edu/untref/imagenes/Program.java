@@ -215,8 +215,7 @@ public class Program extends Application {
         HBox layoutImagesViews = new HBox();
 
         // Imagen original
-        layoutImageOriginal = new VBox();// ex HBox
-        // layoutImageOriginal = new HBox();
+        layoutImageOriginal = new VBox();
         layoutImageOriginal.setMinWidth(stage.getWidth() / 2);
         layoutImageOriginal.setMaxWidth(stage.getWidth() / 2);
         layoutImageOriginal.setMinHeight(600);
@@ -439,7 +438,7 @@ public class Program extends Application {
 
     private EventHandler<ActionEvent> listenerGrayHistogram = new EventHandler<ActionEvent>() {
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(ActionEvent event) { 
 
             if (getImageOriginal() != null) {
                 int[] valores = Modifiers.computeGrayHistogram(matrix1);
@@ -909,7 +908,7 @@ public class Program extends Application {
 
                 int[][] matrixDX = functions.applyPrewitFilter(matrix1, true);
                 int[][] matrixDY = functions.applyPrewitFilter(matrix1, false);
-                
+
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
             }
