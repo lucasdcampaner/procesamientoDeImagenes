@@ -501,7 +501,6 @@ public class Functions {
                         position++;
                     }
                 }
-
                 // Realiza el calculo de la media
                 double adderValues = calcularSumaValores(arrayValuesPixels);
                 int valuePixel = (int) Math.round(weight * adderValues); // 450 * (1/9)
@@ -608,15 +607,13 @@ public class Functions {
     }
 
     public int[][] applyFiltroEstiloMedianaConMatrizPonderada(int[][] matrizOriginal, int tamanoMascara,
-            int[][] matrizDePonderacion) {
+            int[][] matrizDePonderacion, int calcularSoloFiltroMedianaPonderada) {
 
-        // me piden de 3 x 3
-        // int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
         // creo mascara para hacer el filtro
         int[][] mascara = new int[tamanoMascara][tamanoMascara];
         // array para los pixeles tomados de la mascara, y seran ordenados
         int[] mascaraOrdena = new int[tamanoMascara * tamanoMascara];
-
+        double peso = 1 / (Math.pow(tamanoMascara, 2.0));
         int[][] matrizResult = matrizOriginal;
 
         int tope = tamanoMascara / 2; // control desborde de mascara
@@ -631,10 +628,7 @@ public class Functions {
                         mascara[y][x] = matrizOriginal[i - tope + y][j - tope + x];
                     }
                 }
-                // System.out.println(Arrays.deepToString(mascara));
                 mascara = Modifiers.multiplyEspecial(mascara, matrizDePonderacion);
-                // System.out.println(Arrays.deepToString(mascara));
-
                 // for para llenar array mascaraOrdenada a partir de la mascara
                 int posicion = 0;
                 for (int y = 0; y < mascara.length; y++) {
@@ -643,19 +637,22 @@ public class Functions {
                         posicion++;
                     }
                 }
-                // for (int x=0; x<mascaraOrdena.length; x++)
-                // System.out.print(mascaraOrdena[x] + ", ");
-                Arrays.sort(mascaraOrdena);
-                // escritura de pixel con la mediana de la mascara
-                matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
+                if (calcularSoloFiltroMedianaPonderada == 1) {
+                    Arrays.sort(mascaraOrdena);
+                    // escritura de pixel con la mediana de la mascara
+                    matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
+                } else {
+                    // Realiza el calculo de la media (tomado de applyAverageFilter)
+                    double adderValues = calcularSumaValores(mascaraOrdena);
+                    int valuePixel = (int) Math.round(peso * adderValues); // 450 * (1/9)
+                    matrizResult[i][j] = valuePixel;
+                }
             }
         }
-
-        matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
-        // System.out.println(Arrays.deepToString(matrizResult));
-        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito 1
-                                                                // pixel en los
-                                                                // 4 bordes
+        if (calcularSoloFiltroMedianaPonderada == 1) {
+            matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
+        }
+        matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito n pixeles en los 4 bordes
         return matrizResult;
     }
 
