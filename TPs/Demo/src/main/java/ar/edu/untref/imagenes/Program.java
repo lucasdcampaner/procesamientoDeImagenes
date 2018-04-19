@@ -163,9 +163,9 @@ public class Program extends Application {
         filtroMedianaPonderada.setOnAction(listenerFiltroMedianaPonderada);
         MenuItem gaussianFilter = new MenuItem("Gaussian Filter");
         gaussianFilter.setOnAction(listenerGaussianFilter);
-        MenuItem filtroPasaAltos = new MenuItem("Pasa Altos Filter 3x3");
+        MenuItem filtroPasaAltos = new MenuItem("High Pass Filter");
         filtroPasaAltos.setOnAction(listenerFiltroPasaAltos);
-        MenuItem filtroPrewitt = new MenuItem("Prewitt Filter 3x3");
+        MenuItem filtroPrewitt = new MenuItem("Prewitt Filter");
         filtroPrewitt.setOnAction(listenerFiltroPrewitt);
 
         menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
@@ -438,7 +438,7 @@ public class Program extends Application {
 
     private EventHandler<ActionEvent> listenerGrayHistogram = new EventHandler<ActionEvent>() {
         @Override
-        public void handle(ActionEvent event) { 
+        public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
                 int[] valores = Modifiers.computeGrayHistogram(matrix1);
@@ -891,10 +891,9 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                // int[][] matrizDePonderacion = { { -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 } };
-                // int[][] matrixAdded = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
-                // matrizDePonderacion, 0);
-                // setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                int[][] matrixResult = functions.applyHighPassFilter(matrix1);
+                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
             }
         }
     };
@@ -910,7 +909,8 @@ public class Program extends Application {
                 int[][] matrixDY = functions.applyPrewitFilter(matrix1, false);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
-                setSizeImageViewResult(ui.getImageResult(matrixResult));
+                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
             }
         }
     };
