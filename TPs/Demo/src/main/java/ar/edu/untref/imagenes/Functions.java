@@ -606,14 +606,14 @@ public class Functions {
         return matrizResult;
     }
 
-    public int[][] applyFiltroEstiloMedianaConMatrizPonderada(int[][] matrizOriginal, int tamanoMascara,
-            int[][] matrizDePonderacion, int calcularSoloFiltroMedianaPonderada) {
+    public int[][] applyWeightedMedianFilter(int[][] matrizOriginal, int tamanoMascara,
+            int[][] matrizDePonderacion) {
 
         // creo mascara para hacer el filtro
         int[][] mascara = new int[tamanoMascara][tamanoMascara];
         // array para los pixeles tomados de la mascara, y seran ordenados
         int[] mascaraOrdena = new int[tamanoMascara * tamanoMascara];
-        double peso = 1 / (Math.pow(tamanoMascara, 2.0));
+
         int[][] matrizResult = matrizOriginal;
 
         int tope = tamanoMascara / 2; // control desborde de mascara
@@ -622,6 +622,7 @@ public class Functions {
 
         for (int i = tope; i < ancho - tope; i++) {
             for (int j = tope; j < alto - tope; j++) {
+                
                 // for para llenar mascara
                 for (int y = 0; y < mascara.length; y++) {
                     for (int x = 0; x < mascara[0].length; x++) {
@@ -629,6 +630,7 @@ public class Functions {
                     }
                 }
                 mascara = Modifiers.multiplyEspecial(mascara, matrizDePonderacion);
+                
                 // for para llenar array mascaraOrdenada a partir de la mascara
                 int posicion = 0;
                 for (int y = 0; y < mascara.length; y++) {
@@ -637,21 +639,13 @@ public class Functions {
                         posicion++;
                     }
                 }
-                if (calcularSoloFiltroMedianaPonderada == 1) {
-                    Arrays.sort(mascaraOrdena);
-                    // escritura de pixel con la mediana de la mascara
-                    matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
-                } else {
-                    // Realiza el calculo de la media (tomado de applyAverageFilter)
-                    double adderValues = calcularSumaValores(mascaraOrdena);
-                    int valuePixel = (int) Math.round(peso * adderValues); // 450 * (1/9)
-                    matrizResult[i][j] = valuePixel;
-                }
+
+                Arrays.sort(mascaraOrdena);
+                matrizResult[i][j] = mascaraOrdena[(int) Math.ceil(mascaraOrdena.length / 2)];
             }
         }
-        if (calcularSoloFiltroMedianaPonderada == 1) {
-            matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
-        }
+
+        matrizResult = normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
         matrizResult = repeatNPixelsBorder(matrizResult, tope); // repito n pixeles en los 4 bordes
         return matrizResult;
     }
@@ -714,7 +708,7 @@ public class Functions {
                 }
 
                 int valuePixel = (int) Math.round(adderValues / adderWeight); // determina el valor del pixel dividiendo
-                                                                              // la sumatora de valores sobre la
+                                                                              // la sumatoria de valores sobre la
                                                                               // sumatoria de pesos
                 matrizResult[i][j] = valuePixel;
             }

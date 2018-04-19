@@ -880,8 +880,8 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-                int[][] matrixAdded = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
-                        matrizDePonderacion, 1);
+                int[][] matrixAdded = functions.applyWeightedMedianFilter(matrix1, 3,
+                        matrizDePonderacion);
                 setSizeImageViewResult(ui.getImageResult(matrixAdded));
             }
         }
@@ -893,10 +893,10 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrizDePonderacion = { { -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 } };
-                int[][] matrixAdded = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
-                        matrizDePonderacion, 0);
-                setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                // int[][] matrizDePonderacion = { { -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 } };
+                // int[][] matrixAdded = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
+                // matrizDePonderacion, 0);
+                // setSizeImageViewResult(ui.getImageResult(matrixAdded));
             }
         }
     };
@@ -907,15 +907,15 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrizDePonderacionH = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixAddedH = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
-                        matrizDePonderacionH, 0);
-                int[][] matrizDePonderacionV = { { -1, -1, -1 }, { 0, 0, 0 }, { 1, 1, 1 } };
-                int[][] matrixAddedV = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
-                        matrizDePonderacionV, 0);
-                int[][] matrixAddedFusionada = Modifiers.calcularGradiente(matrixAddedH, matrixAddedV);
-                matrixAddedFusionada = functions.normalizeMatrix(matrixAddedFusionada);
-                setSizeImageViewResult(ui.getImageResult(matrixAddedFusionada));
+                // int[][] matrizDePonderacionH = {{ -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+                // int[][] matrixAddedH = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
+                // matrizDePonderacionH, 0);
+                // int[][] matrizDePonderacionV = { { -1, -1, -1 }, { 0, 0, 0 }, { 1, 1, 1 } };
+                // int[][] matrixAddedV = functions.applyFiltroEstiloMedianaConMatrizPonderada(matrix1, 3,
+                // matrizDePonderacionV, 0);
+                // int[][] matrixAddedFusionada = Modifiers.calcularGradiente(matrixAddedH, matrixAddedV);
+                // matrixAddedFusionada = functions.normalizeMatrix(matrixAddedFusionada);
+                // setSizeImageViewResult(ui.getImageResult(matrixAddedFusionada));
             }
         }
     };
