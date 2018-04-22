@@ -174,7 +174,7 @@ public class Program extends Application {
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
         MenuItem generateSyntheticImagesRayleigh = new MenuItem("Rayleigh (phi = 25)");
-        MenuItem generateSyntheticImagesSaltAndPepper = new MenuItem("Salt and pepper (p1 = 0.5; p2 = 0.6)");
+        MenuItem generateSyntheticImagesSaltAndPepper = new MenuItem("Salt and pepper (p1 = 0.1; p2 = 0.9)");
         MenuItem generateSyntheticImagesGaussian = new MenuItem("Gaussian (mean = 127; desviation = 25)");
         MenuItem generateSyntheticImagesExponential = new MenuItem("Exponential (lambda = 0.05)");
         generateSyntheticImagesRayleigh.setOnAction(listenerGenerateSyntheticImagesRayleigh);
@@ -827,8 +827,8 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             int originalValue = 255;
-            double p1 = 0.5;
-            double p2 = 0.6;
+            double p1 = 0.1;
+            double p2 = 0.9;
             int[][] matrixSaltAndPepper = generatorOfSyntheticImages.generateMatrixSaltAndPepper(originalValue, p1, p2);
             setSizeImageViewOriginal(ui.getImageResult(matrixSaltAndPepper));
         }
