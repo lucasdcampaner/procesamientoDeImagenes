@@ -175,17 +175,17 @@ public class Program extends Application {
         generateSyntheticImagesSaltAndPepper.setOnAction(listenerGenerateSyntheticImagesSaltAndPepper);
         generateSyntheticImagesGaussian.setOnAction(listenerGenerateSyntheticImagesGaussian);
         generateSyntheticImagesExponential.setOnAction(listenerGenerateSyntheticImagesExponential);
-        
+
         menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper,
                 generateSyntheticImagesGaussian, generateSyntheticImagesExponential);
-        
+
         // Menu deteccion de bordes
         Menu menuBorderDetection = new Menu("Border detection");
         MenuItem prewitt = new MenuItem("Prewitt");
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
         prewitt.setOnAction(listenerPrewitt);
         highPassFilter.setOnAction(listenerHighPassFilter);
-        
+
         menuBorderDetection.getItems().addAll(prewitt, highPassFilter);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
@@ -196,7 +196,7 @@ public class Program extends Application {
 
     private Scene createWindow() {
 
-        Scene scene = new Scene(new VBox(), 800, 300);
+        Scene scene = new Scene(new VBox(), 600, 600);
         scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
         Screen screen = Screen.getPrimary();
@@ -206,6 +206,7 @@ public class Program extends Application {
         stage.setY(bounds.getMinY());
         stage.setWidth(bounds.getWidth());
         stage.setHeight(bounds.getHeight());
+
         stage.setTitle("Procesamiento de imágenes");
 
         return scene;
@@ -267,14 +268,24 @@ public class Program extends Application {
 
         layoutImageResult.getChildren().add(imageViewResult);
 
+        VBox layoutButton1 = new VBox();
+        layoutButton1.getStyleClass().add("layout-button");
+        Button buttonCopyImage = new Button("Copy image");
+        buttonCopyImage.setOnAction(listenerCopyImage);
+        buttonCopyImage.getStyleClass().add("button-switch");
+        layoutButton1.getChildren().add(buttonCopyImage);
+
+        VBox layoutButton2 = new VBox();
+        layoutButton2.getStyleClass().add("layout-button");
         Button buttonSwitch = new Button("Exchange image");
         buttonSwitch.getStyleClass().add("button-switch");
         buttonSwitch.setOnAction(listenerSwitchImage);
+        layoutButton2.getChildren().add(buttonSwitch);
 
-        VBox layoutButton = new VBox();
+        HBox layoutButton = new HBox();
         layoutButton.setMinWidth(stage.getWidth());
-        layoutButton.getStyleClass().add("layout-button");
-        layoutButton.getChildren().add(buttonSwitch);
+        layoutButton.getStyleClass().add("layout-buttons");
+        layoutButton.getChildren().addAll(layoutButton1, layoutButton2);
 
         layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
@@ -410,7 +421,7 @@ public class Program extends Application {
         imageViewResult.setImage(image);
 
         layoutImageResult.getChildren().add(imageViewResult);
-        
+
         ImagePlus imagePlus = null;
         try {
             imagePlus = functions.getImagePlusFromImage(this.imageOriginal, "main_image");
@@ -419,6 +430,27 @@ public class Program extends Application {
         }
         int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
         matrix1 = matrixImageResult;
+    }
+
+    private void copyImageNewWindow() {
+
+        int w = (int) getImageOriginal().getWidth();
+        int h = (int) getImageOriginal().getHeight();
+
+        // Imagen original
+        ImageView imageView = new ImageView();
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(w);
+        imageView.setFitHeight(h);
+        imageView.setImage(getImageOriginal());
+
+        Scene scene = new Scene(new VBox(), w, h);
+        ((VBox) scene.getRoot()).getChildren().add(imageView);
+
+        Stage stage = new Stage();
+        stage.setTitle("Copia de la imagen principal");
+        stage.setScene(scene);
+        stage.show();
     }
 
     private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -487,6 +519,17 @@ public class Program extends Application {
             if (imageViewResult.getImage() != null) {
                 imageResult = imageViewResult.getImage();
                 setSizeImageViewOriginal(imageResult);
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerCopyImage = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                copyImageNewWindow();
             }
         }
     };

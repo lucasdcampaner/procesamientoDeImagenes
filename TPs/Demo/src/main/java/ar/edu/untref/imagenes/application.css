@@ -41,6 +41,10 @@
 	-fx-padding: 10px;
 }
 
-.layout-button { 
+.layout-buttons { 
 	-fx-alignment: center;	
+}
+
+.layout-button { 
+	-fx-padding: 10px;	
 }
