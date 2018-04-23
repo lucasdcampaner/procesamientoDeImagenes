@@ -407,6 +407,15 @@ public class Program extends Application {
         imageViewResult.setImage(image);
 
         layoutImageResult.getChildren().add(imageViewResult);
+        
+        ImagePlus imagePlus = null;
+        try {
+            imagePlus = functions.getImagePlusFromImage(this.imageOriginal, "main_image");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
+        matrix1 = matrixImageResult;
     }
 
     private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
