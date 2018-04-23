@@ -486,7 +486,9 @@ public class Program extends Application {
                 @Override
                 public void accept(String[] result) {
                     Image image = functions.openRAW(Integer.valueOf(result[0]), Integer.valueOf(result[1]));
-                    setSizeImageViewOriginal(image);
+                    if (image != null) {
+                        setSizeImageViewOriginal(image);
+                    }
                 };
             });
         }
@@ -496,7 +498,9 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             Image image = functions.openImage(true);
-            setSizeImageViewOriginal(image);
+            if (image != null) {
+                setSizeImageViewOriginal(image);
+            }
         }
     };
 
