@@ -163,13 +163,7 @@ public class Program extends Application {
         filtroMedianaPonderada.setOnAction(listenerFiltroMedianaPonderada);
         MenuItem gaussianFilter = new MenuItem("Gaussian Filter");
         gaussianFilter.setOnAction(listenerGaussianFilter);
-        MenuItem filtroPasaAltos = new MenuItem("High Pass Filter");
-        filtroPasaAltos.setOnAction(listenerFiltroPasaAltos);
-        MenuItem filtroPrewitt = new MenuItem("Prewitt Filter");
-        filtroPrewitt.setOnAction(listenerFiltroPrewitt);
-
-        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
-                filtroPasaAltos, filtroPrewitt);
+        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -181,12 +175,21 @@ public class Program extends Application {
         generateSyntheticImagesSaltAndPepper.setOnAction(listenerGenerateSyntheticImagesSaltAndPepper);
         generateSyntheticImagesGaussian.setOnAction(listenerGenerateSyntheticImagesGaussian);
         generateSyntheticImagesExponential.setOnAction(listenerGenerateSyntheticImagesExponential);
-
+        
         menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper,
                 generateSyntheticImagesGaussian, generateSyntheticImagesExponential);
+        
+        // Menu deteccion de bordes
+        Menu menuBorderDetection = new Menu("Border detection");
+        MenuItem prewitt = new MenuItem("Prewitt");
+        MenuItem highPassFilter = new MenuItem("High Pass Filter");
+        prewitt.setOnAction(listenerPrewitt);
+        highPassFilter.setOnAction(listenerHighPassFilter);
+        
+        menuBorderDetection.getItems().addAll(prewitt, highPassFilter);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
-                menuSuavizado, menuSyntheticImages);
+                menuSuavizado, menuSyntheticImages, menuBorderDetection);
 
         return menuBar;
     }
@@ -896,7 +899,7 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerFiltroPasaAltos = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerHighPassFilter = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
 
@@ -909,7 +912,7 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerFiltroPrewitt = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerPrewitt = new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent event) {
