@@ -702,8 +702,7 @@ public class Program extends Application {
                             "Desviación estandar", "Media", resultGuassian -> {
                                 int[][] matrixResult = functions.applyGaussian(matrix1, pixelsSelected,
                                         resultGuassian[0], resultGuassian[1], true);
-
-                                int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                                int[][] imageNormalized = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(imageNormalized));
                             });
                 });
@@ -738,7 +737,6 @@ public class Program extends Application {
                     Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
                             "Ingrese un phi entre 0 y 255", phi -> {
                                 int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi, true);
-
                                 int[][] imageNormalized = functions.dinamicRange(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(imageNormalized));
                             });
