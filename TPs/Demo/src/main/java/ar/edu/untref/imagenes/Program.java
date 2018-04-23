@@ -285,7 +285,7 @@ public class Program extends Application {
         HBox layoutButton = new HBox();
         layoutButton.setMinWidth(stage.getWidth());
         layoutButton.getStyleClass().add("layout-buttons");
-        layoutButton.getChildren().addAll(layoutButton1, layoutButton2);
+        layoutButton.getChildren().addAll(layoutButton2, layoutButton1);
 
         layoutImagesViews.getChildren().addAll(layoutImageOriginal, layoutImageResult);
 
@@ -434,15 +434,15 @@ public class Program extends Application {
 
     private void copyImageNewWindow() {
 
-        int w = (int) getImageOriginal().getWidth();
-        int h = (int) getImageOriginal().getHeight();
+        int w = (int) imageViewResult.getImage().getWidth();
+        int h = (int) imageViewResult.getImage().getHeight();
 
         // Imagen original
         ImageView imageView = new ImageView();
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(w);
         imageView.setFitHeight(h);
-        imageView.setImage(getImageOriginal());
+        imageView.setImage(imageViewResult.getImage());
 
         Scene scene = new Scene(new VBox(), w, h);
         ((VBox) scene.getRoot()).getChildren().add(imageView);
@@ -528,7 +528,7 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            if (getImageOriginal() != null) {
+            if (imageViewResult.getImage() != null) {
                 copyImageNewWindow();
             }
         }
