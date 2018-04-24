@@ -143,13 +143,13 @@ public class Dialogs {
         Double valor = null;
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Contraste Función Gamma");
-        dialog.setHeaderText("Ingrese el valor de gamma (distinto a 1 y entre (0,2))");
+        dialog.setHeaderText("Ingrese el valor de gamma entre (0 y 2), distinto de 1");
         do {
             Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 valor = Double.valueOf(result.get());
             }
-        } while (valor <= 0.0 || valor >= 2.0 || valor == 1.0);
+        } while (valor <= 0.0 || valor >= 2.0);
 
         listenerDialog.accept(valor);
 
