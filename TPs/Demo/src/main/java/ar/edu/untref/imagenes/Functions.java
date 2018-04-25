@@ -649,7 +649,7 @@ public class Functions {
         return matrizResult;
     }
 
-    public int[][] applyGaussianFilter(int[][] matrizOriginal, int size, double sigma) {
+    public int[][] applyGaussianFilter(int[][] matrizOriginal, int size, double sigma) { 
 
         int sizeMask = size * 2 + 1;
 
@@ -735,7 +735,7 @@ public class Functions {
         int top = 1; // control desborde de mascara
         int width = matrizOriginal.length;
         int height = matrizOriginal[0].length;
-
+        
         int[][] matrixResult = new int[width][height];
 
         for (int i = top; i < width - top; i++) {

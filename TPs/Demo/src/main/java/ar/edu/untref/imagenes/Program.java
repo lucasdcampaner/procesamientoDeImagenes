@@ -182,11 +182,15 @@ public class Program extends Application {
         // Menu deteccion de bordes
         Menu menuBorderDetection = new Menu("Border detection");
         MenuItem prewitt = new MenuItem("Prewitt");
+        MenuItem prewittX = new MenuItem("Prewitt Horizontal");
+        MenuItem prewittY = new MenuItem("Prewitt Vertical");
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
         prewitt.setOnAction(listenerPrewitt);
+        prewittX.setOnAction(listenerPrewittX);
+        prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
 
-        menuBorderDetection.getItems().addAll(prewitt, highPassFilter);
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection);
@@ -967,6 +971,36 @@ public class Program extends Application {
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerPrewittX = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrixDX = functions.applyPrewitFilter(matrix1, true);
+
+                int[][] normalizedMatrix = functions.normalizeMatrix(matrixDX);
+                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerPrewittY = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrixDY = functions.applyPrewitFilter(matrix1, false);
+
+                int[][] normalizedMatrix = functions.normalizeMatrix(matrixDY);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
             }
         }
