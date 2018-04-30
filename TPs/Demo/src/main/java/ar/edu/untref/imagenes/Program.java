@@ -372,7 +372,7 @@ public class Program extends Application {
                     ImagePlus imagePlus;
                     try {
                         imagePlus = functions.getImagePlusFromImage(imageResult, "cut_image");
-                        int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
+                        int[][] matrixImageResult = getGrayMatrix(imagePlus);
                         numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrixImageResult)));
                         averageLevelsOfGrayValue
                                 .setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
@@ -384,6 +384,10 @@ public class Program extends Application {
         });
 
         return layoutInfo;
+    }
+    
+    private int[][] getGrayMatrix(ImagePlus imagePlus) {
+        return functions.getMatrixImage(imagePlus).get(0);
     }
 
     private int changePosXDoubleToInt(Double posX) {
@@ -411,7 +415,7 @@ public class Program extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
+        int[][] matrixImageResult = getGrayMatrix(imagePlus);
 
         matrix1 = matrixImageResult;
 
@@ -440,7 +444,7 @@ public class Program extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int[][] matrixImageResult = functions.getMatrixImage(imagePlus);
+        int[][] matrixImageResult = getGrayMatrix(imagePlus);
         matrix1 = matrixImageResult;
     }
 
@@ -621,8 +625,8 @@ public class Program extends Application {
                 // Matrices de imagenes
                 functions.openImage(false);
 
-                int[][] matrix1 = functions.getMatrixImage();
-                int[][] matrix2 = functions.getMatrixSecondImage();
+                int[][] matrix1 = functions.getMatrixImage().get(0);
+                int[][] matrix2 = functions.getMatrixSecondImage().get(0);
 
                 // Igualacion de tamaños con relleno de valores 0
                 List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
@@ -647,8 +651,8 @@ public class Program extends Application {
                 // Matrices de imagenes
                 functions.openImage(false);
 
-                int[][] matrix1 = functions.getMatrixImage();
-                int[][] matrix2 = functions.getMatrixSecondImage();
+                int[][] matrix1 = functions.getMatrixImage().get(0);
+                int[][] matrix2 = functions.getMatrixSecondImage().get(0);
 
                 // Igualacion de tamaños con relleno de valores 0
                 List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);
@@ -673,8 +677,8 @@ public class Program extends Application {
                 // Matrices de imagenes
                 functions.openImage(false);
 
-                int[][] matrix1 = functions.getMatrixImage();
-                int[][] matrix2 = functions.getMatrixSecondImage();
+                int[][] matrix1 = functions.getMatrixImage().get(0);
+                int[][] matrix2 = functions.getMatrixSecondImage().get(0);
 
                 // Igualacion de tamaños con relleno de valores 0
                 List<int[][]> bothMatrix = functions.matchSizesImages(matrix1, matrix2);

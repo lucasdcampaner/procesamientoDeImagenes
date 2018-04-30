@@ -23,8 +23,8 @@ import javafx.stage.Stage;
 
 public class Functions {
 
-    private int[][] matrixImage = new int[][] {};
-    private int[][] matrixSecondImage = new int[][] {};
+    private List<int[][]> matrixImage = new ArrayList<>();
+    private List<int[][]> matrixSecondImage = new ArrayList<>();
     private Stage stage;
 
     @SuppressWarnings("unused")
@@ -117,19 +117,33 @@ public class Functions {
         }
     }
 
-    public int[][] getMatrixImage(ImagePlus image) {
+    public List<int[][]> getMatrixImage(ImagePlus image) {
 
         int w = (int) image.getWidth();
         int h = (int) image.getHeight();
-        int[][] matrix = new int[w][h];
+        
+        List<int[][]> listMatrix = new ArrayList<>();
+        
+        int[][] matrixGray = new int[w][h];
+        int[][] matrixR = new int[w][h];
+        int[][] matrixG = new int[w][h];
+        int[][] matrixB = new int[w][h];
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                matrix[i][j] = image.getPixel(i, j)[0];
+                matrixGray[i][j] = image.getPixel(i, j)[0];
+                matrixR[i][j] = image.getPixel(i, j)[1];
+                matrixG[i][j] = image.getPixel(i, j)[2];
+                matrixB[i][j] = image.getPixel(i, j)[3];
             }
         }
+        
+        listMatrix.add(matrixGray);
+        listMatrix.add(matrixR);
+        listMatrix.add(matrixG);
+        listMatrix.add(matrixB);
 
-        return matrix;
+        return listMatrix;
     }
 
     public Double getValuePixelRedRGB(Image image, int posX, int posY) {
@@ -148,11 +162,11 @@ public class Functions {
         Platform.exit();
     }
 
-    public int[][] getMatrixImage() {
+    public List<int[][]> getMatrixImage() {
         return matrixImage;
     }
 
-    public int[][] getMatrixSecondImage() {
+    public List<int[][]> getMatrixSecondImage() {
         return matrixSecondImage;
     }
 
