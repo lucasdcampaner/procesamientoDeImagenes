@@ -48,13 +48,16 @@ public class Program extends Application {
     private VBox layoutImageResult;
     private VBox layoutImageOriginal;
 
-    private List<int[]> pixels_Selected;
+    private List<int[]> pixelsSelected;
+    
+    private BorderDetectors borderDetectors;
 
     @Override
     public void start(Stage primaryStage) {
         try {
             stage = primaryStage;
             functions = new Functions(stage);
+            borderDetectors = new BorderDetectors(functions);
             generatorOfSyntheticImages = new GeneratorOfSyntheticImages();
             ui = new UI();
 
@@ -854,11 +857,11 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(resultP -> {
-                    pixels_Selected = functions.getPixelsToContaminate(matrix1, resultP);
+                    pixelsSelected = functions.getPixelsToContaminate(matrix1, resultP);
                 });
                 Dialogs.showConfigureOneParameter("Distribución Sal y pimienta",
                         "Ingrese el valor de p1 entre 0 y 1 (p2 será: 1-p1).\n", result -> {
-                            int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixels_Selected,
+                            int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixelsSelected,
                                     result[0].doubleValue(), result[1].doubleValue());
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
@@ -952,7 +955,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixResult = functions.applyHighPassFilter(matrix1);
+                int[][] matrixResult = borderDetectors.applyHighPassFilter(matrix1);
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
             }
@@ -966,8 +969,8 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixDX = functions.applyPrewitFilter(matrix1, true);
-                int[][] matrixDY = functions.applyPrewitFilter(matrix1, false);
+                int[][] matrixDX = borderDetectors.applyPrewitFilter(matrix1, true);
+                int[][] matrixDY = borderDetectors.applyPrewitFilter(matrix1, false);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
@@ -983,7 +986,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixDX = functions.applyPrewitFilter(matrix1, true);
+                int[][] matrixDX = borderDetectors.applyPrewitFilter(matrix1, true);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDX);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
@@ -998,7 +1001,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixDY = functions.applyPrewitFilter(matrix1, false);
+                int[][] matrixDY = borderDetectors.applyPrewitFilter(matrix1, false);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDY);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
