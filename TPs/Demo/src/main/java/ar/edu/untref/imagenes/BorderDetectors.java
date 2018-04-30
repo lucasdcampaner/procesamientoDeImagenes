@@ -8,9 +8,7 @@ public class BorderDetectors {
         this.functions = functions;
     }
 
-    public int[][] applyPrewitFilter(int[][] matrizOriginal, boolean derivateX) {
-
-        int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+    public int[][] applyBorderDetector(int[][] matrizOriginal, int[][] matrixWeight, boolean derivateX) {
 
         int top = 1; // control desborde de mascara
         int width = matrizOriginal.length;

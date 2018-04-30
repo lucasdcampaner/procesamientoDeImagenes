@@ -39,6 +39,9 @@ public class Program extends Application {
     private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
 
+    private final boolean DX = true;
+    private final boolean DY = false;
+
     private Group groupImageOriginal;
     private int x, y, w, h;
 
@@ -49,7 +52,7 @@ public class Program extends Application {
     private VBox layoutImageOriginal;
 
     private List<int[]> pixelsSelected;
-    
+
     private BorderDetectors borderDetectors;
 
     @Override
@@ -188,12 +191,14 @@ public class Program extends Application {
         MenuItem prewittX = new MenuItem("Prewitt Horizontal");
         MenuItem prewittY = new MenuItem("Prewitt Vertical");
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
+        MenuItem sobel = new MenuItem("Sobel");
+        sobel.setOnAction(listenerSobel);
         prewitt.setOnAction(listenerPrewitt);
         prewittX.setOnAction(listenerPrewittX);
         prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter);
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection);
@@ -969,12 +974,30 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixDX = borderDetectors.applyPrewitFilter(matrix1, true);
-                int[][] matrixDY = borderDetectors.applyPrewitFilter(matrix1, false);
+                int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DX);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DY);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+            }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerSobel = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DX);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DY);
+
+                int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
+                setSizeImageViewResult(ui.getImageResult(matrixResult));
             }
         }
     };
@@ -986,7 +1009,8 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixDX = borderDetectors.applyPrewitFilter(matrix1, true);
+                int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, true);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDX);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
@@ -1001,7 +1025,8 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixDY = borderDetectors.applyPrewitFilter(matrix1, false);
+                int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, false);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDY);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
