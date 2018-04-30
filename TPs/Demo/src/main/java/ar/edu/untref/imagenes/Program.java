@@ -1010,7 +1010,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, true);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DX);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDX);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
@@ -1026,7 +1026,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, false);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DY);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDY);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
