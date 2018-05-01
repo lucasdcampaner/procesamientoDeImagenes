@@ -188,17 +188,19 @@ public class Program extends Application {
         // Menu deteccion de bordes
         Menu menuBorderDetection = new Menu("Border detection");
         MenuItem prewitt = new MenuItem("Prewitt");
+        MenuItem prewittColor = new MenuItem("Prewitt (color)");
         MenuItem prewittX = new MenuItem("Prewitt Horizontal");
         MenuItem prewittY = new MenuItem("Prewitt Vertical");
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
         MenuItem sobel = new MenuItem("Sobel");
         sobel.setOnAction(listenerSobel);
         prewitt.setOnAction(listenerPrewitt);
+        prewittColor.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
         prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel);
+        menuBorderDetection.getItems().addAll(highPassFilter, prewittX, prewittY, prewitt, prewittColor, sobel);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection);
@@ -385,7 +387,7 @@ public class Program extends Application {
 
         return layoutInfo;
     }
-    
+
     private int[][] getGrayMatrix(ImagePlus imagePlus) {
         return functions.getMatrixImage(imagePlus).get(0);
     }
@@ -988,7 +990,15 @@ public class Program extends Application {
             }
         }
     };
-    
+
+    private EventHandler<ActionEvent> listenerPrewittColor = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+        }
+    };
+
     private EventHandler<ActionEvent> listenerSobel = new EventHandler<ActionEvent>() {
 
         @Override
