@@ -1,6 +1,7 @@
 package ar.edu.untref.imagenes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ij.ImagePlus;
@@ -39,8 +40,10 @@ public class Program extends Application {
     private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
 
-    private final boolean DX = true;
-    private final boolean DY = false;
+    private static final int DERIVATE_X = 0;
+    private static final int DERIVATE_Y = 1;
+    private static final int ROTATION_R = 2;
+    private static final int ROTATION_L = 3;
 
     private Group groupImageOriginal;
     private int x, y, w, h;
@@ -200,8 +203,21 @@ public class Program extends Application {
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel);
 
+        // Menu deteccion de bordes
+        Menu menuDirectionalBorder = new Menu("Directional Border");
+        MenuItem directionalOptionA = new MenuItem("Option A");
+        MenuItem directionalPrewitt = new MenuItem("Prewitt");
+        MenuItem directionalKirsh = new MenuItem("Kirsh");
+        MenuItem directionalSobel = new MenuItem("Sobel");
+        directionalOptionA.setOnAction(listenerDirectionalOptionA);
+        directionalKirsh.setOnAction(listenerDirectionalKirsh);
+        directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
+        directionalSobel.setOnAction(listenerDirectionalSobel);
+
+        menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel, directionalKirsh);
+
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
-                menuSuavizado, menuSyntheticImages, menuBorderDetection);
+                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder);
 
         return menuBar;
     }
@@ -385,7 +401,7 @@ public class Program extends Application {
 
         return layoutInfo;
     }
-    
+
     private int[][] getGrayMatrix(ImagePlus imagePlus) {
         return functions.getMatrixImage(imagePlus).get(0);
     }
@@ -979,8 +995,8 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DX);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DY);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
@@ -988,7 +1004,7 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerSobel = new EventHandler<ActionEvent>() {
 
         @Override
@@ -997,8 +1013,8 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DX);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DY);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
@@ -1014,7 +1030,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DX);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDX);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
@@ -1030,7 +1046,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DY);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDY);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
@@ -1051,6 +1067,100 @@ public class Program extends Application {
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
             }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerDirectionalPrewitt = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+
+            List<int[][]> listMasks = new ArrayList<>();
+            listMasks.add(matrixDX);
+            listMasks.add(matrixDY);
+            listMasks.add(matrixRR);
+            listMasks.add(matrixRL);
+
+            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+            setSizeImageViewResult(ui.getImageResult(matrixResult));
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerDirectionalOptionA = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            int[][] matrixWeight = { { 1, 1, 1 }, { 1, -2, 1 }, { -1, -1, -1 } };
+
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+
+            List<int[][]> listMasks = new ArrayList<>();
+            listMasks.add(matrixDX);
+            listMasks.add(matrixDY);
+            listMasks.add(matrixRR);
+            listMasks.add(matrixRL);
+
+            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+            int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+            setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerDirectionalKirsh = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            int[][] matrixWeight = { { 5, 5, 5 }, { -3, 0, 3 }, { -3, -3, -3 } };
+
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+
+            List<int[][]> listMasks = new ArrayList<>();
+            listMasks.add(matrixDX);
+            listMasks.add(matrixDY);
+            listMasks.add(matrixRR);
+            listMasks.add(matrixRL);
+
+            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+            int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+            setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerDirectionalSobel = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+
+            List<int[][]> listMasks = new ArrayList<>();
+            listMasks.add(matrixDX);
+            listMasks.add(matrixDY);
+            listMasks.add(matrixRR);
+            listMasks.add(matrixRL);
+
+            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+            setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     };
 

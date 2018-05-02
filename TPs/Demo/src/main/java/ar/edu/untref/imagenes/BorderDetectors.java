@@ -1,14 +1,21 @@
 package ar.edu.untref.imagenes;
 
+import java.util.List;
+
 public class BorderDetectors {
 
     private Functions functions;
+
+    private static final int DERIVATE_X = 0;
+    private static final int DERIVATE_Y = 1;
+    private static final int ROTATION_R = 2;
+    private static final int ROTATION_L = 3;
 
     public BorderDetectors(Functions functions) {
         this.functions = functions;
     }
 
-    public int[][] applyBorderDetector(int[][] matrizOriginal, int[][] matrixWeight, boolean derivateX) {
+    public int[][] applyBorderDetector(int[][] matrizOriginal, int[][] matrixWeight, int direction) {
 
         int top = 1; // control desborde de mascara
         int width = matrizOriginal.length;
@@ -36,11 +43,18 @@ public class BorderDetectors {
                     for (int y = 0; y < matrixWeight[0].length; y++) {
 
                         int valueMask = matrizOriginal[i - top + x][j - top + y];
-                        int valueWeight;
-                        if (derivateX) {
+                        int valueWeight = 0;
+
+                        if (direction == DERIVATE_X) {
                             valueWeight = matrixWeight[x][y];
-                        } else {
+                        } else if (direction == DERIVATE_Y) {
                             valueWeight = matrixWeight[y][x];
+                        } else if (direction == ROTATION_R) {
+                            int[][] aux = rotateMask(matrixWeight, ROTATION_R);
+                            valueWeight = aux[x][y];
+                        } else if (direction == ROTATION_L) {
+                            int[][] aux = rotateMask(matrixWeight, ROTATION_L);
+                            valueWeight = aux[x][y];
                         }
 
                         adderValues += valueMask * valueWeight; // suma los valores de la mascara
@@ -101,4 +115,72 @@ public class BorderDetectors {
         return matrixResult;
     }
 
+    public int[][] rotateMask(int[][] matrix, int rotation) {
+
+        int[][] matrixResult = new int[3][3];
+
+        if (rotation == ROTATION_R) { // Rotacion hacia la derecho
+
+            matrixResult[0][0] = matrix[1][0];
+            matrixResult[0][1] = matrix[0][0];
+            matrixResult[0][2] = matrix[0][1];
+
+            matrixResult[1][0] = matrix[2][0];
+            matrixResult[1][2] = matrix[0][2];
+
+            matrixResult[2][0] = matrix[2][1];
+            matrixResult[2][1] = matrix[2][2];
+            matrixResult[2][2] = matrix[1][2];
+
+        } else { // Rotacion hacia la izquierda
+
+            matrixResult[0][0] = matrix[0][1];
+            matrixResult[0][1] = matrix[0][2];
+            matrixResult[0][2] = matrix[1][2];
+
+            matrixResult[1][0] = matrix[0][0];
+            matrixResult[1][2] = matrix[2][2];
+
+            matrixResult[2][0] = matrix[1][0];
+            matrixResult[2][1] = matrix[2][0];
+            matrixResult[2][2] = matrix[2][1];
+        }
+
+        return matrixResult;
+    }
+
+    public int[][] buildMatrixDirectional(List<int[][]> listMask) {
+
+        int w = listMask.get(0).length;
+        int h = listMask.get(0)[0].length;
+
+        int[][] matrixResult = new int[w][h];
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+
+                int[] pixels = new int[4];
+
+                for (int k = 0; k < listMask.size(); k++) {
+                    pixels[k] = listMask.get(k)[i][j];
+                }
+
+                matrixResult[i][j] = calculateMaxPixel(pixels);
+            }
+        }
+
+        return matrixResult;
+    }
+
+    private int calculateMaxPixel(int[] pixels) {
+
+        int max = 0;
+        
+        for (int i = 0; i < pixels.length; i++) {
+            if(pixels[i] > max){
+                max = pixels[i];
+            }
+        }
+        return max;
+    }
 }
