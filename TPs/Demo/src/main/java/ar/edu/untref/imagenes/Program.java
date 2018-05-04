@@ -194,14 +194,16 @@ public class Program extends Application {
         MenuItem prewittX = new MenuItem("Prewitt Horizontal");
         MenuItem prewittY = new MenuItem("Prewitt Vertical");
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
+        MenuItem laplaciano = new MenuItem("Laplaciano");
         MenuItem sobel = new MenuItem("Sobel");
         sobel.setOnAction(listenerSobel);
         prewitt.setOnAction(listenerPrewitt);
         prewittX.setOnAction(listenerPrewittX);
         prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
+        laplaciano.setOnAction(listenerLaplaciano);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel);
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1013,6 +1015,23 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+
+                int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
+                setSizeImageViewResult(ui.getImageResult(matrixResult));
+            }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerLaplaciano = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrixWeight = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
                 int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
                 int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
 
