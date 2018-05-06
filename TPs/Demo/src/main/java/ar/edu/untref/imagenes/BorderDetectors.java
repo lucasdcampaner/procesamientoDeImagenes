@@ -1,6 +1,8 @@
 package ar.edu.untref.imagenes;
 
+import java.util.ArrayList;
 import java.util.List;
+import ij.ImagePlus;
 
 public class BorderDetectors {
 
@@ -68,6 +70,73 @@ public class BorderDetectors {
 
         matrixResult = functions.repeatNPixelsBorder(matrixResult, top); // repito 1 pixel en los 4 bordes
         return matrixResult;
+    }
+
+    public List<int[][]> applyBorderDetectorToImageColor(ImagePlus matrixColor, int[][] matrixWeight, int direction) {
+
+        List<int[][]> matrixs = new ArrayList<>();
+
+        int[][] matrixR = functions.getMatrixImage(matrixColor).get(1);
+        int[][] matrixG = functions.getMatrixImage(matrixColor).get(2);
+        int[][] matrixB = functions.getMatrixImage(matrixColor).get(3);
+
+        int top = 1; // control desborde de mascara
+        int width = matrixR.length;
+        int height = matrixR[0].length;
+
+        int[][] matrixResultR = new int[width][height];
+        int[][] matrixResultG = new int[width][height];
+        int[][] matrixResultB = new int[width][height];
+
+        for (int i = top; i < width - top; i++) {
+            for (int j = top; j < height - top; j++) {
+
+                int adderValuesR = 0;
+                int adderValuesG = 0;
+                int adderValuesB = 0;
+                for (int x = 0; x < matrixWeight.length; x++) {
+                    for (int y = 0; y < matrixWeight[0].length; y++) {
+
+                        int valueMaskR = matrixR[i - top + x][j - top + y];
+                        int valueMaskG = matrixG[i - top + x][j - top + y];
+                        int valueMaskB = matrixB[i - top + x][j - top + y];
+                        int valueWeight = 0;
+
+                        if (direction == DERIVATE_X) {
+                            valueWeight = matrixWeight[x][y];
+                        } else if (direction == DERIVATE_Y) {
+                            valueWeight = matrixWeight[y][x];
+                        } else if (direction == ROTATION_R) {
+                            int[][] aux = rotateMask(matrixWeight, ROTATION_R);
+                            valueWeight = aux[x][y];
+                        } else if (direction == ROTATION_L) {
+                            int[][] aux = rotateMask(matrixWeight, ROTATION_L);
+                            valueWeight = aux[x][y];
+                        }
+
+                        adderValuesR += valueMaskR * valueWeight;
+                        adderValuesG += valueMaskG * valueWeight;
+                        adderValuesB += valueMaskB * valueWeight;
+                    }
+                }
+
+                int valuePixelR = (int) Math.round(adderValuesR);
+                int valuePixelG = (int) Math.round(adderValuesG);
+                int valuePixelB = (int) Math.round(adderValuesB);
+                matrixResultR[i][j] = valuePixelR;
+                matrixResultG[i][j] = valuePixelG;
+                matrixResultB[i][j] = valuePixelB;
+            }
+        }
+
+        matrixResultR = functions.repeatNPixelsBorder(matrixResultR, top);
+        matrixResultG = functions.repeatNPixelsBorder(matrixResultG, top);
+        matrixResultB = functions.repeatNPixelsBorder(matrixResultB, top);
+        matrixs.add(matrixResultR);
+        matrixs.add(matrixResultG);
+        matrixs.add(matrixResultB);
+
+        return matrixs;
     }
 
     public int[][] applyHighPassFilter(int[][] matrixOriginal) {
@@ -175,9 +244,9 @@ public class BorderDetectors {
     private int calculateMaxPixel(int[] pixels) {
 
         int max = 0;
-        
+
         for (int i = 0; i < pixels.length; i++) {
-            if(pixels[i] > max){
+            if (pixels[i] > max) {
                 max = pixels[i];
             }
         }
