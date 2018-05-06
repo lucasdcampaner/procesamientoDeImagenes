@@ -124,14 +124,14 @@ public class UI {
         int h = matrixR[0].length;
         ImagePlus imageResult = new ImagePlus();
         imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR));
-        int[] rgb = new int[3];
+        int[] bgr = new int[3];
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                rgb[0] = matrixR[i][j];
-                rgb[1] = matrixG[i][j];
-                rgb[2] = matrixB[i][j];
-                imageResult.getProcessor().putPixel(i, j, rgb);
+                bgr[0] = matrixB[i][j];
+                bgr[1] = matrixG[i][j];
+                bgr[2] = matrixR[i][j];
+                imageResult.getProcessor().putPixel(i, j, bgr);
                 ;
             }
         }
