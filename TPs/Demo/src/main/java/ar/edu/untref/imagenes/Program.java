@@ -49,7 +49,8 @@ public class Program extends Application {
     private int x, y, w, h;
 
     private Slider slider;
-    private int[][] matrix1;
+    private int[][] matrixGray;
+    private ImagePlus matrixColor;
 
     private VBox layoutImageResult;
     private VBox layoutImageOriginal;
@@ -193,17 +194,20 @@ public class Program extends Application {
         MenuItem prewitt = new MenuItem("Prewitt");
         MenuItem prewittX = new MenuItem("Prewitt Horizontal");
         MenuItem prewittY = new MenuItem("Prewitt Vertical");
+        MenuItem prewittColor = new MenuItem("Prewitt Color");
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
         MenuItem laplaciano = new MenuItem("Laplaciano");
         MenuItem sobel = new MenuItem("Sobel");
         sobel.setOnAction(listenerSobel);
         prewitt.setOnAction(listenerPrewitt);
+        prewittColor.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
         prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
         laplaciano.setOnAction(listenerLaplaciano);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano);
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel,
+                laplaciano);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -216,7 +220,8 @@ public class Program extends Application {
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
         directionalSobel.setOnAction(listenerDirectionalSobel);
 
-        menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel, directionalKirsh);
+        menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
+                directionalKirsh);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder);
@@ -435,7 +440,8 @@ public class Program extends Application {
         }
         int[][] matrixImageResult = getGrayMatrix(imagePlus);
 
-        matrix1 = matrixImageResult;
+        matrixGray = matrixImageResult;
+        matrixColor = imagePlus;
 
         layoutImageOriginal.getChildren().add(imageViewOriginal);
         groupImageOriginal.getChildren().add(imageViewOriginal);
@@ -463,7 +469,7 @@ public class Program extends Application {
             e.printStackTrace();
         }
         int[][] matrixImageResult = getGrayMatrix(imagePlus);
-        matrix1 = matrixImageResult;
+        matrixGray = matrixImageResult;
     }
 
     private void copyImageNewWindow() {
@@ -519,7 +525,7 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                int[] valores = Modifiers.computeGrayHistogram(matrix1);
+                int[] valores = Modifiers.computeGrayHistogram(matrixGray);
                 Image image = ui.drawGrayHistogramImage(valores);
                 setSizeImageViewResult(image);
             }
@@ -531,8 +537,8 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                int[] valoresHistogramaGris = Modifiers.computeGrayHistogram(matrix1);
-                Image image = ui.equalizeToBetterImage(matrix1, valoresHistogramaGris);
+                int[] valoresHistogramaGris = Modifiers.computeGrayHistogram(matrixGray);
+                Image image = ui.equalizeToBetterImage(matrixGray, valoresHistogramaGris);
                 setSizeImageViewResult(image);
             }
         }
@@ -614,7 +620,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 slider.setVisible(true);
-                int[][] newMatrix = Modifiers.thresholdize(matrix1, (int) slider.getValue());
+                int[][] newMatrix = Modifiers.thresholdize(matrixGray, (int) slider.getValue());
                 setSizeImageViewResult(ui.getImageResult(newMatrix));
             }
         }
@@ -626,7 +632,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 slider.setVisible(false);
-                int[][] newMatrix = Modifiers.negative(matrix1);
+                int[][] newMatrix = Modifiers.negative(matrixGray);
                 imageResult = ui.getImageResult(newMatrix);
                 setSizeImageViewResult(imageResult);
             }
@@ -718,7 +724,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigureTwoParameters("Configurar valores",
                         "Ingrese valores de r1 y r2 entre 0 y 255.\n\nSiendo r1 < r2", "R1", "R2", result -> {
-                            int[][] matrixAdded = Modifiers.contrast(matrix1, result[0].intValue(),
+                            int[][] matrixAdded = Modifiers.contrast(matrixGray, result[0].intValue(),
                                     result[1].intValue());
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
@@ -732,7 +738,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 Dialogs.showConfigureContrastGamma(result -> {
-                    int[][] matrixAdded = Modifiers.contrastGamma(matrix1, result);
+                    int[][] matrixAdded = Modifiers.contrastGamma(matrixGray, result);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -745,7 +751,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationScalar(result -> {
-                    int[][] resultMatrix = Modifiers.scalarByMatrix(result, matrix1);
+                    int[][] resultMatrix = Modifiers.scalarByMatrix(result, matrixGray);
 
                     int[][] imageNormalized = functions.dinamicRange(resultMatrix);
                     setSizeImageViewResult(ui.getImageResult(imageNormalized));
@@ -758,7 +764,7 @@ public class Program extends Application {
     private ChangeListener<Number> listenerSlider = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            int[][] newMatrix = Modifiers.thresholdize(matrix1, newValue.intValue());
+            int[][] newMatrix = Modifiers.thresholdize(matrixGray, newValue.intValue());
             setSizeImageViewResult(ui.getImageResult(newMatrix));
         }
     };
@@ -769,12 +775,12 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(result -> {
-                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigureTwoParameters("Distribución Gaussiana",
                             "Ingrese los valores de la media y la desviación estandar entre 0 y 255",
                             "Desviación estandar", "Media", resultGuassian -> {
-                                int[][] matrixResult = functions.applyGaussian(matrix1, pixelsSelected,
+                                int[][] matrixResult = functions.applyGaussian(matrixGray, pixelsSelected,
                                         resultGuassian[0], resultGuassian[1], false);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             });
@@ -788,12 +794,12 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(result -> {
-                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigureTwoParameters("Distribución Gaussiana",
                             "Ingrese los valores de la media y la desviación estandar entre 0 y 255",
                             "Desviación estandar", "Media", resultGuassian -> {
-                                int[][] matrixResult = functions.applyGaussian(matrix1, pixelsSelected,
+                                int[][] matrixResult = functions.applyGaussian(matrixGray, pixelsSelected,
                                         resultGuassian[0], resultGuassian[1], true);
                                 int[][] imageNormalized = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(imageNormalized));
@@ -808,11 +814,11 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(result -> {
-                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
                             "Ingrese un phi entre 0 y 255", phi -> {
-                                int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi, false);
+                                int[][] matrixResult = functions.applyRayleigh(matrixGray, pixelsSelected, phi, false);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             });
                 });
@@ -825,11 +831,11 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(result -> {
-                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
                             "Ingrese un phi entre 0 y 255", phi -> {
-                                int[][] matrixResult = functions.applyRayleigh(matrix1, pixelsSelected, phi, true);
+                                int[][] matrixResult = functions.applyRayleigh(matrixGray, pixelsSelected, phi, true);
                                 int[][] imageNormalized = functions.dinamicRange(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(imageNormalized));
                             });
@@ -844,11 +850,11 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(result -> {
-                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigurationParameterDistribution("Distribución Exponencial",
                             "Ingrese un lambda entre 0 y 1", lambda -> {
-                                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, lambda,
+                                int[][] matrixResult = functions.applyExponencial(matrixGray, pixelsSelected, lambda,
                                         false);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             });
@@ -863,11 +869,11 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(result -> {
-                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrix1, result);
+                    List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigurationParameterDistribution("Distribución Exponencial",
                             "Ingrese un lambda entre 0 y 1", lambda -> {
-                                int[][] matrixResult = functions.applyExponencial(matrix1, pixelsSelected, lambda,
+                                int[][] matrixResult = functions.applyExponencial(matrixGray, pixelsSelected, lambda,
                                         true);
 
                                 int[][] imageNormalized = functions.dinamicRange(matrixResult);
@@ -884,11 +890,11 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationPercentNoise(resultP -> {
-                    pixelsSelected = functions.getPixelsToContaminate(matrix1, resultP);
+                    pixelsSelected = functions.getPixelsToContaminate(matrixGray, resultP);
                 });
                 Dialogs.showConfigureOneParameter("Distribución Sal y pimienta",
                         "Ingrese el valor de p1 entre 0 y 1 (p2 será: 1-p1).\n", result -> {
-                            int[][] matrixAdded = functions.applySaltAndPepper(matrix1, pixelsSelected,
+                            int[][] matrixAdded = functions.applySaltAndPepper(matrixGray, pixelsSelected,
                                     result[0].doubleValue(), result[1].doubleValue());
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
@@ -942,7 +948,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyAverageFilter(matrix1, resultP);
+                    int[][] matrixAdded = functions.applyAverageFilter(matrixGray, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -956,7 +962,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyFiltroMediana(matrix1, resultP);
+                    int[][] matrixAdded = functions.applyFiltroMediana(matrixGray, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -970,7 +976,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-                int[][] matrixAdded = functions.applyWeightedMedianFilter(matrix1, 3, matrizDePonderacion);
+                int[][] matrixAdded = functions.applyWeightedMedianFilter(matrixGray, 3, matrizDePonderacion);
                 setSizeImageViewResult(ui.getImageResult(matrixAdded));
             }
         }
@@ -982,7 +988,7 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                int[][] matrixResult = borderDetectors.applyHighPassFilter(matrix1);
+                int[][] matrixResult = borderDetectors.applyHighPassFilter(matrixGray);
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
             }
@@ -997,12 +1003,41 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerPrewittColor = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+                
+                int[][] matrixDXR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
+                int[][] matrixDXG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
+                int[][] matrixDXB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
+                
+                int[][] matrixDYR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
+                int[][] matrixDYG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
+                int[][] matrixDYB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
+
+                int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
+                int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
+                int[][] matrixResultB = Modifiers.calculateGradient(matrixDXB, matrixDYB);
+                int[][] normalizedMatrixR = functions.normalizeMatrix(matrixResultR);
+                int[][] normalizedMatrixG = functions.normalizeMatrix(matrixResultG);
+                int[][] normalizedMatrixB = functions.normalizeMatrix(matrixResultB);
+                
+                setSizeImageViewResult(ui.getImageResultColor(normalizedMatrixR, normalizedMatrixG, normalizedMatrixB));
             }
         }
     };
@@ -1015,15 +1050,15 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerLaplaciano = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1032,8 +1067,8 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
@@ -1049,7 +1084,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDX);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
@@ -1065,7 +1100,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
 
                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixDY);
                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
@@ -1082,7 +1117,7 @@ public class Program extends Application {
                 Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana",
                         "Ingrese un valor de sigma entre 1 y 10", resultP -> {
 
-                            int[][] matrixAdded = functions.applyGaussianFilter(matrix1, 3, resultP);
+                            int[][] matrixAdded = functions.applyGaussianFilter(matrixGray, 3, resultP);
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
             }
@@ -1096,10 +1131,10 @@ public class Program extends Application {
 
             int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
 
-            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
-            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
-            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
-            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
 
             List<int[][]> listMasks = new ArrayList<>();
             listMasks.add(matrixDX);
@@ -1111,7 +1146,7 @@ public class Program extends Application {
             setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerDirectionalOptionA = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1119,10 +1154,10 @@ public class Program extends Application {
 
             int[][] matrixWeight = { { 1, 1, 1 }, { 1, -2, 1 }, { -1, -1, -1 } };
 
-            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
-            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
-            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
-            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
 
             List<int[][]> listMasks = new ArrayList<>();
             listMasks.add(matrixDX);
@@ -1143,10 +1178,10 @@ public class Program extends Application {
 
             int[][] matrixWeight = { { 5, 5, 5 }, { -3, 0, 3 }, { -3, -3, -3 } };
 
-            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
-            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
-            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
-            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
 
             List<int[][]> listMasks = new ArrayList<>();
             listMasks.add(matrixDX);
@@ -1167,10 +1202,10 @@ public class Program extends Application {
 
             int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 
-            int[][] matrixDX = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_X);
-            int[][] matrixDY = borderDetectors.applyBorderDetector(matrix1, matrixWeight, DERIVATE_Y);
-            int[][] matrixRR = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_R);
-            int[][] matrixRL = borderDetectors.applyBorderDetector(matrix1, matrixWeight, ROTATION_L);
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
 
             List<int[][]> listMasks = new ArrayList<>();
             listMasks.add(matrixDX);

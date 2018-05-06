@@ -64,7 +64,8 @@ public class UI {
         Canvas canvas = new Canvas(500, 500);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.rect(0, 0, 500, 500);
-        LinearGradient lg = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, new Stop(0.0, Color.BLACK), new Stop(1.0, Color.WHITE));
+        LinearGradient lg = new LinearGradient(0, 0, 1, 1, true, CycleMethod.REFLECT, new Stop(0.0, Color.BLACK),
+                new Stop(1.0, Color.WHITE));
         gc.setFill(lg);
         gc.fill();
         WritableImage image = canvas.snapshot(null, null);
@@ -111,6 +112,27 @@ public class UI {
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 imageResult.getProcessor().putPixel(i, j, matrixImage[i][j]);
+            }
+        }
+
+        return SwingFXUtils.toFXImage(imageResult.getBufferedImage(), null);
+    }
+
+    public Image getImageResultColor(int[][] matrixR, int[][] matrixG, int[][] matrixB) {
+
+        int w = matrixR.length;
+        int h = matrixR[0].length;
+        ImagePlus imageResult = new ImagePlus();
+        imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR));
+        int[] rgb = new int[3];
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                rgb[0] = matrixR[i][j];
+                rgb[1] = matrixG[i][j];
+                rgb[2] = matrixB[i][j];
+                imageResult.getProcessor().putPixel(i, j, rgb);
+                ;
             }
         }
 
