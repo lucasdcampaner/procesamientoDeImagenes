@@ -58,6 +58,7 @@ public class Program extends Application {
     private List<int[]> pixelsSelected;
 
     private BorderDetectors borderDetectors;
+    private Softeners softeners;
 
     @Override
     public void start(Stage primaryStage) {
@@ -66,6 +67,7 @@ public class Program extends Application {
             functions = new Functions(stage);
             borderDetectors = new BorderDetectors(functions);
             generatorOfSyntheticImages = new GeneratorOfSyntheticImages();
+            softeners = new Softeners(functions);
             ui = new UI();
 
             Scene scene = createWindow();
@@ -950,7 +952,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyAverageFilter(matrixGray, resultP);
+                    int[][] matrixAdded = softeners.applyAverageFilter(matrixGray, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -964,7 +966,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyFiltroMediana(matrixGray, resultP);
+                    int[][] matrixAdded = softeners.applyFiltroMediana(matrixGray, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -978,7 +980,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-                int[][] matrixAdded = functions.applyWeightedMedianFilter(matrixGray, 3, matrizDePonderacion);
+                int[][] matrixAdded = softeners.applyWeightedMedianFilter(matrixGray, 3, matrizDePonderacion);
                 setSizeImageViewResult(ui.getImageResult(matrixAdded));
             }
         }
@@ -1146,7 +1148,7 @@ public class Program extends Application {
                 Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana",
                         "Ingrese un valor de sigma entre 1 y 10", resultP -> {
 
-                            int[][] matrixAdded = functions.applyGaussianFilter(matrixGray, 3, resultP);
+                            int[][] matrixAdded = softeners.applyGaussianFilter(matrixGray, 3, resultP);
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
             }
