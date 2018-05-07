@@ -1,5 +1,8 @@
 package ar.edu.untref.imagenes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -239,94 +242,85 @@ public class Modifiers {
             }
         }
         return matrixAux;
-
     }
 
     public static int[][] thresholdizeGlobal(int[][] matrixGray, Integer delta) {
 
         int w = matrixGray.length;
         int h = matrixGray[0].length;
-        int cantidadIteraciones = 0;
-        int[][] matrixAux = new int[w][h];
-        int valueThreshold = 100; // se "elige" uno inicial, para probar todos
-        int deltaActual = Integer.MAX_VALUE;// para que entre al while
-        int cantidadDeNegros = 0;
-        int cantidadDeBlancos = 0;
-        int exThreshold = 0;
+
+        int[][] thresholdMatrix = new int[w][h];
+
+        int oldValueThreshold = 0;
+        int newValueThreshold = 100;
+
+        int currentDelta = Integer.MAX_VALUE;
+
         int m1 = 0;
         int m2 = 0;
 
-        while (deltaActual >= delta) {
+        int amountIterations = 0;
 
-            matrixAux = thresholdize(matrixGray, valueThreshold);
+        while (currentDelta >= delta) {
 
-            cantidadDeNegros = cantidadNegros(matrixAux); // grupo1
-            cantidadDeBlancos = cantidadBlancos(matrixAux);// grupo2
+            thresholdMatrix = thresholdize(matrixGray, newValueThreshold);
 
-            System.out.println("cantidadDeNegros es: " + cantidadDeNegros);
-            System.out.println("cantidadDeBlancos es: " + cantidadDeBlancos);
+            int amountBlack = counterPixelsGray(thresholdMatrix).get(0);
+            int amountWhite = counterPixelsGray(thresholdMatrix).get(1);
 
             for (int i = 0; i < w; i++) {
                 for (int j = 0; j < h; j++) {
-                    if (matrixAux[i][j] == 0) {
-                        // m1 += matrixAux[i][j];//negros
-                        // fix es usando i j pero de la imagen original:
+                    if (thresholdMatrix[i][j] == 0) {
                         m1 += matrixGray[i][j];
                     } else {
-                        // m2 += matrixAux[i][j];//blancos
-                        // fix es usando i j pero de la imagen original:
                         m2 += matrixGray[i][j];
                     }
                 }
             }
-            System.out.println("m1 es: " + m1);
-            System.out.println("m2 es: " + m2);
 
-            exThreshold = valueThreshold;
-            if (cantidadDeNegros != 0 && cantidadDeBlancos != 0) {
-                valueThreshold = (int) Math.round(0.5 * ((1 / cantidadDeNegros) * m1 + (1 / cantidadDeBlancos) * m2));
-                deltaActual = Math.abs(exThreshold - valueThreshold);
+            if (amountBlack != 0) {
+                m1 = m1 / amountBlack;
             }
-            System.out.println("valueThreshold es: " + valueThreshold);
+            if (amountWhite != 0) {
+                m2 = m2 / amountWhite;
+            }
 
-            cantidadIteraciones++;
-            valueThreshold++;
+            oldValueThreshold = newValueThreshold;
+            newValueThreshold = Math.round((m1 + m2) / 2);
+
+            currentDelta = Math.abs(newValueThreshold - oldValueThreshold);
+            amountIterations++;
         }
 
         Dialogs.showInformation(
-                "valueThreshold es: " + valueThreshold + " cantidadIteraciones: " + cantidadIteraciones);
+                "Valor de umbral: " + newValueThreshold + "\nCantidad de iteraciones: " + amountIterations);
 
-        return matrixAux;
+        return thresholdMatrix;
     }
 
-    public static int cantidadNegros(int[][] matrixGray) {
-        int cantidad = 0;
+    private static List<Integer> counterPixelsGray(int[][] matrixGray) {
+
+        int black = 0;
+        int white = 0;
+
+        List<Integer> amounts = new ArrayList<>();
+
         int w = matrixGray.length;
         int h = matrixGray[0].length;
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 if (matrixGray[i][j] == 0) {
-                    cantidad++;
+                    black++;
+                } else if (matrixGray[i][j] == 255) {
+                    white++;
                 }
             }
         }
-        return cantidad;
-    }
 
-    public static int cantidadBlancos(int[][] matrixGray) {
-        int cantidad = 0;
-        int w = matrixGray.length;
-        int h = matrixGray[0].length;
-
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-                if (matrixGray[i][j] == 255) {
-                    cantidad++;
-                }
-            }
-        }
-        return cantidad;
+        amounts.add(black);
+        amounts.add(white);
+        return amounts;
     }
 
     public static int[][] thresholdizeOtsu(int[][] matrixGray) {
