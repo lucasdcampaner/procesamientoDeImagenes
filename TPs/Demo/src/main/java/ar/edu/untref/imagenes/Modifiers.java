@@ -270,7 +270,7 @@ public class Modifiers {
 
             for (int i = 0; i < w; i++) {
                 for (int j = 0; j < h; j++) {
-                    if (thresholdMatrix[i][j] == 0) {
+                    if (matrixGray[i][j] <= newValueThreshold) {
                         m1 += matrixGray[i][j];
                     } else {
                         m2 += matrixGray[i][j];
