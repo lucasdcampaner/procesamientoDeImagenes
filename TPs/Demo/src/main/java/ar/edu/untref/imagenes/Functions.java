@@ -26,6 +26,9 @@ public class Functions {
     private List<int[][]> matrixSecondImage = new ArrayList<>();
     private Stage stage;
 
+    private final static int WITH_DOUBLE_NEXT = 1;
+    private final static int WITHOUT_DOUBLE_NEXT = 0;
+
     @SuppressWarnings("unused")
     private String extensionFile;
 
@@ -520,26 +523,94 @@ public class Functions {
 
     public double getGaussianValue(int x, int y, int center, double sigma) {
 
-        // G(x,y) = (1/2.π.Ω^2) * e^-[(x^2 + y^2) / 2*Ω^2]
+        // G(x,y) = (1/(2.π.Ω^2)^(1/2)) * e^-[(x^2 + y^2) / 2*Ω^2]
 
         int x_mask = x - center;
         int y_mask = y - center;
 
-        return (1 / (2 * Math.PI * Math.pow(sigma, 2)))
+        return (1 / (Math.sqrt(2 * Math.PI) * Math.pow(sigma, 2)))
                 * Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
     }
 
     public double getGaussianLaplacianValue(int x, int y, int center, double sigma) {
 
-        // G(x,y) = -1/(2.π.Ω^3) * [2 - ((x^2 + y^2) / Ω^2)] * e^-[ 2(x^2 + y^2) / 2Ω^2]
+        // G(x,y) = -1/((2.π)^(1/2).Ω^3) * [2 - ((x^2 + y^2) / Ω^2)] * e^-[ 2(x^2 + y^2) / 2Ω^2]
 
         int x_mask = x - center;
         int y_mask = y - center;
-        
-        double firstTerm = (-1 / (2 * Math.PI * Math.pow(sigma, 3)));
-        double secondTerm = (2 - ((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
-        double thirdTerm =  Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (2 * (Math.pow(sigma, 2)))));
 
-        return  firstTerm * secondTerm * thirdTerm;
+        double firstTerm = (-1 / (Math.sqrt(2 * Math.PI) * Math.pow(sigma, 3)));
+        double secondTerm = (2 - ((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
+        double thirdTerm = Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (2 * (Math.pow(sigma, 2)))));
+
+        return firstTerm * secondTerm * thirdTerm;
+    }
+
+    public int[][] crossesByZero(int[][] matrixOriginal) {
+
+        int w = matrixOriginal.length;
+        int h = matrixOriginal[0].length;
+
+        int[][] matrixResult = new int[w][h];
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h - 1; j++) {
+                matrixResult[i][j] = findZero(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT);
+            }
+        }
+        
+        return matrixResult;
+    }
+
+    public int findZero(int[][] matrixOriginal, int i, int j, int doubleNext) {
+
+        int h = matrixOriginal[0].length;
+
+        int pixel = matrixOriginal[i][j - doubleNext];
+        int nextPixel = matrixOriginal[i][j + 1];
+
+        if (pixel != 0 && nextPixel != 0) {
+
+            if (changedSign(pixel, nextPixel)) {
+                return 255;
+            } else {
+                return 0;
+            }
+        }
+
+        if (pixel != 0 && nextPixel == 0) {
+            if ((j + 1) < h) {
+                return findZero(matrixOriginal, i, j + 1, WITH_DOUBLE_NEXT);
+            } else {
+                return 0;
+            }
+        }
+
+        if (pixel == 0 && nextPixel != 0) {
+            if ((j + 1) < h) {
+                return findZero(matrixOriginal, i, j + 1, WITHOUT_DOUBLE_NEXT);
+            } else {
+                return 0;
+            }
+        }
+
+        return 0;
+    }
+
+    public boolean changedSign(int value1, int value2) {
+
+        int max = Math.abs(value1);
+
+        if (Math.abs(value2) > max) {
+            max = Math.abs(value2);
+        }
+
+        int sum = value1 + value2;
+
+        if (Math.abs(sum) >= max) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

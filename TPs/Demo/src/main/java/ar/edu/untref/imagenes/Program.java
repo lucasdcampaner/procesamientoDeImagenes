@@ -181,7 +181,8 @@ public class Program extends Application {
         gaussianFilter.setOnAction(listenerGaussianFilter);
         MenuItem laplacianoMarrHildreth = new MenuItem("Laplaciano (Marr Hilderth)");
         laplacianoMarrHildreth.setOnAction(listenerLaplacianoMarrHildreth);
-        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter, laplacianoMarrHildreth);
+        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
+                laplacianoMarrHildreth);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -206,6 +207,7 @@ public class Program extends Application {
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
         MenuItem laplaciano = new MenuItem("Laplaciano");
         MenuItem sobel = new MenuItem("Sobel");
+        MenuItem crossesByZero = new MenuItem("Crosses by zero");
         sobel.setOnAction(listenerSobel);
         prewitt.setOnAction(listenerPrewitt);
         prewittColor.setOnAction(listenerPrewittColor);
@@ -213,9 +215,10 @@ public class Program extends Application {
         prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
         laplaciano.setOnAction(listenerLaplaciano);
-        
+        crossesByZero.setOnAction(listenerCrossesByZero);
+
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel,
-                laplaciano);
+                laplaciano, crossesByZero);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1115,6 +1118,28 @@ public class Program extends Application {
         }
     };
 
+    private EventHandler<ActionEvent> listenerCrossesByZero = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor entre 1 y 4",
+                        new ListenerResultDialogs<Double>() {
+
+                            @Override
+                            public void accept(Double result) {
+                                int[][] matrixFiltered = borderDetectors.applyGaussianLaplacianFilter(matrixGray, 3,
+                                        result);
+                                int[][] matrixResult = functions.crossesByZero(matrixFiltered);
+                                setSizeImageViewResult(ui.getImageResult(matrixResult));
+                            }
+                        });
+            }
+        }
+    };
+
     private EventHandler<ActionEvent> listenerLaplacianoMarrHildreth = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1122,12 +1147,13 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor entre 1 y 10",
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor entre 1 y 4",
                         new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixResult = borderDetectors.applyGaussianLaplacianDetector(matrixGray, 3, result);
+                                int[][] matrixResult = borderDetectors.applyGaussianLaplacianFilter(matrixGray, 3,
+                                        result);
                                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
                             }
