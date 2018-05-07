@@ -197,4 +197,22 @@ public class Dialogs {
         }
         listenerResultDialogs.accept(array);
     }
+    
+    public static void showConfigureThresholdGlobal(ListenerResultDialogs<Integer> listenerDialog) {
+
+        Integer valor = null;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Umbralizacion Global");
+        dialog.setHeaderText("Ingrese el valor Delta T entre (1 y 254)");
+        do {
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                valor = Integer.valueOf(result.get());
+            }
+        } while (valor < 1 || valor > 255);
+
+        listenerDialog.accept(valor);
+
+    }
+
 }

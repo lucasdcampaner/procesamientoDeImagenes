@@ -241,4 +241,88 @@ public class Modifiers {
         return matrixAux;
 
     }
+
+    public static int[][] thresholdizeGlobal(int[][] matrixGray, Integer delta) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static int[][] thresholdizeOtsu(int[][] matrixGray) {
+
+        int w = matrixGray.length;
+        int h = matrixGray[0].length;
+        int[][] matrixAux = new int[w][h];
+        int valorOptimoDeUmbral = 0;
+        double valorVarianzaMaxima = 0.0;
+
+        double valorVarianza = 0.0;
+
+        int cantidadTotalDePixeles = w * h;
+
+        int[] valoresHistograma = Modifiers.computeGrayHistogram(matrixGray);
+        double[] valoresDeProbOcurrenciaNivelGris = new double[256];
+
+        for (int i = 0; i <= 255; i++) {
+            valoresDeProbOcurrenciaNivelGris[i] = (double) valoresHistograma[i] / cantidadTotalDePixeles;
+        }
+
+        // valores de umbralizacion posibles
+        for (int valorUmbral = 0; valorUmbral <= 255; valorUmbral++) {
+
+            valorVarianza = computeVariance(valorUmbral, valoresDeProbOcurrenciaNivelGris);
+            if (valorUmbral == 0) {
+                valorVarianzaMaxima = valorVarianza; // solo el primer valor seteado como el máximo
+            }
+
+            // Maximizar la varianza anterior
+            if (valorVarianza > valorVarianzaMaxima) {
+                valorVarianzaMaxima = valorVarianza;
+                valorOptimoDeUmbral = valorUmbral;
+            }
+        }
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                if (matrixGray[i][j] > valorOptimoDeUmbral) {
+                    matrixAux[i][j] = 255;
+                } else {
+                    matrixAux[i][j] = 0;
+                }
+            }
+        }
+        // System.out.println("valorOptimoDeUmbral es: " + valorOptimoDeUmbral);
+        Dialogs.showInformation("valorOptimoDeUmbral es: " + valorOptimoDeUmbral);
+
+        return matrixAux;
+    }
+
+    public static double computeVariance(int valorUmbral, double[] valoresDeProbOcurrenciaNivelGris) {
+
+        double valorVarianza = 0.0;
+        double valor1 = 0.0, valor2 = 0.0, umbralClase1 = 0.0, umbralClase2 = 0.0, totalDeUmbral = 0.0;
+
+        for (int i = 0; i <= 255; i++) {
+            if (i < valorUmbral) {
+                umbralClase1 += i * valoresDeProbOcurrenciaNivelGris[i]; // Computar las medias acumulativas Clase 1
+                valor1 += valoresDeProbOcurrenciaNivelGris[i]; // Computar las sumas acumulativas Clase 1
+            } else {
+                umbralClase2 += i * valoresDeProbOcurrenciaNivelGris[i]; // Computar las medias acumulativas Clase 2
+                valor2 += valoresDeProbOcurrenciaNivelGris[i]; // Computar las sumas acumulativas Clase2
+            }
+        }
+
+        if (valor1 != 0) {
+            umbralClase1 = umbralClase1 / valor1;
+        }
+        if (valor2 != 0) {
+            umbralClase2 = umbralClase2 / valor2;
+        }
+
+        // Computar la varianza entre clases
+        totalDeUmbral = (valor1 * umbralClase1) + (valor2 * umbralClase2);
+        valorVarianza = valor1 * Math.pow(umbralClase1 - totalDeUmbral, 2)
+                + valor2 * Math.pow(umbralClase2 - totalDeUmbral, 2);
+        return valorVarianza;
+    }
+
 }
