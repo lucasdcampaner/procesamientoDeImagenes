@@ -243,8 +243,90 @@ public class Modifiers {
     }
 
     public static int[][] thresholdizeGlobal(int[][] matrixGray, Integer delta) {
-        // TODO Auto-generated method stub
-        return null;
+
+        int w = matrixGray.length;
+        int h = matrixGray[0].length;
+        int cantidadIteraciones = 0;
+        int[][] matrixAux = new int[w][h];
+        int valueThreshold = 100; // se "elige" uno inicial, para probar todos
+        int deltaActual = Integer.MAX_VALUE;// para que entre al while
+        int cantidadDeNegros = 0;
+        int cantidadDeBlancos = 0;
+        int exThreshold = 0;
+        int m1 = 0;
+        int m2 = 0;
+
+        while (deltaActual >= delta) {
+
+            matrixAux = thresholdize(matrixGray, valueThreshold);
+
+            cantidadDeNegros = cantidadNegros(matrixAux); // grupo1
+            cantidadDeBlancos = cantidadBlancos(matrixAux);// grupo2
+
+            System.out.println("cantidadDeNegros es: " + cantidadDeNegros);
+            System.out.println("cantidadDeBlancos es: " + cantidadDeBlancos);
+
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                    if (matrixAux[i][j] == 0) {
+                        // m1 += matrixAux[i][j];//negros
+                        // fix es usando i j pero de la imagen original:
+                        m1 += matrixGray[i][j];
+                    } else {
+                        // m2 += matrixAux[i][j];//blancos
+                        // fix es usando i j pero de la imagen original:
+                        m2 += matrixGray[i][j];
+                    }
+                }
+            }
+            System.out.println("m1 es: " + m1);
+            System.out.println("m2 es: " + m2);
+
+            exThreshold = valueThreshold;
+            if (cantidadDeNegros != 0 && cantidadDeBlancos != 0) {
+                valueThreshold = (int) Math.round(0.5 * ((1 / cantidadDeNegros) * m1 + (1 / cantidadDeBlancos) * m2));
+                deltaActual = Math.abs(exThreshold - valueThreshold);
+            }
+            System.out.println("valueThreshold es: " + valueThreshold);
+
+            cantidadIteraciones++;
+            valueThreshold++;
+        }
+
+        Dialogs.showInformation(
+                "valueThreshold es: " + valueThreshold + " cantidadIteraciones: " + cantidadIteraciones);
+
+        return matrixAux;
+    }
+
+    public static int cantidadNegros(int[][] matrixGray) {
+        int cantidad = 0;
+        int w = matrixGray.length;
+        int h = matrixGray[0].length;
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                if (matrixGray[i][j] == 0) {
+                    cantidad++;
+                }
+            }
+        }
+        return cantidad;
+    }
+
+    public static int cantidadBlancos(int[][] matrixGray) {
+        int cantidad = 0;
+        int w = matrixGray.length;
+        int h = matrixGray[0].length;
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                if (matrixGray[i][j] == 255) {
+                    cantidad++;
+                }
+            }
+        }
+        return cantidad;
     }
 
     public static int[][] thresholdizeOtsu(int[][] matrixGray) {
