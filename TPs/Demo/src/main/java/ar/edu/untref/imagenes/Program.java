@@ -138,12 +138,16 @@ public class Program extends Application {
         contrast.setOnAction(listenerContrast);
         MenuItem contrastGamma = new MenuItem("Gamma Contrast");
         contrastGamma.setOnAction(listenerContrastGamma);
-        MenuItem threshold = new MenuItem("Threshold");
+        MenuItem threshold = new MenuItem("Basic Threshold");
         threshold.setOnAction(listenerThreshold);
+        MenuItem thresholdGlobal = new MenuItem("Global Threshold");
+        thresholdGlobal.setOnAction(listenerThresholdGlobal);
+        MenuItem thresholdOtsu = new MenuItem("Otsu Threshold");
+        thresholdOtsu.setOnAction(listenerThresholdOtsu);
         MenuItem equalizeImage = new MenuItem("Equalize image");
         equalizeImage.setOnAction(listenerEqualizeImage);
 
-        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, equalizeImage);
+        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, thresholdGlobal, thresholdOtsu, equalizeImage);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
@@ -632,7 +636,32 @@ public class Program extends Application {
             }
         }
     };
+    
+    private EventHandler<ActionEvent> listenerThresholdGlobal = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
 
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigureThresholdGlobal(result -> {
+                    int[][] matrixAdded = Modifiers.thresholdizeGlobal(matrixGray, result);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
+                
+            }
+        }
+    };
+        
+    private EventHandler<ActionEvent> listenerThresholdOtsu = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                int[][] newMatrix = Modifiers.thresholdizeOtsu(matrixGray);
+                setSizeImageViewResult(ui.getImageResult(newMatrix));
+            }
+        }
+    };
+    
     private EventHandler<ActionEvent> listenerNegative = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
