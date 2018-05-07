@@ -58,6 +58,7 @@ public class Program extends Application {
     private List<int[]> pixelsSelected;
 
     private BorderDetectors borderDetectors;
+    private Softeners softeners;
 
     @Override
     public void start(Stage primaryStage) {
@@ -66,6 +67,7 @@ public class Program extends Application {
             functions = new Functions(stage);
             borderDetectors = new BorderDetectors(functions);
             generatorOfSyntheticImages = new GeneratorOfSyntheticImages();
+            softeners = new Softeners(functions);
             ui = new UI();
 
             Scene scene = createWindow();
@@ -177,7 +179,9 @@ public class Program extends Application {
         filtroMedianaPonderada.setOnAction(listenerFiltroMedianaPonderada);
         MenuItem gaussianFilter = new MenuItem("Gaussian Filter");
         gaussianFilter.setOnAction(listenerGaussianFilter);
-        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter);
+        MenuItem laplacianoMarrHildreth = new MenuItem("Laplaciano (Marr Hilderth)");
+        laplacianoMarrHildreth.setOnAction(listenerLaplacianoMarrHildreth);
+        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter, laplacianoMarrHildreth);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -209,7 +213,7 @@ public class Program extends Application {
         prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
         laplaciano.setOnAction(listenerLaplaciano);
-
+        
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel,
                 laplaciano);
 
@@ -977,7 +981,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyAverageFilter(matrixGray, resultP);
+                    int[][] matrixAdded = softeners.applyAverageFilter(matrixGray, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -991,7 +995,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Dialogs.showConfigurationTamanoMascara(resultP -> {
 
-                    int[][] matrixAdded = functions.applyFiltroMediana(matrixGray, resultP);
+                    int[][] matrixAdded = softeners.applyFiltroMediana(matrixGray, resultP);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
             }
@@ -1005,7 +1009,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrizDePonderacion = { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } };
-                int[][] matrixAdded = functions.applyWeightedMedianFilter(matrixGray, 3, matrizDePonderacion);
+                int[][] matrixAdded = softeners.applyWeightedMedianFilter(matrixGray, 3, matrizDePonderacion);
                 setSizeImageViewResult(ui.getImageResult(matrixAdded));
             }
         }
@@ -1050,14 +1054,20 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                
-                int[][] matrixDXR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
-                int[][] matrixDXG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
-                int[][] matrixDXB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
-                
-                int[][] matrixDYR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
-                int[][] matrixDYG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
-                int[][] matrixDYB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
+
+                int[][] matrixDXR = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
+                int[][] matrixDXG = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
+                int[][] matrixDXB = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
+
+                int[][] matrixDYR = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
+                int[][] matrixDYG = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
+                int[][] matrixDYB = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
 
                 int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
                 int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
@@ -1065,7 +1075,7 @@ public class Program extends Application {
                 int[][] normalizedMatrixR = functions.normalizeMatrix(matrixResultR);
                 int[][] normalizedMatrixG = functions.normalizeMatrix(matrixResultG);
                 int[][] normalizedMatrixB = functions.normalizeMatrix(matrixResultB);
-                
+
                 setSizeImageViewResult(ui.getImageResultColor(normalizedMatrixR, normalizedMatrixG, normalizedMatrixB));
             }
         }
@@ -1101,6 +1111,27 @@ public class Program extends Application {
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerLaplacianoMarrHildreth = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor entre 1 y 10",
+                        new ListenerResultDialogs<Double>() {
+
+                            @Override
+                            public void accept(Double result) {
+                                int[][] matrixResult = borderDetectors.applyGaussianLaplacianDetector(matrixGray, 3, result);
+                                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                            }
+                        });
             }
         }
     };
@@ -1146,7 +1177,7 @@ public class Program extends Application {
                 Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana",
                         "Ingrese un valor de sigma entre 1 y 10", resultP -> {
 
-                            int[][] matrixAdded = functions.applyGaussianFilter(matrixGray, 3, resultP);
+                            int[][] matrixAdded = softeners.applyGaussianFilter(matrixGray, 3, resultP);
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
             }
