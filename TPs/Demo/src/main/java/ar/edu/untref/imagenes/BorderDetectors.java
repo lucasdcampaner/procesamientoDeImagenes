@@ -139,6 +139,48 @@ public class BorderDetectors {
         return matrixs;
     }
 
+    public int[][] applyGaussianLaplacianDetector(int[][] matrizOriginal, int size, double sigma) {
+
+        int sizeMask = size * 2 + 1;
+
+        int top = sizeMask / 2; // control desborde de mascara
+        int width = matrizOriginal.length;
+        int height = matrizOriginal[0].length;
+
+        int[][] matrixResult = new int[width][height];
+        
+        double[][] maskWeight = new double[sizeMask][sizeMask];
+
+        for (int i = top; i < width - top; i++) {
+            for (int j = top; j < height - top; j++) {
+
+                for (int x = 0; x < sizeMask; x++) {
+                    for (int y = 0; y < sizeMask; y++) {
+                        double value = functions.getGaussianLaplacianValue(x, y, size, sigma);
+                        maskWeight[x][y] = value;
+                    }
+                }
+                
+                double adderValues = 0;
+                for (int x = 0; x < maskWeight.length; x++) {
+                    for (int y = 0; y < maskWeight[0].length; y++) {
+
+                        int valueMask = matrizOriginal[i - top + x][j - top + y];
+                        double valueWeight = maskWeight[x][y];
+
+                        adderValues += valueMask * valueWeight; // suma los valores de la mascara
+                    }
+                }
+
+                int valuePixel = (int) Math.round(adderValues);
+                matrixResult[i][j] = valuePixel;
+            }
+        }
+
+        matrixResult = functions.repeatNPixelsBorder(matrixResult, top); // repito 1 pixel en los 4 bordes
+        return matrixResult;
+    }
+
     public int[][] applyHighPassFilter(int[][] matrixOriginal) {
 
         int[][] matrixWeight = { { -1, -1, -1 }, { -1, 8, -1 }, { -1, -1, -1 } };

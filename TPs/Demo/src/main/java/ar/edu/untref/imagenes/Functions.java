@@ -121,9 +121,9 @@ public class Functions {
 
         int w = (int) image.getWidth();
         int h = (int) image.getHeight();
-        
+
         List<int[][]> listMatrix = new ArrayList<>();
-        
+
         int[][] matrixGray = new int[w][h];
         int[][] matrixR = new int[w][h];
         int[][] matrixG = new int[w][h];
@@ -137,7 +137,7 @@ public class Functions {
                 matrixB[i][j] = image.getPixel(i, j)[3];
             }
         }
-        
+
         listMatrix.add(matrixGray);
         listMatrix.add(matrixR);
         listMatrix.add(matrixG);
@@ -663,7 +663,7 @@ public class Functions {
         return matrizResult;
     }
 
-    public int[][] applyGaussianFilter(int[][] matrizOriginal, int size, double sigma) { 
+    public int[][] applyGaussianFilter(int[][] matrizOriginal, int size, double sigma) {
 
         int sizeMask = size * 2 + 1;
 
@@ -740,5 +740,19 @@ public class Functions {
 
         return (1 / (2 * Math.PI * Math.pow(sigma, 2)))
                 * Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
+    }
+
+    public double getGaussianLaplacianValue(int x, int y, int center, double sigma) {
+
+        // G(x,y) = -1/(2.π.Ω^3) * [2 - ((x^2 + y^2) / Ω^2)] * e^-[ 2(x^2 + y^2) / 2Ω^2]
+
+        int x_mask = x - center;
+        int y_mask = y - center;
+        
+        double firstTerm = (-1 / (2 * Math.PI * Math.pow(sigma, 3)));
+        double secondTerm = (2 - ((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
+        double thirdTerm =  Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (2 * (Math.pow(sigma, 2)))));
+
+        return  firstTerm * secondTerm * thirdTerm;
     }
 }

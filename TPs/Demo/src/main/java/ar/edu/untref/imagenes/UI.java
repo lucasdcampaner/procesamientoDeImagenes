@@ -132,7 +132,6 @@ public class UI {
                 bgr[1] = matrixG[i][j];
                 bgr[2] = matrixR[i][j];
                 imageResult.getProcessor().putPixel(i, j, bgr);
-                ;
             }
         }
 
