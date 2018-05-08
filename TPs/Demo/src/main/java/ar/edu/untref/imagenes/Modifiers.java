@@ -252,7 +252,7 @@ public class Modifiers {
         int[][] thresholdMatrix = new int[w][h];
 
         int oldValueThreshold = 0;
-        int newValueThreshold = 100;
+        int newValueThreshold = 1;// comienzo por el minimo
 
         int currentDelta = Integer.MAX_VALUE;
 
@@ -265,8 +265,9 @@ public class Modifiers {
 
             thresholdMatrix = thresholdize(matrixGray, newValueThreshold);
 
-            int amountBlack = counterPixelsGray(thresholdMatrix).get(0);
-            int amountWhite = counterPixelsGray(thresholdMatrix).get(1);
+            List<Integer> amountsBlackAndWhite = counterPixelsBlackAndWhite(thresholdMatrix);
+            int amountBlack = amountsBlackAndWhite.get(0);
+            int amountWhite = amountsBlackAndWhite.get(1);
 
             for (int i = 0; i < w; i++) {
                 for (int j = 0; j < h; j++) {
@@ -298,28 +299,28 @@ public class Modifiers {
         return thresholdMatrix;
     }
 
-    private static List<Integer> counterPixelsGray(int[][] matrixGray) {
+    private static List<Integer> counterPixelsBlackAndWhite(int[][] matrixBlackAndWhite) {
 
-        int black = 0;
-        int white = 0;
+        int countBlack = 0;
+        int countWhite = 0;
 
         List<Integer> amounts = new ArrayList<>();
 
-        int w = matrixGray.length;
-        int h = matrixGray[0].length;
+        int w = matrixBlackAndWhite.length;
+        int h = matrixBlackAndWhite[0].length;
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                if (matrixGray[i][j] == 0) {
-                    black++;
-                } else if (matrixGray[i][j] == 255) {
-                    white++;
+                if (matrixBlackAndWhite[i][j] == 0) {
+                    countBlack++;
+                } else {
+                    countWhite++;
                 }
             }
         }
 
-        amounts.add(black);
-        amounts.add(white);
+        amounts.add(countBlack);
+        amounts.add(countWhite);
         return amounts;
     }
 
