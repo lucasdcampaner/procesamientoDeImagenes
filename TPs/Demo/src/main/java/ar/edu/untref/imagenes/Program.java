@@ -208,6 +208,7 @@ public class Program extends Application {
         MenuItem laplaciano = new MenuItem("Laplaciano");
         MenuItem sobel = new MenuItem("Sobel");
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
+        MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
         sobel.setOnAction(listenerSobel);
         prewitt.setOnAction(listenerPrewitt);
         prewittColor.setOnAction(listenerPrewittColor);
@@ -216,9 +217,10 @@ public class Program extends Application {
         highPassFilter.setOnAction(listenerHighPassFilter);
         laplaciano.setOnAction(listenerLaplaciano);
         crossesByZero.setOnAction(listenerCrossesByZero);
+        pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel,
-                laplaciano, crossesByZero);
+                laplaciano, crossesByZero, pendingOfCrosses);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1114,6 +1116,29 @@ public class Program extends Application {
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
+            }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerPendingOfCrosses = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
+                        new ListenerResultDialogs<Double>() {
+
+                            @Override
+                            public void accept(Double result) {
+                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
+                                        1.0);
+                                int[][] matrixCrossesByZero = borderDetectors.crossesByZero(matrixFiltered);
+                                int[][] matrixPending = borderDetectors.pendingOfCrosses(matrixCrossesByZero, 50);
+                                setSizeImageViewResult(ui.getImageResult(matrixPending));
+                            }
+                        });
             }
         }
     };

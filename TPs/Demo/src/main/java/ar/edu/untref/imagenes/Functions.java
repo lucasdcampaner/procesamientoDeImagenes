@@ -11,11 +11,9 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import ij.ImagePlus;
-//import ij.io.FileSaver;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-//import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -546,7 +544,7 @@ public class Functions {
         return firstTerm * secondTerm * thirdTerm;
     }
 
-    public int findZero(int[][] matrixOriginal, int i, int j, int doubleNext) {
+    public int findZero(int[][] matrixOriginal, int i, int j, int doubleNext, int threshold) {
 
         int h = matrixOriginal[0].length;
 
@@ -555,7 +553,8 @@ public class Functions {
 
         if (pixel != 0 && nextPixel != 0) {
 
-            if (changedSign(pixel, nextPixel)) {
+            int sumPixels = Math.abs(pixel + nextPixel);
+            if (changedSign(pixel, nextPixel) && sumPixels >= threshold) {
                 return 255;
             } else {
                 return 0;
@@ -564,7 +563,7 @@ public class Functions {
 
         if (pixel != 0 && nextPixel == 0) {
             if ((j + 1) < h) {
-                return findZero(matrixOriginal, i, j + 1, WITH_DOUBLE_NEXT);
+                return findZero(matrixOriginal, i, j + 1, WITH_DOUBLE_NEXT, threshold);
             } else {
                 return 0;
             }
@@ -572,7 +571,7 @@ public class Functions {
 
         if (pixel == 0 && nextPixel != 0) {
             if ((j + 1) < h) {
-                return findZero(matrixOriginal, i, j + 1, WITHOUT_DOUBLE_NEXT);
+                return findZero(matrixOriginal, i, j + 1, WITHOUT_DOUBLE_NEXT, threshold);
             } else {
                 return 0;
             }

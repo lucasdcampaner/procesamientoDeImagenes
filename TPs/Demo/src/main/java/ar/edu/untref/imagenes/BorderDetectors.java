@@ -12,7 +12,7 @@ public class BorderDetectors {
     private static final int DERIVATE_Y = 1;
     private static final int ROTATION_R = 2;
     private static final int ROTATION_L = 3;
-    private final static int WITHOUT_DOUBLE_NEXT = 1;
+    private final static int WITHOUT_DOUBLE_NEXT = 0;
 
     public BorderDetectors(Functions functions) {
         this.functions = functions;
@@ -263,7 +263,23 @@ public class BorderDetectors {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                matrixResult[i][j] = functions.findZero(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT);
+                matrixResult[i][j] = functions.findZero(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT, 0);
+            }
+        }
+        
+        return matrixResult;
+    }
+    
+    public int[][] pendingOfCrosses(int[][] matrixOriginal, int threshold) {
+
+        int w = matrixOriginal.length;
+        int h = matrixOriginal[0].length;
+
+        int[][] matrixResult = new int[w][h];
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h - 1; j++) {
+                matrixResult[i][j] = functions.findZero(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT, threshold);
             }
         }
         

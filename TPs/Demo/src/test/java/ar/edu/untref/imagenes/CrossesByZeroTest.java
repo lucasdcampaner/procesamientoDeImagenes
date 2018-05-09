@@ -50,7 +50,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
@@ -69,7 +69,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
@@ -88,7 +88,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
@@ -107,7 +107,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
@@ -126,7 +126,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
@@ -145,7 +145,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
@@ -164,7 +164,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
@@ -183,7 +183,7 @@ public class CrossesByZeroTest {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0);
+                arrayResult[i][j] = functions.findZero(matrixOriginal, i, j, 0, 0);
             }
         }
 
