@@ -581,7 +581,7 @@ public class Functions {
         return 0;
     }
 
-    private boolean changedSign(int value1, int value2) {
+    public boolean changedSign(int value1, int value2) {
 
         int max = Math.abs(value1);
 
