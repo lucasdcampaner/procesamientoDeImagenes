@@ -1130,7 +1130,7 @@ public class Program extends Application {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixFiltered = borderDetectors.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
+                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
                                         1.0);
                                 int[][] matrixResult = functions.crossesByZero(matrixFiltered);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
@@ -1152,7 +1152,7 @@ public class Program extends Application {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixResult = borderDetectors.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
+                                int[][] matrixResult = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
                                         1.0);
                                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
