@@ -546,22 +546,6 @@ public class Functions {
         return firstTerm * secondTerm * thirdTerm;
     }
 
-    public int[][] crossesByZero(int[][] matrixOriginal) {
-
-        int w = matrixOriginal.length;
-        int h = matrixOriginal[0].length;
-
-        int[][] matrixResult = new int[w][h];
-
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h - 1; j++) {
-                matrixResult[i][j] = findZero(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT);
-            }
-        }
-        
-        return matrixResult;
-    }
-
     public int findZero(int[][] matrixOriginal, int i, int j, int doubleNext) {
 
         int h = matrixOriginal[0].length;
@@ -597,7 +581,7 @@ public class Functions {
         return 0;
     }
 
-    public boolean changedSign(int value1, int value2) {
+    private boolean changedSign(int value1, int value2) {
 
         int max = Math.abs(value1);
 

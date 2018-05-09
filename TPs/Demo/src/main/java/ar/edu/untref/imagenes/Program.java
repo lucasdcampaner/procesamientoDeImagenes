@@ -1132,7 +1132,7 @@ public class Program extends Application {
                             public void accept(Double result) {
                                 int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
                                         1.0);
-                                int[][] matrixResult = functions.crossesByZero(matrixFiltered);
+                                int[][] matrixResult = borderDetectors.crossesByZero(matrixFiltered);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             }
                         });
