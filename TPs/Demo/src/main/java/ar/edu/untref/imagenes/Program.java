@@ -1125,13 +1125,13 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor entre 1 y 4",
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
                         new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixFiltered = borderDetectors.applyGaussianLaplacianFilter(matrixGray, 3,
-                                        result);
+                                int[][] matrixFiltered = borderDetectors.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
+                                        1.0);
                                 int[][] matrixResult = functions.crossesByZero(matrixFiltered);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             }
@@ -1147,13 +1147,13 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor entre 1 y 4",
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
                         new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixResult = borderDetectors.applyGaussianLaplacianFilter(matrixGray, 3,
-                                        result);
+                                int[][] matrixResult = borderDetectors.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
+                                        1.0);
                                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
                             }

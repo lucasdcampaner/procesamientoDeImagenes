@@ -157,7 +157,7 @@ public class BorderDetectors {
                 for (int x = 0; x < sizeMask; x++) {
                     for (int y = 0; y < sizeMask; y++) {
                         double value = functions.getGaussianLaplacianValue(x, y, size / 2, sigma);
-                        maskWeight[x][y] = Math.ceil(value * 100);
+                        maskWeight[x][y] = value * 255;
                     }
                 }
                 
