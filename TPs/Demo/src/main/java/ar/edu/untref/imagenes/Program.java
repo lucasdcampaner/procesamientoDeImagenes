@@ -147,7 +147,8 @@ public class Program extends Application {
         MenuItem equalizeImage = new MenuItem("Equalize image");
         equalizeImage.setOnAction(listenerEqualizeImage);
 
-        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, thresholdGlobal, thresholdOtsu, equalizeImage);
+        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, thresholdGlobal,
+                thresholdOtsu, equalizeImage);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
@@ -638,7 +639,7 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerThresholdGlobal = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -648,11 +649,11 @@ public class Program extends Application {
                     int[][] matrixAdded = Modifiers.thresholdizeGlobal(matrixGray, result);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
-                
+
             }
         }
     };
-        
+
     private EventHandler<ActionEvent> listenerThresholdOtsu = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -663,7 +664,7 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerNegative = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -1119,7 +1120,7 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerPendingOfCrosses = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1127,16 +1128,25 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
-                        new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano",
+                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
-                                        1.0);
-                                int[][] matrixCrossesByZero = borderDetectors.crossesByZero(matrixFiltered);
-                                int[][] matrixPending = borderDetectors.pendingOfCrosses(matrixCrossesByZero, 50);
-                                setSizeImageViewResult(ui.getImageResult(matrixPending));
+                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray,
+                                        result.intValue(), 1.0);
+
+                                Dialogs.showConfigurationParameterDistribution("Umbral",
+                                        "Ingrese un valor de umbral entre 0 y 255",
+                                        new ListenerResultDialogs<Double>() {
+
+                                            @Override
+                                            public void accept(Double result) {
+                                                
+                                                int[][] matrixPending = borderDetectors.pendingOfCrossesByZero(matrixFiltered, result.intValue());
+                                                setSizeImageViewResult(ui.getImageResult(matrixPending));
+                                            }
+                                        });
                             }
                         });
             }
@@ -1150,14 +1160,14 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
-                        new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano",
+                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
-                                        1.0);
-                                int[][] matrixResult = borderDetectors.crossesByZero(matrixFiltered);
+                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray,
+                                        result.intValue(), 1.0);
+                                int[][] matrixResult = borderDetectors.pendingOfCrossesByZero(matrixFiltered, 0);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             }
                         });
@@ -1172,13 +1182,13 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
-                        new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano",
+                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixResult = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(),
-                                        1.0);
+                                int[][] matrixResult = softeners.applyGaussianLaplacianFilter(matrixGray,
+                                        result.intValue(), 1.0);
                                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
                             }

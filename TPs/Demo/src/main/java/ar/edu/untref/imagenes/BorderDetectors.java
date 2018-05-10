@@ -254,34 +254,29 @@ public class BorderDetectors {
         return max;
     }
     
-    public int[][] crossesByZero(int[][] matrixOriginal) {
+    public int[][] pendingOfCrossesByZero(int[][] matrixOriginal, int threshold) {
 
         int w = matrixOriginal.length;
         int h = matrixOriginal[0].length;
 
-        int[][] matrixResult = new int[w][h];
+        int[][] matrixResult = new int[w][w];
+        int[][] matrixResultH = new int[w][h];
+        int[][] matrixResultV = new int[w][h];
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h - 1; j++) {
-                matrixResult[i][j] = functions.findZero(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT, 0);
+                matrixResultH[i][j] = functions.findZeroH(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT, threshold);
+                
             }
         }
         
-        return matrixResult;
-    }
-    
-    public int[][] pendingOfCrosses(int[][] matrixOriginal, int threshold) {
-
-        int w = matrixOriginal.length;
-        int h = matrixOriginal[0].length;
-
-        int[][] matrixResult = new int[w][h];
-
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h - 1; j++) {
-                matrixResult[i][j] = functions.findZero(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT, threshold);
+        for (int i = 0; i < w - 1; i++) {
+            for (int j = 0; j < h; j++) {
+                matrixResultV[i][j] = functions.findZeroV(matrixOriginal, i, j, WITHOUT_DOUBLE_NEXT, threshold);
             }
         }
+        
+        matrixResult = Modifiers.addImage(matrixResultH, matrixResultV);
         
         return matrixResult;
     }

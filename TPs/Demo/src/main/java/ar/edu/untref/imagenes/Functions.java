@@ -543,8 +543,8 @@ public class Functions {
 
         return firstTerm * secondTerm * thirdTerm;
     }
-
-    public int findZero(int[][] matrixOriginal, int i, int j, int doubleNext, int threshold) {
+    
+    public int findZeroH(int[][] matrixOriginal, int i, int j, int doubleNext, int threshold) {
 
         int h = matrixOriginal[0].length;
 
@@ -554,8 +554,12 @@ public class Functions {
         if (pixel != 0 && nextPixel != 0) {
 
             int sumPixels = Math.abs(pixel + nextPixel);
-            if (changedSign(pixel, nextPixel) && sumPixels >= threshold) {
-                return 255;
+            if (changedSign(pixel, nextPixel)) {
+                if (sumPixels >= threshold) {
+                    return 255;
+                } else {
+                    return 0;
+                }
             } else {
                 return 0;
             }
@@ -563,7 +567,7 @@ public class Functions {
 
         if (pixel != 0 && nextPixel == 0) {
             if ((j + 1) < h) {
-                return findZero(matrixOriginal, i, j + 1, WITH_DOUBLE_NEXT, threshold);
+                return findZeroH(matrixOriginal, i, j + 1, WITH_DOUBLE_NEXT, threshold);
             } else {
                 return 0;
             }
@@ -571,7 +575,47 @@ public class Functions {
 
         if (pixel == 0 && nextPixel != 0) {
             if ((j + 1) < h) {
-                return findZero(matrixOriginal, i, j + 1, WITHOUT_DOUBLE_NEXT, threshold);
+                return findZeroH(matrixOriginal, i, j + 1, WITHOUT_DOUBLE_NEXT, threshold);
+            } else {
+                return 0;
+            }
+        }
+
+        return 0;
+    }
+
+    public int findZeroV(int[][] matrixOriginal, int i, int j, int doubleNext, int threshold) {
+
+        int w = matrixOriginal.length;
+
+        int pixel = matrixOriginal[i - doubleNext][j];
+        int nextPixel = matrixOriginal[i + 1][j];
+
+        if (pixel != 0 && nextPixel != 0) {
+
+            int sumPixels = Math.abs(pixel + nextPixel);
+            if (changedSign(pixel, nextPixel)) {
+                if (sumPixels >= threshold) {
+                    return 255;
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+        }
+
+        if (pixel != 0 && nextPixel == 0) {
+            if ((i + 1) < w) {
+                return findZeroV(matrixOriginal, i + 1, j, WITH_DOUBLE_NEXT, threshold);
+            } else {
+                return 0;
+            }
+        }
+
+        if (pixel == 0 && nextPixel != 0) {
+            if ((i + 1) < w) {
+                return findZeroV(matrixOriginal, i + 1, j, WITHOUT_DOUBLE_NEXT, threshold);
             } else {
                 return 0;
             }
