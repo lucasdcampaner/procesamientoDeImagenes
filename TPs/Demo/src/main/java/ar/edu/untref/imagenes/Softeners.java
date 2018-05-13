@@ -316,9 +316,8 @@ public class Softeners {
 
     }
 
-    private int calcularLecreriano(double valorSigma, double derivadaNorte) {
-        // TODO Auto-generated method stub
-        return 0;
+    private int calcularLecreriano(double valorSigma, double valorDerivada) {
+        return (int) Math.round(Math.pow(Math.E, (Math.pow(-Math.abs(valorDerivada), 2) / Math.pow(valorSigma, 2))));
     }
 
     public int calcularLorentziano(double valorSigma, double valorDerivada) {
