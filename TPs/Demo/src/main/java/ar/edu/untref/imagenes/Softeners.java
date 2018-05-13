@@ -3,9 +3,9 @@ package ar.edu.untref.imagenes;
 import java.util.Arrays;
 
 public class Softeners {
-    
+
     private Functions functions;
-    
+
     public Softeners(Functions functions) {
         this.functions = functions;
     }
@@ -46,8 +46,8 @@ public class Softeners {
         }
         matrizResult = functions.normalizeMatrix(matrizResult); // NORMALIZO AQUÍ
         matrizResult = functions.repeatNPixelsBorder(matrizResult, tope); // repito 1
-                                                                // pixel en los
-                                                                // 4 bordes
+        // pixel en los
+        // 4 bordes
         return matrizResult;
     }
 
@@ -161,7 +161,7 @@ public class Softeners {
         matrizResult = functions.repeatNPixelsBorder(matrizResult, top); // repito 1 pixel en los 4 bordes
         return matrizResult;
     }
-    
+
     public int[][] applyAverageFilter(int[][] matrizOriginal, int sizeMask) {
 
         int[][] mask = new int[sizeMask][sizeMask];
@@ -221,7 +221,7 @@ public class Softeners {
         matrizResult = functions.repeatNPixelsBorder(matrizResult, top); // repito 1 pixel en los 4 bordes
         return matrizResult;
     }
-    
+
     public int[][] applyGaussianLaplacianFilter(int[][] matrizOriginal, int size, double sigma) {
 
         int sizeMask = size * 2 + 1;
@@ -231,7 +231,7 @@ public class Softeners {
         int height = matrizOriginal[0].length;
 
         int[][] matrixResult = new int[width][height];
-        
+
         double[][] maskWeight = new double[sizeMask][sizeMask];
 
         for (int i = top; i < width - top; i++) {
@@ -243,7 +243,7 @@ public class Softeners {
                         maskWeight[x][y] = value * 10;
                     }
                 }
-                
+
                 double adderValues = 0;
                 for (int x = 0; x < maskWeight.length; x++) {
                     for (int y = 0; y < maskWeight[0].length; y++) {
@@ -263,4 +263,84 @@ public class Softeners {
         matrixResult = functions.repeatNPixelsBorder(matrixResult, top); // repito 1 pixel en los 4 bordes
         return matrixResult;
     }
+
+    public int[][] applyAnOrIsotropicaFilter(int[][] matrixGray, int cantRepeticiones, String eleccion,
+            double valorSigma) {
+
+        int width = matrixGray.length;
+        int height = matrixGray[0].length;
+
+        int[][] matrixResult = matrixGray; // new int[width][height];
+
+        int cN = 1, cS = 1, cE = 1, cO = 1;
+        int value;
+        double derivadaNorte = 0, derivadaSur = 0, derivadaEste = 0, derivadaOeste = 0;
+
+        for (int c = 0; c < cantRepeticiones; c++) {
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+
+                    derivadaNorte = calcularDerivadaNorte(matrixResult, i, j);
+                    derivadaSur = calcularDerivadaSur(matrixResult, i, j);
+                    derivadaEste = calcularDerivadaEste(matrixResult, i, j);
+                    derivadaOeste = calcularDerivadaOeste(matrixResult, i, j);
+
+                    if (eleccion != "iso") {
+                        cN = this.calcularValorC(valorSigma, derivadaNorte, "loretnz");
+                        cS = this.calcularValorC(valorSigma, derivadaSur, "loretnz");
+                        cE = this.calcularValorC(valorSigma, derivadaEste, "loretnz");
+                        cO = this.calcularValorC(valorSigma, derivadaOeste, "loretnz");
+                    }
+
+                    value = (int) Math.round(matrixGray[i][j]
+                            + 0.25 * (derivadaNorte * cN + derivadaSur * cS + derivadaEste * cE + derivadaOeste * cO));
+
+                    matrixResult[i][j] = value;
+
+                } // for j
+            } // for i
+        } // for c
+
+        return matrixResult;
+
+    }
+
+    private int calcularValorC(double valorSigma, double valorDerivada, String method) {
+        if (method == "lorentz") {
+            return calcularLorentziano(valorSigma, valorDerivada);
+        } else {
+            return calcularLecreriano(valorSigma, valorDerivada);
+        }
+
+    }
+
+    private int calcularLecreriano(double valorSigma, double derivadaNorte) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public int calcularLorentziano(double valorSigma, double valorDerivada) {
+        return (int) Math.round(1 / (((float) (Math.pow(Math.abs(valorDerivada), 2) / Math.pow(valorSigma, 2))) + 1));
+    }
+
+    private double calcularDerivadaOeste(int[][] matrixGray, int i, int j) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private double calcularDerivadaEste(int[][] matrixGray, int i, int j) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private double calcularDerivadaSur(int[][] matrixGray, int i, int j) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private double calcularDerivadaNorte(int[][] matrixGray, int i, int j) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

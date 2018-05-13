@@ -182,8 +182,12 @@ public class Program extends Application {
         gaussianFilter.setOnAction(listenerGaussianFilter);
         MenuItem laplacianoMarrHildreth = new MenuItem("Laplaciano (Marr Hilderth)");
         laplacianoMarrHildreth.setOnAction(listenerLaplacianoMarrHildreth);
+        MenuItem isotropicaFilter = new MenuItem("Isotropic Filter");
+        isotropicaFilter.setOnAction(listenerIsotropicaFilter);
+        MenuItem anisotropicaFilter = new MenuItem("AnIsotropic Filter");
+        anisotropicaFilter.setOnAction(listenerAnIsotropicaFilter);
         menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
-                laplacianoMarrHildreth);
+                laplacianoMarrHildreth, isotropicaFilter, anisotropicaFilter);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -1142,8 +1146,9 @@ public class Program extends Application {
 
                                             @Override
                                             public void accept(Double result) {
-                                                
-                                                int[][] matrixPending = borderDetectors.pendingOfCrossesByZero(matrixFiltered, result.intValue());
+
+                                                int[][] matrixPending = borderDetectors
+                                                        .pendingOfCrossesByZero(matrixFiltered, result.intValue());
                                                 setSizeImageViewResult(ui.getImageResult(matrixPending));
                                             }
                                         });
@@ -1189,6 +1194,49 @@ public class Program extends Application {
                             public void accept(Double result) {
                                 int[][] matrixResult = softeners.applyGaussianLaplacianFilter(matrixGray,
                                         result.intValue(), 1.0);
+                                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                            }
+                        });
+            }
+        }
+    };
+
+    // listenerAnIsotropicaFilter
+    private EventHandler<ActionEvent> listenerAnIsotropicaFilter = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Difusion Anisotropica",
+                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+
+                            @Override
+                            public void accept(Double result) {
+                                int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray, 4, "ani",
+                                        result);
+                                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                            }
+                        });
+            }
+        }
+    };
+    // listenerIsotropicaFilter
+    private EventHandler<ActionEvent> listenerIsotropicaFilter = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Difusion Isotropica",
+                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+
+                            @Override
+                            public void accept(Double result) {
+                                int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray, 4, "iso",
+                                        result);
                                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
                             }
