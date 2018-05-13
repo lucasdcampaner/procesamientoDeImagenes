@@ -212,9 +212,11 @@ public class Program extends Application {
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
         MenuItem laplaciano = new MenuItem("Laplaciano");
         MenuItem sobel = new MenuItem("Sobel");
+        MenuItem sobelColor = new MenuItem("Sobel Color");
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
         sobel.setOnAction(listenerSobel);
+        sobelColor.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewitt);
         prewittColor.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -224,7 +226,7 @@ public class Program extends Application {
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel,
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel, sobelColor,
                 laplaciano, crossesByZero, pendingOfCrosses);
 
         // Menu deteccion de bordes
@@ -1104,6 +1106,38 @@ public class Program extends Application {
 
                 int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerSobelColor = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+
+                int[][] matrixDXR = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
+                int[][] matrixDXG = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
+                int[][] matrixDXB = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
+
+                int[][] matrixDYR = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
+                int[][] matrixDYG = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
+                int[][] matrixDYB = borderDetectors
+                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
+
+                int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
+                int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
+                int[][] matrixResultB = Modifiers.calculateGradient(matrixDXB, matrixDYB);
+
+                setSizeImageViewResult(ui.getImageResultColor(matrixResultR, matrixResultG, matrixResultB));
             }
         }
     };
