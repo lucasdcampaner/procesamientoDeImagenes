@@ -299,6 +299,8 @@ public class Softeners {
 
                 } // for j
             } // for i
+              // normalizo
+            matrixResult = functions.normalizeMatrix(matrixResult); // NORMALIZO AQUÍ
         } // for c
 
         return matrixResult;
@@ -323,24 +325,57 @@ public class Softeners {
         return (int) Math.round(1 / (((float) (Math.pow(Math.abs(valorDerivada), 2) / Math.pow(valorSigma, 2))) + 1));
     }
 
-    private double calcularDerivadaOeste(int[][] matrixGray, int i, int j) {
-        // TODO Auto-generated method stub
-        return 0;
+    private int calcularDerivadaOeste(int[][] matrixGray, int i, int j) {
+        int width = matrixGray.length;
+        int height = matrixGray[0].length;
+        int value = matrixGray[i][j];
+        int x = j - 1;// ancho - 1
+
+        if (x >= width || x < 0) {// se pasa
+            return value;
+        } else {
+            return (matrixGray[i][x] - value);
+        }
     }
 
-    private double calcularDerivadaEste(int[][] matrixGray, int i, int j) {
-        // TODO Auto-generated method stub
-        return 0;
+    private int calcularDerivadaEste(int[][] matrixGray, int i, int j) {
+        int width = matrixGray.length;
+        int height = matrixGray[0].length;
+        int value = matrixGray[i][j];
+        int x = j + 1;// ancho + 1
+
+        if (x >= width || x < 0) {// se pasa
+            return value;
+        } else {
+            return (matrixGray[i][x] - value);
+        }
     }
 
-    private double calcularDerivadaSur(int[][] matrixGray, int i, int j) {
-        // TODO Auto-generated method stub
-        return 0;
+    private int calcularDerivadaSur(int[][] matrixGray, int i, int j) {
+        int width = matrixGray.length;
+        int height = matrixGray[0].length;
+        int value = matrixGray[i][j];
+        int x = i + 1;// alto + 1
+
+        if (x >= height || x < 0) {// se pasa
+            return value;
+        } else {
+            return (matrixGray[x][j] - value);
+        }
     }
 
-    private double calcularDerivadaNorte(int[][] matrixGray, int i, int j) {
-        // TODO Auto-generated method stub
-        return 0;
+    private int calcularDerivadaNorte(int[][] matrixGray, int i, int j) {
+        int width = matrixGray.length;
+        int height = matrixGray[0].length;
+        int value = matrixGray[i][j];
+        int x = i - 1;// alto menos 1
+
+        if (x >= height || x < 0) {// se pasa
+            return value;
+        } else {
+            return (matrixGray[x][j] - value);
+        }
+
     }
 
 }
