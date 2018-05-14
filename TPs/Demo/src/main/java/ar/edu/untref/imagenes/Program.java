@@ -226,8 +226,8 @@ public class Program extends Application {
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel, sobelColor,
-                laplaciano, crossesByZero, pendingOfCrosses);
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel,
+                sobelColor, laplaciano, crossesByZero, pendingOfCrosses);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1236,45 +1236,66 @@ public class Program extends Application {
         }
     };
 
-    // listenerAnIsotropicaFilter
     private EventHandler<ActionEvent> listenerAnIsotropicaFilter = new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Difusion Anisotropica",
-                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+
+                Dialogs.showConfigurationParameterDistribution("Eleccion de gradiente",
+                        "Escriba 1 para Loretziano, 2 para Lecreriano", new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray, 4, "ani",
-                                        result);
-                                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
-                                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                                int gradientSelection = (int) Math.round(result);
+
+                                Dialogs.showConfigureTwoParameters("Difusion Anisotropica",
+                                        "Ingrese cantidad de repeticiones y el valor de sigma", "Repeticiones", "Sigma",
+                                        results -> {
+                                            int count = (int) Math.round(results[0]);
+                                            double sigma = results[1];
+                                            int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray,
+                                                    count, "ani", sigma, gradientSelection);
+                                            // int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                                            // setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                                            setSizeImageViewResult(ui.getImageResult(matrixResult));
+                                        });
                             }
                         });
+
             }
         }
     };
-    // listenerIsotropicaFilter
+
     private EventHandler<ActionEvent> listenerIsotropicaFilter = new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Difusion Isotropica",
-                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+
+                Dialogs.showConfigurationParameterDistribution("Eleccion de gradiente",
+                        "Escriba 1 para Loretziano, 2 para Lecreriano", new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray, 4, "iso",
-                                        result);
-                                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
-                                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                                int gradientSelection = (int) Math.round(result);
+
+                                Dialogs.showConfigureTwoParameters("Difusion Isotropica",
+                                        "Ingrese cantidad de repeticiones y el valor de sigma", "Repeticiones", "Sigma",
+                                        results -> {
+                                            int count = (int) Math.round(results[0]);
+                                            double sigma = results[1];
+                                            int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray,
+                                                    count, "iso", sigma, gradientSelection);
+                                            // int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                                            // setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                                            setSizeImageViewResult(ui.getImageResult(matrixResult));
+                                        });
                             }
                         });
+
             }
         }
     };

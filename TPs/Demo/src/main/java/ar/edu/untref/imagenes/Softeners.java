@@ -265,7 +265,7 @@ public class Softeners {
     }
 
     public int[][] applyAnOrIsotropicaFilter(int[][] matrixGray, int cantRepeticiones, String eleccion,
-            double valorSigma) {
+            double valorSigma, int gradientSelection) {
 
         int width = matrixGray.length;
         int height = matrixGray[0].length;
@@ -275,6 +275,11 @@ public class Softeners {
         int cN = 1, cS = 1, cE = 1, cO = 1;
         int value;
         double derivadaNorte = 0, derivadaSur = 0, derivadaEste = 0, derivadaOeste = 0;
+        String methodGradientSelection = "lecrer";
+
+        if (gradientSelection == 1) {
+            methodGradientSelection = "loretnz";
+        }
 
         for (int c = 0; c < cantRepeticiones; c++) {
             for (int i = 0; i < width; i++) {
@@ -286,25 +291,21 @@ public class Softeners {
                     derivadaOeste = calcularDerivadaOeste(matrixResult, i, j);
 
                     if (eleccion != "iso") {
-                        cN = this.calcularValorC(valorSigma, derivadaNorte, "loretnz");
-                        cS = this.calcularValorC(valorSigma, derivadaSur, "loretnz");
-                        cE = this.calcularValorC(valorSigma, derivadaEste, "loretnz");
-                        cO = this.calcularValorC(valorSigma, derivadaOeste, "loretnz");
+                        cN = this.calcularValorC(valorSigma, derivadaNorte, methodGradientSelection);
+                        cS = this.calcularValorC(valorSigma, derivadaSur, methodGradientSelection);
+                        cE = this.calcularValorC(valorSigma, derivadaEste, methodGradientSelection);
+                        cO = this.calcularValorC(valorSigma, derivadaOeste, methodGradientSelection);
                     }
-
                     value = (int) Math.round(matrixGray[i][j]
                             + 0.25 * (derivadaNorte * cN + derivadaSur * cS + derivadaEste * cE + derivadaOeste * cO));
-
                     matrixResult[i][j] = value;
-
                 } // for j
             } // for i
-              // normalizo
+
             matrixResult = functions.normalizeMatrix(matrixResult); // NORMALIZO AQUÍ
         } // for c
 
         return matrixResult;
-
     }
 
     private int calcularValorC(double valorSigma, double valorDerivada, String method) {
@@ -313,7 +314,6 @@ public class Softeners {
         } else {
             return calcularLecreriano(valorSigma, valorDerivada);
         }
-
     }
 
     private int calcularLecreriano(double valorSigma, double valorDerivada) {
@@ -328,9 +328,9 @@ public class Softeners {
         int width = matrixGray.length;
         int height = matrixGray[0].length;
         int value = matrixGray[i][j];
-        int x = j - 1;// ancho - 1
+        int x = j - 1;// alto - 1
 
-        if (x >= width || x < 0) {// se pasa
+        if (x >= height || x < 0) {// se pasa
             return value;
         } else {
             return (matrixGray[i][x] - value);
@@ -341,9 +341,9 @@ public class Softeners {
         int width = matrixGray.length;
         int height = matrixGray[0].length;
         int value = matrixGray[i][j];
-        int x = j + 1;// ancho + 1
+        int x = j + 1;// alto + 1
 
-        if (x >= width || x < 0) {// se pasa
+        if (x >= height || x < 0) {// se pasa
             return value;
         } else {
             return (matrixGray[i][x] - value);
@@ -354,9 +354,9 @@ public class Softeners {
         int width = matrixGray.length;
         int height = matrixGray[0].length;
         int value = matrixGray[i][j];
-        int x = i + 1;// alto + 1
+        int x = i + 1;// ancho + 1
 
-        if (x >= height || x < 0) {// se pasa
+        if (x >= width || x < 0) {// se pasa
             return value;
         } else {
             return (matrixGray[x][j] - value);
@@ -367,14 +367,12 @@ public class Softeners {
         int width = matrixGray.length;
         int height = matrixGray[0].length;
         int value = matrixGray[i][j];
-        int x = i - 1;// alto menos 1
+        int x = i - 1;// ancho menos 1
 
-        if (x >= height || x < 0) {// se pasa
+        if (x >= width || x < 0) {// se pasa
             return value;
         } else {
             return (matrixGray[x][j] - value);
         }
-
     }
-
 }
