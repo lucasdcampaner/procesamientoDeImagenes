@@ -205,20 +205,16 @@ public class Program extends Application {
 
         // Menu deteccion de bordes
         Menu menuBorderDetection = new Menu("Border detection");
-        MenuItem prewitt = new MenuItem("Prewitt");
         MenuItem prewittX = new MenuItem("Prewitt Horizontal");
         MenuItem prewittY = new MenuItem("Prewitt Vertical");
-        MenuItem prewittColor = new MenuItem("Prewitt Color");
+        MenuItem prewitt = new MenuItem("Prewitt");
         MenuItem highPassFilter = new MenuItem("High Pass Filter");
         MenuItem laplaciano = new MenuItem("Laplaciano");
         MenuItem sobel = new MenuItem("Sobel");
-        MenuItem sobelColor = new MenuItem("Sobel Color");
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
-        sobel.setOnAction(listenerSobel);
-        sobelColor.setOnAction(listenerSobelColor);
-        prewitt.setOnAction(listenerPrewitt);
-        prewittColor.setOnAction(listenerPrewittColor);
+        sobel.setOnAction(listenerSobelColor);
+        prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
         prewittY.setOnAction(listenerPrewittY);
         highPassFilter.setOnAction(listenerHighPassFilter);
@@ -226,8 +222,8 @@ public class Program extends Application {
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, prewittColor, highPassFilter, sobel,
-                sobelColor, laplaciano, crossesByZero, pendingOfCrosses);
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
+                crossesByZero, pendingOfCrosses);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1040,24 +1036,6 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerPrewitt = new EventHandler<ActionEvent>() {
-
-        @Override
-        public void handle(ActionEvent event) {
-
-            if (getImageOriginal() != null) {
-
-                int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
-
-                int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
-                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
-                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
-            }
-        }
-    };
-
     private EventHandler<ActionEvent> listenerPrewittColor = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1089,23 +1067,6 @@ public class Program extends Application {
                 int[][] normalizedMatrixB = functions.normalizeMatrix(matrixResultB);
 
                 setSizeImageViewResult(ui.getImageResultColor(normalizedMatrixR, normalizedMatrixG, normalizedMatrixB));
-            }
-        }
-    };
-
-    private EventHandler<ActionEvent> listenerSobel = new EventHandler<ActionEvent>() {
-
-        @Override
-        public void handle(ActionEvent event) {
-
-            if (getImageOriginal() != null) {
-
-                int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
-
-                int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
-                setSizeImageViewResult(ui.getImageResult(matrixResult));
             }
         }
     };

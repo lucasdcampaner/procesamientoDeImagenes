@@ -46,7 +46,7 @@ public class Functions {
             extensionFile = getExtensionFile(path);
             ImagePlus imagePlus = new ImagePlus(path);
             Image image = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
-
+            
             if (mainImage) {
                 matrixImage = getMatrixImage(imagePlus);
             } else {
@@ -131,10 +131,14 @@ public class Functions {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
+                
+                int[] rgb = new int[3];
+                image.getProcessor().getPixel(i, j, rgb);
+                
                 matrixGray[i][j] = image.getPixel(i, j)[0];
-                matrixR[i][j] = image.getPixel(i, j)[1];
-                matrixG[i][j] = image.getPixel(i, j)[2];
-                matrixB[i][j] = image.getPixel(i, j)[3];
+                matrixR[i][j] = rgb[0];
+                matrixG[i][j] = rgb[1];
+                matrixB[i][j] = rgb[2];
             }
         }
 
