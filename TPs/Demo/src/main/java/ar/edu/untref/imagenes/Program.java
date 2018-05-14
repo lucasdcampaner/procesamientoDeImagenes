@@ -1205,7 +1205,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 Dialogs.showConfigurationParameterDistribution("Eleccion de gradiente",
-                        "Escriba 1 para Loretziano, 2 para Lecreriano", new ListenerResultDialogs<Double>() {
+                        "Escriba 1 para Loretz, 2 para Lecrer", new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
@@ -1288,7 +1288,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana",
-                        "Ingrese un valor de sigma entre 1 y 10", resultP -> {
+                        "Ingrese un valor de sigma", resultP -> {
 
                             int[][] matrixAdded = softeners.applyGaussianFilter(matrixGray, 3, resultP);
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));

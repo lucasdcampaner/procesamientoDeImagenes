@@ -275,7 +275,7 @@ public class Softeners {
 
         int[][] matrixResult = matrixGray;
 
-        int cN = 1, cS = 1, cE = 1, cO = 1;
+        double cN = 1, cS = 1, cE = 1, cO = 1;
         int value;
         double derivadaNorte = 0, derivadaSur = 0, derivadaEste = 0, derivadaOeste = 0;
 
@@ -288,10 +288,10 @@ public class Softeners {
                     derivadaEste = calculateDerivate(matrixGray, i, j, Direction.EAST);
                     derivadaOeste = calculateDerivate(matrixGray, i, j, Direction.WEST);
 
-                    cN = this.calculateValueC(valorSigma, derivadaNorte, gradientSelection);
-                    cS = this.calculateValueC(valorSigma, derivadaSur, gradientSelection);
-                    cE = this.calculateValueC(valorSigma, derivadaEste, gradientSelection);
-                    cO = this.calculateValueC(valorSigma, derivadaOeste, gradientSelection);
+                    cN = calculateValueC(valorSigma, derivadaNorte, gradientSelection);
+                    cS = calculateValueC(valorSigma, derivadaSur, gradientSelection);
+                    cE = calculateValueC(valorSigma, derivadaEste, gradientSelection);
+                    cO = calculateValueC(valorSigma, derivadaOeste, gradientSelection);
                     value = (int) Math.round(matrixGray[i][j]
                             + 0.25 * (derivadaNorte * cN + derivadaSur * cS + derivadaEste * cE + derivadaOeste * cO));
                     matrixResult[i][j] = value;
@@ -331,7 +331,7 @@ public class Softeners {
         return matrixResult;
     }
 
-    private int calculateValueC(double valorSigma, double valorDerivada, int method) {
+    private double calculateValueC(double valorSigma, double valorDerivada, int method) {
         switch (method) {
         case LORENTZ:
             return calcularLorentziano(valorSigma, valorDerivada);
@@ -344,12 +344,12 @@ public class Softeners {
         }
     }
 
-    private int calcularLecreriano(double valorSigma, double valorDerivada) {
-        return (int) Math.round(Math.pow(Math.E, (Math.pow(-Math.abs(valorDerivada), 2) / Math.pow(valorSigma, 2))));
+    private double calcularLecreriano(double valorSigma, double valorDerivada) {
+        return Math.exp((Math.pow(-Math.abs(valorDerivada), 2)) / Math.pow(valorSigma, 2));
     }
 
-    public int calcularLorentziano(double valorSigma, double valorDerivada) {
-        return (int) Math.round(1 / (((float) (Math.pow(Math.abs(valorDerivada), 2) / Math.pow(valorSigma, 2))) + 1));
+    public double calcularLorentziano(double valorSigma, double valorDerivada) {
+        return 1 / ((Math.pow(-Math.abs(valorDerivada), 2)) / Math.pow(valorSigma, 2) + 1);
     }
 
     private int calculateDerivate(int[][] imageOriginal, int x, int y, Direction direction) {
