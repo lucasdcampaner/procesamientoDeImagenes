@@ -183,9 +183,9 @@ public class Program extends Application {
         MenuItem laplacianoMarrHildreth = new MenuItem("Laplaciano (Marr Hilderth)");
         laplacianoMarrHildreth.setOnAction(listenerLaplacianoMarrHildreth);
         MenuItem isotropicaFilter = new MenuItem("Isotropic Filter");
-        isotropicaFilter.setOnAction(listenerIsotropicaFilter);
+        isotropicaFilter.setOnAction(listenerIsotropicFilter);
         MenuItem anisotropicaFilter = new MenuItem("AnIsotropic Filter");
-        anisotropicaFilter.setOnAction(listenerAnIsotropicaFilter);
+        anisotropicaFilter.setOnAction(listenerAnisotropicFilter);
         menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
                 laplacianoMarrHildreth, isotropicaFilter, anisotropicaFilter);
 
@@ -1236,7 +1236,7 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerAnIsotropicaFilter = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerAnisotropicFilter = new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent event) {
@@ -1255,10 +1255,8 @@ public class Program extends Application {
                                         results -> {
                                             int count = (int) Math.round(results[0]);
                                             double sigma = results[1];
-                                            int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray,
-                                                    count, "ani", sigma, gradientSelection);
-                                            // int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
-                                            // setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+                                            int[][] matrixResult = softeners.applyAnisotropicFilter(matrixGray, count,
+                                                    sigma, gradientSelection);
                                             setSizeImageViewResult(ui.getImageResult(matrixResult));
                                         });
                             }
@@ -1268,31 +1266,21 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerIsotropicaFilter = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerIsotropicFilter = new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Eleccion de gradiente",
-                        "Escriba 1 para Loretziano, 2 para Lecreriano", new ListenerResultDialogs<Double>() {
-
+                Dialogs.showConfigurationParameterDistribution("Eleccion de repeticiones",
+                        "Ingrese una cantidad de repeticiones", new ListenerResultDialogs<Double>() {
                             @Override
                             public void accept(Double result) {
-                                int gradientSelection = (int) Math.round(result);
+                                int count = (int) Math.round(result);
 
-                                Dialogs.showConfigureTwoParameters("Difusion Isotropica",
-                                        "Ingrese cantidad de repeticiones y el valor de sigma", "Repeticiones", "Sigma",
-                                        results -> {
-                                            int count = (int) Math.round(results[0]);
-                                            double sigma = results[1];
-                                            int[][] matrixResult = softeners.applyAnOrIsotropicaFilter(matrixGray,
-                                                    count, "iso", sigma, gradientSelection);
-                                            // int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
-                                            // setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
-                                            setSizeImageViewResult(ui.getImageResult(matrixResult));
-                                        });
+                                int[][] matrixResult = softeners.applyIsotropicFilter(matrixGray, count);
+                                setSizeImageViewResult(ui.getImageResult(matrixResult));
                             }
                         });
 

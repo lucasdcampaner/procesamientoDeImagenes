@@ -6,6 +6,9 @@ public class Softeners {
 
     private Functions functions;
 
+    private static final int LORENTZ = 1;
+    private static final int LECRER = 2;
+
     public Softeners(Functions functions) {
         this.functions = functions;
     }
@@ -264,55 +267,80 @@ public class Softeners {
         return matrixResult;
     }
 
-    public int[][] applyAnOrIsotropicaFilter(int[][] matrixGray, int cantRepeticiones, String eleccion,
-            double valorSigma, int gradientSelection) {
+    public int[][] applyAnisotropicFilter(int[][] matrixGray, int cantRepeticiones, double valorSigma,
+            int gradientSelection) {
 
         int width = matrixGray.length;
         int height = matrixGray[0].length;
 
-        int[][] matrixResult = matrixGray; // new int[width][height];
+        int[][] matrixResult = matrixGray;
 
         int cN = 1, cS = 1, cE = 1, cO = 1;
         int value;
         double derivadaNorte = 0, derivadaSur = 0, derivadaEste = 0, derivadaOeste = 0;
-        String methodGradientSelection = "lecrer";
-
-        if (gradientSelection == 1) {
-            methodGradientSelection = "loretnz";
-        }
 
         for (int c = 0; c < cantRepeticiones; c++) {
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
 
-                    derivadaNorte = calcularDerivadaNorte(matrixResult, i, j);
-                    derivadaSur = calcularDerivadaSur(matrixResult, i, j);
-                    derivadaEste = calcularDerivadaEste(matrixResult, i, j);
-                    derivadaOeste = calcularDerivadaOeste(matrixResult, i, j);
+                    derivadaNorte = calculateDerivate(matrixGray, i, j, Direction.NORTH);
+                    derivadaSur = calculateDerivate(matrixGray, i, j, Direction.SOUTH);
+                    derivadaEste = calculateDerivate(matrixGray, i, j, Direction.EAST);
+                    derivadaOeste = calculateDerivate(matrixGray, i, j, Direction.WEST);
 
-                    if (eleccion != "iso") {
-                        cN = this.calcularValorC(valorSigma, derivadaNorte, methodGradientSelection);
-                        cS = this.calcularValorC(valorSigma, derivadaSur, methodGradientSelection);
-                        cE = this.calcularValorC(valorSigma, derivadaEste, methodGradientSelection);
-                        cO = this.calcularValorC(valorSigma, derivadaOeste, methodGradientSelection);
-                    }
+                    cN = this.calculateValueC(valorSigma, derivadaNorte, gradientSelection);
+                    cS = this.calculateValueC(valorSigma, derivadaSur, gradientSelection);
+                    cE = this.calculateValueC(valorSigma, derivadaEste, gradientSelection);
+                    cO = this.calculateValueC(valorSigma, derivadaOeste, gradientSelection);
                     value = (int) Math.round(matrixGray[i][j]
                             + 0.25 * (derivadaNorte * cN + derivadaSur * cS + derivadaEste * cE + derivadaOeste * cO));
                     matrixResult[i][j] = value;
-                } // for j
-            } // for i
-
-            matrixResult = functions.normalizeMatrix(matrixResult); // NORMALIZO AQUÍ
-        } // for c
+                }
+            }
+        }
 
         return matrixResult;
     }
 
-    private int calcularValorC(double valorSigma, double valorDerivada, String method) {
-        if (method == "lorentz") {
+    public int[][] applyIsotropicFilter(int[][] matrixGray, int cantRepeticiones) {
+
+        int width = matrixGray.length;
+        int height = matrixGray[0].length;
+
+        int[][] matrixResult = matrixGray;
+
+        int value;
+        double derivadaNorte = 0, derivadaSur = 0, derivadaEste = 0, derivadaOeste = 0;
+
+        for (int c = 0; c < cantRepeticiones; c++) {
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+
+                    derivadaNorte = calculateDerivate(matrixGray, i, j, Direction.NORTH);
+                    derivadaSur = calculateDerivate(matrixGray, i, j, Direction.SOUTH);
+                    derivadaEste = calculateDerivate(matrixGray, i, j, Direction.EAST);
+                    derivadaOeste = calculateDerivate(matrixGray, i, j, Direction.WEST);
+
+                    value = (int) Math.round(
+                            matrixGray[i][j] + 0.25 * (derivadaNorte + derivadaSur + derivadaEste + derivadaOeste));
+                    matrixResult[i][j] = value;
+                }
+            }
+        }
+
+        return matrixResult;
+    }
+
+    private int calculateValueC(double valorSigma, double valorDerivada, int method) {
+        switch (method) {
+        case LORENTZ:
             return calcularLorentziano(valorSigma, valorDerivada);
-        } else {
+
+        case LECRER:
             return calcularLecreriano(valorSigma, valorDerivada);
+
+        default:
+            return calcularLorentziano(valorSigma, valorDerivada);
         }
     }
 
@@ -324,55 +352,37 @@ public class Softeners {
         return (int) Math.round(1 / (((float) (Math.pow(Math.abs(valorDerivada), 2) / Math.pow(valorSigma, 2))) + 1));
     }
 
-    private int calcularDerivadaOeste(int[][] matrixGray, int i, int j) {
-        int width = matrixGray.length;
-        int height = matrixGray[0].length;
-        int value = matrixGray[i][j];
-        int x = j - 1;// alto - 1
+    private int calculateDerivate(int[][] imageOriginal, int x, int y, Direction direction) {
 
-        if (x >= height || x < 0) {// se pasa
-            return value;
-        } else {
-            return (matrixGray[i][x] - value);
+        int w = imageOriginal.length;
+        int h = imageOriginal[0].length;
+
+        if (y == 0 && direction == Direction.NORTH) {
+            return 0;
         }
-    }
-
-    private int calcularDerivadaEste(int[][] matrixGray, int i, int j) {
-        int width = matrixGray.length;
-        int height = matrixGray[0].length;
-        int value = matrixGray[i][j];
-        int x = j + 1;// alto + 1
-
-        if (x >= height || x < 0) {// se pasa
-            return value;
-        } else {
-            return (matrixGray[i][x] - value);
+        if (x == 0 && direction == Direction.WEST) {
+            return 0;
         }
-    }
-
-    private int calcularDerivadaSur(int[][] matrixGray, int i, int j) {
-        int width = matrixGray.length;
-        int height = matrixGray[0].length;
-        int value = matrixGray[i][j];
-        int x = i + 1;// ancho + 1
-
-        if (x >= width || x < 0) {// se pasa
-            return value;
-        } else {
-            return (matrixGray[x][j] - value);
+        if (y >= h - 1 && direction == Direction.SOUTH) {
+            return 0;
         }
-    }
+        if (x >= w - 1 && direction == Direction.EAST) {
+            return 0;
+        }
 
-    private int calcularDerivadaNorte(int[][] matrixGray, int i, int j) {
-        int width = matrixGray.length;
-        int height = matrixGray[0].length;
-        int value = matrixGray[i][j];
-        int x = i - 1;// ancho menos 1
+        int pixel = imageOriginal[x][y];
 
-        if (x >= width || x < 0) {// se pasa
-            return value;
-        } else {
-            return (matrixGray[x][j] - value);
+        switch (direction) {
+        case NORTH:
+            return imageOriginal[x][y - 1] - pixel;
+        case SOUTH:
+            return imageOriginal[x][y + 1] - pixel;
+        case EAST:
+            return imageOriginal[x + 1][y] - pixel;
+        case WEST:
+            return imageOriginal[x - 1][y] - pixel;
+        default:
+            return 0;
         }
     }
 }
