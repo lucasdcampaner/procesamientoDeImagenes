@@ -345,7 +345,7 @@ public class Softeners {
     }
 
     private double calcularLecreriano(double valorSigma, double valorDerivada) {
-        return Math.exp((Math.pow(-Math.abs(valorDerivada), 2)) / Math.pow(valorSigma, 2));
+        return Math.exp((-Math.pow(Math.abs(valorDerivada), 2)) / Math.pow(valorSigma, 2));
     }
 
     public double calcularLorentziano(double valorSigma, double valorDerivada) {
