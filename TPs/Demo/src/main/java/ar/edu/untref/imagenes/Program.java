@@ -1111,10 +1111,7 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
 
                 int[][] matrixWeight = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
-
-                int[][] matrixResult = Modifiers.calculateGradient(matrixDX, matrixDY);
+                int[][] matrixResult = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
                 setSizeImageViewResult(ui.getImageResult(matrixResult));
             }
         }
