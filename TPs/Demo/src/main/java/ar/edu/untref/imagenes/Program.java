@@ -1112,7 +1112,8 @@ public class Program extends Application {
 
                 int[][] matrixWeight = { { 0, -1, 0 }, { -1, 4, -1 }, { 0, -1, 0 } };
                 int[][] matrixResult = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
-                setSizeImageViewResult(ui.getImageResult(matrixResult));
+                int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+                setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
             }
         }
     };
