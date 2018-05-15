@@ -349,7 +349,7 @@ public class Softeners {
     }
 
     public double calcularLorentziano(double valorSigma, double valorDerivada) {
-        return 1 / ((Math.pow(-Math.abs(valorDerivada), 2)) / Math.pow(valorSigma, 2) + 1);
+        return 1 / ((Math.pow(Math.abs(valorDerivada), 2)) / Math.pow(valorSigma, 2) + 1);
     }
 
     private int calculateDerivate(int[][] imageOriginal, int x, int y, Direction direction) {
