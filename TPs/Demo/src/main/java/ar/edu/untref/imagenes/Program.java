@@ -182,9 +182,9 @@ public class Program extends Application {
         gaussianFilter.setOnAction(listenerGaussianFilter);
         MenuItem laplacianoMarrHildreth = new MenuItem("Laplaciano (Marr Hilderth)");
         laplacianoMarrHildreth.setOnAction(listenerLaplacianoMarrHildreth);
-        MenuItem isotropicaFilter = new MenuItem("Isotropic Filter");
+        MenuItem isotropicaFilter = new MenuItem("Isotropic Diffusion");
         isotropicaFilter.setOnAction(listenerIsotropicFilter);
-        MenuItem anisotropicaFilter = new MenuItem("AnIsotropic Filter");
+        MenuItem anisotropicaFilter = new MenuItem("AnIsotropic Diffusion");
         anisotropicaFilter.setOnAction(listenerAnisotropicFilter);
         menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
                 laplacianoMarrHildreth, isotropicaFilter, anisotropicaFilter);
