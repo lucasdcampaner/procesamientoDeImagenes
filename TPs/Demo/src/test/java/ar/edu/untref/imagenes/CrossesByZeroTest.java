@@ -1,11 +1,20 @@
 package ar.edu.untref.imagenes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 public class CrossesByZeroTest {
 
     private Functions functions = new Functions(null);
+    private BorderDetectors borders = new BorderDetectors(functions);
+
+    private static final int DERIVATE_X = 0;
+    private static final int DERIVATE_Y = 1;
+    private static final int ROTATION_R = 2;
+    private static final int ROTATION_L = 3;
 
     // Tests para encontrar cambios de signo -----------------------------
     @Test
@@ -189,5 +198,50 @@ public class CrossesByZeroTest {
 
         int[][] arrayExpected = new int[][] { { 255, 255, 255, 0 }, { 255, 0, 255, 0 } };
         Assert.assertArrayEquals(arrayExpected, arrayResult);
+    }
+
+    @Test
+    public void obtainMaxValueBetweenFourMatrix() {
+
+        int[][] matrixOriginal = new int[][] { { 8, 2, 4 }, { 1, 2, 5 }, { 0, 2, 4 } };
+
+        int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+
+        int[][] matrixDX = borders.applyBorderDetector(matrixOriginal, matrixWeight, DERIVATE_X);
+        int[][] matrixDY = borders.applyBorderDetector(matrixOriginal, matrixWeight, DERIVATE_Y);
+        int[][] matrixRR = borders.applyBorderDetector(matrixOriginal, matrixWeight, ROTATION_R);
+        int[][] matrixRL = borders.applyBorderDetector(matrixOriginal, matrixWeight, ROTATION_L);
+
+        List<int[][]> listMasks = new ArrayList<>();
+        listMasks.add(matrixDX);
+        listMasks.add(matrixDY);
+        listMasks.add(matrixRR);
+        listMasks.add(matrixRL);
+        int[][] matrixResult = borders.buildMatrixDirectional(listMasks);
+
+        System.out.println("DX ---");
+        imprimirMatriz(matrixDX);
+        System.out.println("");
+        System.out.println("DY ---");
+        imprimirMatriz(matrixDY);
+        System.out.println("");
+        System.out.println("RR ---");
+        imprimirMatriz(matrixRR);
+        System.out.println("");
+        System.out.println("RL ---");
+        imprimirMatriz(matrixRL);
+
+        int[][] expected = { { 0, 0, 0 }, { 0, 8, 0 }, { 0, 0, 0 } };
+
+        Assert.assertArrayEquals(expected, matrixResult);
+    }
+
+    private void imprimirMatriz(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println("");
+        }
     }
 }

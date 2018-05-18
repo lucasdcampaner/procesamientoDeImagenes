@@ -1317,7 +1317,7 @@ public class Program extends Application {
             setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     };
-
+    
     private EventHandler<ActionEvent> listenerDirectionalOptionA = new EventHandler<ActionEvent>() {
 
         @Override

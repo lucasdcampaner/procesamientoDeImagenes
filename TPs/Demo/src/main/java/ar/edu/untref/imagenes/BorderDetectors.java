@@ -69,7 +69,7 @@ public class BorderDetectors {
             }
         }
 
-        matrixResult = functions.repeatNPixelsBorder(matrixResult, top); // repito 1 pixel en los 4 bordes
+//        matrixResult = functions.repeatNPixelsBorder(matrixResult, top); // repito 1 pixel en los 4 bordes
         return matrixResult;
     }
 
