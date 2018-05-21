@@ -229,7 +229,7 @@ public class BorderDetectors {
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
 
-                int[] pixels = new int[4];
+                int[] pixels = new int[listMask.size()];
 
                 for (int k = 0; k < listMask.size(); k++) {
                     pixels[k] = listMask.get(k)[i][j];
