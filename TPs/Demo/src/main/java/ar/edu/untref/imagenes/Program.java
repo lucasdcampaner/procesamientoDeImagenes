@@ -1347,7 +1347,7 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            int[][] matrixWeight = { { 5, 5, 5 }, { -3, 0, 3 }, { -3, -3, -3 } };
+            int[][] matrixWeight = { { 5, 5, 5 }, { -3, 0, -3 }, { -3, -3, -3 } };
 
             int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
             int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
