@@ -213,6 +213,7 @@ public class Program extends Application {
         MenuItem sobel = new MenuItem("Sobel");
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
+        MenuItem canny = new MenuItem("Canny");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -221,9 +222,10 @@ public class Program extends Application {
         laplaciano.setOnAction(listenerLaplaciano);
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
+        canny.setOnAction(listenerCanny);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses);
+                crossesByZero, pendingOfCrosses, canny);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1151,6 +1153,26 @@ public class Program extends Application {
         }
     };
 
+    private EventHandler<ActionEvent> listenerCanny = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Canny", "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        // Aplico filtro Gaussiano
+                        int[][] matrixFiltered = softeners.applyGaussianFilter(matrixGray, 3,
+                                result.intValue());
+
+                        setSizeImageViewResult(ui.getImageResult(matrixFiltered));
+                    }
+                });
+            }
+        }
+    };
+
     private EventHandler<ActionEvent> listenerCrossesByZero = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1285,8 +1307,8 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana",
-                        "Ingrese un valor de sigma", resultP -> {
+                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana", "Ingrese un valor de sigma",
+                        resultP -> {
 
                             int[][] matrixAdded = softeners.applyGaussianFilter(matrixGray, 3, resultP);
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
@@ -1317,7 +1339,7 @@ public class Program extends Application {
             setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerDirectionalOptionA = new EventHandler<ActionEvent>() {
 
         @Override
