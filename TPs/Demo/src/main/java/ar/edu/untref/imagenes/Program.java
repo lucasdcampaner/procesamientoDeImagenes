@@ -1154,21 +1154,24 @@ public class Program extends Application {
     };
 
     private EventHandler<ActionEvent> listenerCanny = new EventHandler<ActionEvent>() {
-
         @Override
         public void handle(ActionEvent event) {
-
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Canny", "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma", new ListenerResultDialogs<Double>() {
                     @Override
                     public void accept(Double result) {
-                        // Aplico filtro Gaussiano
-                        int[][] matrixFiltered = softeners.applyGaussianFilter(matrixGray, 3,
-                                result.intValue());
-
-                        setSizeImageViewResult(ui.getImageResult(matrixFiltered));
+                        int sigma = (int) Math.round(result);
+                        Dialogs.showConfigureTwoParameters("Umbral",
+                                "Ingrese el umbral", "T1", "T2",
+                                results -> {
+                                    int t1 = (int) Math.round(results[0]);
+                                    int t2 = (int) Math.round(results[1]);
+                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
+                                    setSizeImageViewResult(ui.getImageResult(matrixResult));
+                                });
                     }
                 });
+
             }
         }
     };
