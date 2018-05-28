@@ -8,6 +8,7 @@ import ij.ImagePlus;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
@@ -213,6 +214,7 @@ public class Program extends Application {
         MenuItem sobel = new MenuItem("Sobel");
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
+        MenuItem canny = new MenuItem("Canny");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -221,9 +223,10 @@ public class Program extends Application {
         laplaciano.setOnAction(listenerLaplaciano);
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
+        canny.setOnAction(listenerCanny);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses);
+                crossesByZero, pendingOfCrosses, canny);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1151,6 +1154,33 @@ public class Program extends Application {
         }
     };
 
+    private EventHandler<ActionEvent> listenerCanny = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        int sigma = (int) Math.round(result);
+                        Dialogs.showConfigureTwoParameters("Umbral",
+                                "Ingrese el umbral", "T1", "T2",
+                                results -> {
+                                    int t1 = (int) Math.round(results[0]);
+                                    int t2 = (int) Math.round(results[1]);
+//                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
+//                                    setSizeImageViewResult(ui.getImageResult(matrixResult));
+                                    Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
+                                    canny.filter();
+                                    Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(), null);
+                                    setSizeImageViewResult(filteredImage);
+                                });
+                    }
+                });
+
+            }
+        }
+    };
+
     private EventHandler<ActionEvent> listenerCrossesByZero = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1285,8 +1315,8 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana",
-                        "Ingrese un valor de sigma", resultP -> {
+                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana", "Ingrese un valor de sigma",
+                        resultP -> {
 
                             int[][] matrixAdded = softeners.applyGaussianFilter(matrixGray, 3, resultP);
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
@@ -1317,7 +1347,7 @@ public class Program extends Application {
             setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerDirectionalOptionA = new EventHandler<ActionEvent>() {
 
         @Override
