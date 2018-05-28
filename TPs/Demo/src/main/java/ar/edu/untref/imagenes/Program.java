@@ -234,13 +234,15 @@ public class Program extends Application {
         MenuItem directionalPrewitt = new MenuItem("Prewitt");
         MenuItem directionalKirsh = new MenuItem("Kirsh");
         MenuItem directionalSobel = new MenuItem("Sobel");
+        MenuItem directionalHoughLines = new MenuItem("Hough trans. for lines");
+        //MenuItem directionalHoughcircules = new MenuItem("Hough tr. for circules");
         directionalOptionA.setOnAction(listenerDirectionalOptionA);
         directionalKirsh.setOnAction(listenerDirectionalKirsh);
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
         directionalSobel.setOnAction(listenerDirectionalSobel);
 
         menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
-                directionalKirsh);
+                directionalKirsh,directionalHoughLines);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder);
