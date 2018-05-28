@@ -1167,9 +1167,8 @@ public class Program extends Application {
                                 results -> {
                                     int t1 = (int) Math.round(results[0]);
                                     int t2 = (int) Math.round(results[1]);
-//                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
-//                                    setSizeImageViewResult(ui.getImageResult(matrixResult));
-                                    Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
+                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
+                                    Canny canny = new Canny(ui.getImageResult(matrixResult), sigma, t1, t2, 16);
                                     canny.filter();
                                     Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(), null);
                                     setSizeImageViewResult(filteredImage);
