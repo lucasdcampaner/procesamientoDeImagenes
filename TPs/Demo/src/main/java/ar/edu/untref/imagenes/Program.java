@@ -224,6 +224,7 @@ public class Program extends Application {
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
         MenuItem canny = new MenuItem("Canny");
+        MenuItem susan = new MenuItem("Susan");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -233,9 +234,10 @@ public class Program extends Application {
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
         canny.setOnAction(listenerCanny);
+        susan.setOnAction(listenerSusan);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny);
+                crossesByZero, pendingOfCrosses, canny, susan);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1309,6 +1311,22 @@ public class Program extends Application {
         }
     };
 
+    private EventHandler<ActionEvent> listenerSusan = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        int delta = (int) Math.round(result);
+
+                    }
+                });
+
+            }
+        }
+    };
+    
     private EventHandler<ActionEvent> listenerCrossesByZero = new EventHandler<ActionEvent>() {
 
         @Override
