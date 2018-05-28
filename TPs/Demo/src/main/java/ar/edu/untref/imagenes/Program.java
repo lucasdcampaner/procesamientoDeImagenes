@@ -8,6 +8,7 @@ import ij.ImagePlus;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
@@ -1166,8 +1167,12 @@ public class Program extends Application {
                                 results -> {
                                     int t1 = (int) Math.round(results[0]);
                                     int t2 = (int) Math.round(results[1]);
-                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
-                                    setSizeImageViewResult(ui.getImageResult(matrixResult));
+//                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
+//                                    setSizeImageViewResult(ui.getImageResult(matrixResult));
+                                    Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
+                                    canny.filter();
+                                    Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(), null);
+                                    setSizeImageViewResult(filteredImage);
                                 });
                     }
                 });
