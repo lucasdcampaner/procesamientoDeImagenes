@@ -234,7 +234,7 @@ public class Program extends Application {
         MenuItem directionalPrewitt = new MenuItem("Prewitt");
         MenuItem directionalKirsh = new MenuItem("Kirsh");
         MenuItem directionalSobel = new MenuItem("Sobel");
-        directionalOptionA.setOnAction(listenerDirectionalOptionA);
+        directionalOptionA.setOnAction(listenerDirectionalWeight);
         directionalKirsh.setOnAction(listenerDirectionalKirsh);
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
         directionalSobel.setOnAction(listenerDirectionalSobel);
@@ -1274,6 +1274,30 @@ public class Program extends Application {
                         });
 
             }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerDirectionalWeight = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            int[][] matrixWeight = { { -1, -1, -1 }, { 1, 0, -1 }, { 1, 1, 1 } };
+
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
+
+            List<int[][]> listMasks = new ArrayList<>();
+            listMasks.add(matrixDX);
+            listMasks.add(matrixDY);
+            listMasks.add(matrixRR);
+            listMasks.add(matrixRL);
+
+            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+            int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+            setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
         }
     };
 
