@@ -11,10 +11,10 @@ import javafx.scene.image.Image;
 
 public class ActiveContours {
 
-    private static final int EXTERIOR_PIXEL = 3;
+    private static final int BACKGROUND = 3;
     private static final int L_OUT = 1;
     private static final int L_IN = -1;
-    private static final int INTERIOR_PIXEL = -3;
+    private static final int OBJECT = -3;
 
     private List<Point> pointsLIn = new ArrayList<>();
     private List<Point> pointsLOut = new ArrayList<>();
@@ -80,9 +80,9 @@ public class ActiveContours {
                     matrixTheta[i][j] = L_OUT;
                     pointsLOut.add(new Point(i, j));
                 } else if (insideEdge(i, j, sinceX, untilX, sinceY, untilY)) {
-                    matrixTheta[i][j] = INTERIOR_PIXEL;
+                    matrixTheta[i][j] = OBJECT;
                 } else {
-                    matrixTheta[i][j] = EXTERIOR_PIXEL;
+                    matrixTheta[i][j] = BACKGROUND;
                 }
             }
         }
@@ -98,7 +98,7 @@ public class ActiveContours {
 
             for (int j = 0; j < pointsLIn.size(); j++) {
                 Point point = pointsLIn.get(j);
-                removeLInNoCorrespondent(point);
+                removeLInNoCorrespondent(imagePlus, point);
             }
 
             for (int j = 0; j < pointsLIn.size(); j++) {
@@ -108,7 +108,7 @@ public class ActiveContours {
 
             for (int j = 0; j < pointsLOut.size(); j++) {
                 Point point = pointsLOut.get(j);
-                removeLOutNoCorrespondent(point);
+                removeLOutNoCorrespondent(imagePlus, point);
             }
         }
 
@@ -120,7 +120,7 @@ public class ActiveContours {
             imagePlus.getProcessor().putPixel(point.x, point.y, Color.RED.getRGB());
         }
 
-//        paintTheta(matrixTheta, imagePlus);
+        // paintTheta(matrixTheta, imagePlus);
         pointsLIn.clear();
         pointsLOut.clear();
 
@@ -128,17 +128,23 @@ public class ActiveContours {
         return imageResult;
     }
 
-    private void removeLOutNoCorrespondent(Point point) {
+    private void removeLOutNoCorrespondent(ImagePlus imagePlus, Point point) {
 
-        int valueMatrixLeft = matrixTheta[point.x - 1][point.y];
-        int valueMatrixRight = matrixTheta[point.x + 1][point.y];
-        int valueMatrixUp = matrixTheta[point.x][point.y - 1];
-        int valueMatrixDown = matrixTheta[point.x][point.y + 1];
+        int w = imagePlus.getWidth();
+        int h = imagePlus.getHeight();
 
-        if (valueMatrixLeft > 0 && valueMatrixRight > 0 && valueMatrixUp > 0 && valueMatrixDown > 0) {
+        if (point.x > 0 && point.y < h - 1 && point.y > 0 && point.x < w - 1) {
 
-            matrixTheta[point.x][point.y] = EXTERIOR_PIXEL;
-            pointsLOut.remove(point);
+            int valueMatrixLeft = matrixTheta[point.x - 1][point.y];
+            int valueMatrixRight = matrixTheta[point.x + 1][point.y];
+            int valueMatrixUp = matrixTheta[point.x][point.y - 1];
+            int valueMatrixDown = matrixTheta[point.x][point.y + 1];
+
+            if (valueMatrixLeft > 0 && valueMatrixRight > 0 && valueMatrixUp > 0 && valueMatrixDown > 0) {
+
+                matrixTheta[point.x][point.y] = BACKGROUND;
+                pointsLOut.remove(point);
+            }
         }
     }
 
@@ -151,22 +157,22 @@ public class ActiveContours {
             int valueMatrixUp = matrixTheta[point.x][point.y - 1];
             int valueMatrixDown = matrixTheta[point.x][point.y + 1];
 
-            if (valueMatrixLeft == INTERIOR_PIXEL) {
+            if (valueMatrixLeft == OBJECT) {
                 matrixTheta[point.x - 1][point.y] = L_IN;
                 pointsLIn.add(new Point(point.x - 1, point.y));
             }
 
-            if (valueMatrixRight == INTERIOR_PIXEL) {
+            if (valueMatrixRight == OBJECT) {
                 matrixTheta[point.x + 1][point.y] = L_IN;
                 pointsLIn.add(new Point(point.x + 1, point.y));
             }
 
-            if (valueMatrixUp == INTERIOR_PIXEL) {
+            if (valueMatrixUp == OBJECT) {
                 matrixTheta[point.x][point.y - 1] = L_IN;
                 pointsLIn.add(new Point(point.x, point.y - 1));
             }
 
-            if (valueMatrixDown == INTERIOR_PIXEL) {
+            if (valueMatrixDown == OBJECT) {
                 matrixTheta[point.x][point.y + 1] = L_IN;
                 pointsLIn.add(new Point(point.x, point.y + 1));
             }
@@ -177,17 +183,23 @@ public class ActiveContours {
         }
     }
 
-    private void removeLInNoCorrespondent(Point point) {
+    private void removeLInNoCorrespondent(ImagePlus imagePlus, Point point) {
 
-        int valueMatrixLeft = matrixTheta[point.x - 1][point.y];
-        int valueMatrixRight = matrixTheta[point.x + 1][point.y];
-        int valueMatrixUp = matrixTheta[point.x][point.y - 1];
-        int valueMatrixDown = matrixTheta[point.x][point.y + 1];
+        int w = imagePlus.getWidth();
+        int h = imagePlus.getHeight();
 
-        if (valueMatrixLeft < 0 && valueMatrixRight < 0 && valueMatrixUp < 0 && valueMatrixDown < 0) {
+        if (point.x > 0 && point.y < h - 1 && point.y > 0 && point.x < w - 1) {
 
-            matrixTheta[point.x][point.y] = INTERIOR_PIXEL;
-            pointsLIn.remove(point);
+            int valueMatrixLeft = matrixTheta[point.x - 1][point.y];
+            int valueMatrixRight = matrixTheta[point.x + 1][point.y];
+            int valueMatrixUp = matrixTheta[point.x][point.y - 1];
+            int valueMatrixDown = matrixTheta[point.x][point.y + 1];
+
+            if (valueMatrixLeft < 0 && valueMatrixRight < 0 && valueMatrixUp < 0 && valueMatrixDown < 0) {
+
+                matrixTheta[point.x][point.y] = OBJECT;
+                pointsLIn.remove(point);
+            }
         }
     }
 
@@ -204,22 +216,22 @@ public class ActiveContours {
                 int valueMatrixUp = matrixTheta[point.x][point.y - 1];
                 int valueMatrixDown = matrixTheta[point.x][point.y + 1];
 
-                if (valueMatrixLeft == EXTERIOR_PIXEL) {
+                if (valueMatrixLeft == BACKGROUND) {
                     matrixTheta[point.x - 1][point.y] = L_OUT;
                     pointsLOut.add(new Point(point.x - 1, point.y));
                 }
 
-                if (valueMatrixRight == EXTERIOR_PIXEL) {
+                if (valueMatrixRight == BACKGROUND) {
                     matrixTheta[point.x + 1][point.y] = L_OUT;
                     pointsLOut.add(new Point(point.x + 1, point.y));
                 }
 
-                if (valueMatrixUp == EXTERIOR_PIXEL) {
+                if (valueMatrixUp == BACKGROUND) {
                     matrixTheta[point.x][point.y - 1] = L_OUT;
                     pointsLOut.add(new Point(point.x, point.y - 1));
                 }
 
-                if (valueMatrixDown == EXTERIOR_PIXEL) {
+                if (valueMatrixDown == BACKGROUND) {
                     matrixTheta[point.x][point.y + 1] = L_OUT;
                     pointsLOut.add(new Point(point.x, point.y + 1));
                 }
@@ -299,11 +311,11 @@ public class ActiveContours {
                     imagePlus.getProcessor().putPixel(i, j, Color.RED.getRGB());
                     break;
 
-                case EXTERIOR_PIXEL:
+                case BACKGROUND:
                     imagePlus.getProcessor().putPixel(i, j, Color.BLUE.getRGB());
                     break;
 
-                case INTERIOR_PIXEL:
+                case OBJECT:
                     imagePlus.getProcessor().putPixel(i, j, Color.YELLOW.getRGB());
                     break;
 
