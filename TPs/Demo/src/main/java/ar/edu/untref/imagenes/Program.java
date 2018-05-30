@@ -1,5 +1,6 @@
 package ar.edu.untref.imagenes;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class Program extends Application {
     private Functions functions;
     private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
+    private ActiveContours activeContours;
 
     private static final int DERIVATE_X = 0;
     private static final int DERIVATE_Y = 1;
@@ -48,6 +50,8 @@ public class Program extends Application {
 
     private Group groupImageOriginal;
     private int x, y, w, h;
+
+    private int positionX, positionY, width, height;
 
     private Slider slider;
     private int[][] matrixGray;
@@ -69,6 +73,7 @@ public class Program extends Application {
             borderDetectors = new BorderDetectors(functions);
             generatorOfSyntheticImages = new GeneratorOfSyntheticImages();
             softeners = new Softeners(functions);
+            activeContours = new ActiveContours(functions);
             ui = new UI();
 
             Scene scene = createWindow();
@@ -242,8 +247,14 @@ public class Program extends Application {
         menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
                 directionalKirsh);
 
+        Menu menuActiveContourns = new Menu("Active contourns");
+        MenuItem activeContourns = new MenuItem("Segmentation");
+        activeContourns.setOnAction(listenerActiveContourns);
+
+        menuActiveContourns.getItems().addAll(activeContourns);
+
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
-                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder);
+                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder, menuActiveContourns);
 
         return menuBar;
     }
@@ -411,6 +422,7 @@ public class Program extends Application {
                     Image imageResult;
                     imageResult = ui.getImageResult(imageViewOriginal, x, y, w, h);
                     setSizeImageViewResult(imageResult);
+
                     ImagePlus imagePlus;
                     try {
                         imagePlus = functions.getImagePlusFromImage(imageResult, "cut_image");
@@ -491,7 +503,7 @@ public class Program extends Application {
         matrixGray = matrixImageResult;
     }
 
-    private void copyImageNewWindow() {
+    private void copyImageResultInNewWindow() {
 
         int w = (int) imageViewResult.getImage().getWidth();
         int h = (int) imageViewResult.getImage().getHeight();
@@ -507,9 +519,70 @@ public class Program extends Application {
         ((VBox) scene.getRoot()).getChildren().add(imageView);
 
         Stage stage = new Stage();
+        stage.setTitle("Copia de la imagen resultado");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void copyMainImageInNewWindow(int countIteration) {
+
+        int w = (int) imageViewOriginal.getImage().getWidth();
+        int h = (int) imageViewOriginal.getImage().getHeight();
+
+        // Imagen original
+        ImageView imageView = new ImageView();
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(w);
+        imageView.setFitHeight(h);
+        imageView.setImage(imageViewOriginal.getImage());
+
+        Scene scene = new Scene(new VBox(), w, h);
+        ((VBox) scene.getRoot()).getChildren().add(imageView);
+
+        Stage stage = new Stage();
         stage.setTitle("Copia de la imagen principal");
         stage.setScene(scene);
         stage.show();
+
+        imageView.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+            }
+        });
+
+        imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                positionX = (int) event.getX();
+                positionY = (int) event.getY();
+            }
+        });
+
+        imageView.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                width = (int) (event.getX() - positionX);
+                height = (int) (event.getY() - positionY);
+
+                if (width > 0 && height > 0) {
+                    try {
+                        ImagePlus imagePlus = functions.getImagePlusFromImage(imageView.getImage(), "active_contourns");
+
+                        int x1 = positionX + 2;
+                        int y1 = positionY + 2;
+                        int x2 = (int) event.getX() - 2;
+                        int y2 = (int) event.getY() - 2;
+
+                        Image image = activeContours.segment(imagePlus, new Point(x1, y1), new Point(x2, y2),
+                                countIteration);
+                        imageView.setImage(image);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -588,7 +661,7 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (imageViewResult.getImage() != null) {
-                copyImageNewWindow();
+                copyImageResultInNewWindow();
             }
         }
     };
@@ -1158,24 +1231,27 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma", new ListenerResultDialogs<Double>() {
-                    @Override
-                    public void accept(Double result) {
-                        int sigma = (int) Math.round(result);
-                        Dialogs.showConfigureTwoParameters("Umbral",
-                                "Ingrese el umbral", "T1", "T2",
-                                results -> {
-                                    int t1 = (int) Math.round(results[0]);
-                                    int t2 = (int) Math.round(results[1]);
-//                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
-//                                    Canny canny = new Canny(ui.getImageResult(matrixResult), sigma, t1, t2, 16);
-                                    Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
-                                    canny.filter();
-                                    Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(), null);
-                                    setSizeImageViewResult(filteredImage);
-                                });
-                    }
-                });
+                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma",
+                        new ListenerResultDialogs<Double>() {
+                            @Override
+                            public void accept(Double result) {
+                                int sigma = (int) Math.round(result);
+                                Dialogs.showConfigureTwoParameters("Umbral", "Ingrese el umbral", "T1", "T2",
+                                        results -> {
+                                            int t1 = (int) Math.round(results[0]);
+                                            int t2 = (int) Math.round(results[1]);
+                                            // int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3,
+                                            // sigma);
+                                            // Canny canny = new Canny(ui.getImageResult(matrixResult), sigma, t1, t2,
+                                            // 16);
+                                            Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
+                                            canny.filter();
+                                            Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(),
+                                                    null);
+                                            setSizeImageViewResult(filteredImage);
+                                        });
+                            }
+                        });
 
             }
         }
@@ -1276,7 +1352,7 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerDirectionalWeight = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1440,6 +1516,22 @@ public class Program extends Application {
 
             int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
             setSizeImageViewResult(ui.getImageResult(matrixResult));
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerActiveContourns = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones",
+                        new ListenerResultDialogs<Integer>() {
+                            @Override
+                            public void accept(Integer result) {
+                                copyMainImageInNewWindow(result);
+                            }
+                        });
+            }
         }
     };
 

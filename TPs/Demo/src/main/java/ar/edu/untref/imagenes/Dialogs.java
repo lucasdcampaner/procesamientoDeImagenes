@@ -172,6 +172,22 @@ public class Dialogs {
 
     }
 
+    public static void showConfigurationParameter(String title, String message,
+            ListenerResultDialogs<Integer> listenerDialog) {
+
+        Integer valor = null;
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(title);
+        dialog.setHeaderText(message);
+        
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            valor = Integer.valueOf(result.get());
+        }
+
+        listenerDialog.accept(valor);
+    }
+
     public static void showConfigureOneParameter(String title, String message,
             ListenerResultDialogs<Double[]> listenerResultDialogs) {
 
@@ -197,7 +213,7 @@ public class Dialogs {
         }
         listenerResultDialogs.accept(array);
     }
-    
+
     public static void showConfigureThresholdGlobal(ListenerResultDialogs<Integer> listenerDialog) {
 
         Integer valor = null;
