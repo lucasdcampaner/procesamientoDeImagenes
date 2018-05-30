@@ -540,7 +540,7 @@ public class Program extends Application {
         ((VBox) scene.getRoot()).getChildren().add(imageView);
 
         Stage stage = new Stage();
-        stage.setTitle("Copia de la imagen principal");
+        stage.setTitle("Copia de la imagen principal (" + countIteration + ")");
         stage.setScene(scene);
         stage.show();
 
