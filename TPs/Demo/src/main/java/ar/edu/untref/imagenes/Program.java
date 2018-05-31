@@ -65,6 +65,9 @@ public class Program extends Application {
     private BorderDetectors borderDetectors;
     private Softeners softeners;
 
+    private List<ImagePlus> frames;
+    private int indexFrame = 0;
+
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -81,6 +84,7 @@ public class Program extends Application {
 
             ((VBox) scene.getRoot()).getChildren().addAll(createMenuBar(), createMainLayout());
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -249,9 +253,11 @@ public class Program extends Application {
 
         Menu menuActiveContourns = new Menu("Active contourns");
         MenuItem activeContourns = new MenuItem("Segmentation");
+        MenuItem activeContournsVideo = new MenuItem("Video segmentation");
         activeContourns.setOnAction(listenerActiveContourns);
+        activeContournsVideo.setOnAction(listenerActiveContournsVideo);
 
-        menuActiveContourns.getItems().addAll(activeContourns);
+        menuActiveContourns.getItems().addAll(activeContourns, activeContournsVideo);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder, menuActiveContourns);
@@ -501,6 +507,33 @@ public class Program extends Application {
         }
         int[][] matrixImageResult = getGrayMatrix(imagePlus);
         matrixGray = matrixImageResult;
+
+        imageViewResult.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+
+                switch (event.getButton()) {
+
+                case PRIMARY:
+                    if (indexFrame < frames.size() - 1 && imageViewResult != null) {
+                        indexFrame++;
+                        showSequenceImages();
+                    }
+                    break;
+
+                case SECONDARY:
+                    if (indexFrame > 0 && imageViewResult != null) {
+                        indexFrame--;
+                        showSequenceImages();
+                    }
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        });
     }
 
     private void copyImageResultInNewWindow() {
@@ -524,7 +557,7 @@ public class Program extends Application {
         stage.show();
     }
 
-    private void copyMainImageInNewWindow(int countIteration) {
+    private void copyMainImageInNewWindow(int countIteration, boolean video) {
 
         int w = (int) imageViewOriginal.getImage().getWidth();
         int h = (int) imageViewOriginal.getImage().getHeight();
@@ -573,16 +606,35 @@ public class Program extends Application {
                         int x2 = (int) event.getX() - 2;
                         int y2 = (int) event.getY() - 2;
 
-                        Image image = activeContours.segment(imagePlus, new Point(x1, y1), new Point(x2, y2),
-                                countIteration);
-                        imageView.setImage(image);
+                        if (!video) {
 
+                            ImagePlus imageActiveContornous = activeContours.segment(imagePlus, new Point(x1, y1),
+                                    new Point(x2, y2), countIteration);
+                            Image imageResult = SwingFXUtils.toFXImage(imageActiveContornous.getBufferedImage(), null);
+                            imageView.setImage(imageResult);
+
+                        } else {
+
+                            frames = functions.openSequenceImage(activeContours, countIteration, x1, y1, x2, y2);
+                            showSequenceImages();
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
+    }
+
+    private void showSequenceImages() {
+
+        ImagePlus image = (ImagePlus) frames.get(indexFrame);
+
+        int[][] matrixResultR = functions.getMatrixImage(image).get(3);
+        int[][] matrixResultG = functions.getMatrixImage(image).get(2);
+        int[][] matrixResultB = functions.getMatrixImage(image).get(1);
+
+        setSizeImageViewResult(ui.getImageResultColor(matrixResultR, matrixResultG, matrixResultB));
     }
 
     private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -1528,7 +1580,23 @@ public class Program extends Application {
                         new ListenerResultDialogs<Integer>() {
                             @Override
                             public void accept(Integer result) {
-                                copyMainImageInNewWindow(result);
+                                copyMainImageInNewWindow(result, false);
+                            }
+                        });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerActiveContournsVideo = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones",
+                        new ListenerResultDialogs<Integer>() {
+                            @Override
+                            public void accept(Integer result) {
+                                copyMainImageInNewWindow(result, true);
                             }
                         });
             }

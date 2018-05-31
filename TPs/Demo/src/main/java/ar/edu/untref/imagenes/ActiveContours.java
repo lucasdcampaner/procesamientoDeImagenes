@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ij.ImagePlus;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
 
 public class ActiveContours {
 
@@ -22,6 +20,7 @@ public class ActiveContours {
     private Functions functions;
 
     private int[][] matrixTheta;
+    private int[] averageColors;
 
     public ActiveContours(Functions functions) {
         this.functions = functions;
@@ -56,7 +55,7 @@ public class ActiveContours {
         return new Curve(pointSince, pointUntil);
     }
 
-    public Image segment(ImagePlus imagePlus, Point point1, Point point2, int countIteration) {
+    public ImagePlus segment(ImagePlus imagePlus, Point point1, Point point2, int countIteration) {
 
         int w = imagePlus.getWidth();
         int h = imagePlus.getHeight();
@@ -87,7 +86,7 @@ public class ActiveContours {
             }
         }
 
-        int[] averageColors = functions.getAverageRGB(imagePlus, point1, point2);
+        averageColors = functions.getAverageRGB(imagePlus, point1, point2);
 
         for (int i = 0; i < countIteration; i++) {
 
@@ -124,8 +123,7 @@ public class ActiveContours {
         pointsLIn.clear();
         pointsLOut.clear();
 
-        Image imageResult = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
-        return imageResult;
+        return imagePlus;
     }
 
     private void removeLOutNoCorrespondent(ImagePlus imagePlus, Point point) {

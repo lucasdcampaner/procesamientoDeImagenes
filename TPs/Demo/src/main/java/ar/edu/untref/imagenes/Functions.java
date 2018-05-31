@@ -6,7 +6,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -16,6 +19,7 @@ import ij.ImagePlus;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -727,5 +731,44 @@ public class Functions {
         arrayAverages[2] = averageBlue;
 
         return arrayAverages;
+    }
+
+    public List<ImagePlus> openSequenceImage(ActiveContours activeContours, int iteration, int x1, int y1, int x2,
+            int y2) {
+
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        File folder = dirChooser.showDialog(null);
+
+        if (folder != null) {
+
+            File[] selectedImages = folder.listFiles();
+            Arrays.sort(selectedImages);
+
+            List<ImagePlus> frames = new LinkedList<>();
+
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < selectedImages.length; i++) {
+
+                ImagePlus frame = new ImagePlus(selectedImages[i].getAbsolutePath());
+
+                frame = activeContours.segment(frame, new Point(x1, y1), new Point(x2, y2), iteration);
+                frames.add(frame);
+            }
+
+            long endTime = System.currentTimeMillis();
+            double duration = (endTime - startTime);
+            double averageDuration = duration / selectedImages.length;
+            double fps = (1 / averageDuration) * 1000;
+
+            DecimalFormat df = new DecimalFormat("0.##");
+            String resultFPS = df.format(fps);
+
+            String info = "Duración total: " + duration / 1000 + " seg.\n" + "Cantidad de imágenes: " + selectedImages.length
+                    + "\n" + "FPS: " + resultFPS + " fps";
+            Dialogs.showInformation(info);
+
+            return frames;
+        }
+        return null;
     }
 }
