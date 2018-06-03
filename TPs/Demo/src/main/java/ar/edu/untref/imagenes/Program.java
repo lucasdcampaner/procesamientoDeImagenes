@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.untref.imagenes.susan.DetectorSusan;
+import ar.edu.untref.imagenes.susan.Susan;
+import ar.edu.untref.imagenes.susan.SusanCorner;
+import ar.edu.untref.imagenes.susan.SusanEdge;
 import ij.ImagePlus;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -224,6 +228,8 @@ public class Program extends Application {
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
         MenuItem canny = new MenuItem("Canny");
+        MenuItem susanEdges = new MenuItem("Susan - Edges");
+        MenuItem susanCorners = new MenuItem("Susan - Corners");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -233,9 +239,11 @@ public class Program extends Application {
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
         canny.setOnAction(listenerCanny);
+        susanEdges.setOnAction(listenerSusanEdges);
+        susanCorners.setOnAction(listenerSusanCorners);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny);
+                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1304,6 +1312,48 @@ public class Program extends Application {
                                         });
                             }
                         });
+
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerSusanEdges = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        Double delta = result.doubleValue();
+                        int thresholdSusan = 27;
+                        DetectorSusan detector = new DetectorSusan();
+                        Susan susan = new Susan(imageViewOriginal, detector, new SusanEdge());
+                        susan.filter(thresholdSusan, delta);
+                        imageResult = susan.getImageResult();
+                        setSizeImageViewResult(imageResult);
+                    }
+                });
+
+            }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerSusanCorners = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        Double delta = result.doubleValue();
+                        int thresholdSusan = 27;
+                        DetectorSusan boundaryDetectionBySusanService = new DetectorSusan();
+                        Susan susan = new Susan(imageViewOriginal, boundaryDetectionBySusanService, new SusanCorner());
+                        susan.filter(thresholdSusan, delta);
+                        imageResult = susan.getImageResult();
+                        setSizeImageViewResult(imageResult);
+                    }
+                });
 
             }
         }
