@@ -15,19 +15,19 @@ public class DetectorSusan {
     public Image detect(Image image, CornerOEdge imageElementSusan, Integer threshold, Double accumulateDelta) {
         int width = toInt(image.getWidth());
         int height = toInt(image.getHeight());
-        WritableImage imageWithDetectedElement = new WritableImage(width, height);
+        WritableImage imageResult = new WritableImage(width, height);
         PixelReader pixelReader = image.getPixelReader();
-        PixelWriter pixelWriter = imageWithDetectedElement.getPixelWriter();
+        PixelWriter pixelWriter = imageResult.getPixelWriter();
 
         for (int row = 0; row < height; row++) {
             for (int column = 0; column < width; column++) {
-                double elementDetectionParameter = calculateElementDetectionParameter(threshold, row, column, pixelReader, image);
+                double element = calculateElementDetectionParameter(threshold, row, column, pixelReader, image);
                 Color imageColor = pixelReader.getColor(column, row);
-                pixelWriter.setColor(column, row, imageElementSusan.calculateElement(elementDetectionParameter, accumulateDelta, imageColor));
+                pixelWriter.setColor(column, row, imageElementSusan.calculateColorResult(element, accumulateDelta, imageColor));
             }
         }
 
-        return imageWithDetectedElement;
+        return imageResult;
     }
 
     private int toInt(double doubleValue) {
