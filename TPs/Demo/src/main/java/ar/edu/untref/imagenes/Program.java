@@ -240,6 +240,7 @@ public class Program extends Application {
         directionalKirsh.setOnAction(listenerDirectionalKirsh);
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
         directionalSobel.setOnAction(listenerDirectionalSobel);
+        directionalHoughLines.setOnAction(listenerDirectionalHoughLines);
 
         menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
                 directionalKirsh,directionalHoughLines);
@@ -1421,6 +1422,20 @@ public class Program extends Application {
         }
     };
 
+
+    private EventHandler<ActionEvent> listenerDirectionalHoughLines = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            Hough hough = new Hough();
+            int[][] matrixResult = hough.pasarPrewitt( matrixGray);
+            matrixResult = hough.deteccionDeRectas(matrixResult);
+                    
+            setSizeImageViewResult(ui.getImageResult(matrixResult));
+        }
+    };
+    
     private Image getImageOriginal() {
         return this.imageOriginal;
     }
