@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ar.edu.untref.imagenes.susan.DetectorSusan;
 import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.susan.SusanCorner;
 import ar.edu.untref.imagenes.susan.SusanEdge;
@@ -1325,10 +1324,10 @@ public class Program extends Application {
                     @Override
                     public void accept(Double result) {
                         Double delta = result.doubleValue();
-                        int thresholdSusan = 27;
-                        DetectorSusan detector = new DetectorSusan();
-                        Susan susan = new Susan(imageViewOriginal, detector, new SusanEdge());
-                        susan.filter(thresholdSusan, delta);
+                        //Fijo 27
+                        int threshold = 27;
+                        Susan susan = new Susan(imageViewOriginal, new SusanEdge());
+                        susan.filter(threshold, delta);
                         imageResult = susan.getImageResult();
                         setSizeImageViewResult(imageResult);
                     }
@@ -1346,10 +1345,10 @@ public class Program extends Application {
                     @Override
                     public void accept(Double result) {
                         Double delta = result.doubleValue();
-                        int thresholdSusan = 27;
-                        DetectorSusan boundaryDetectionBySusanService = new DetectorSusan();
-                        Susan susan = new Susan(imageViewOriginal, boundaryDetectionBySusanService, new SusanCorner());
-                        susan.filter(thresholdSusan, delta);
+                        //Fijo 27
+                        int threshold = 27;
+                        Susan susan = new Susan(imageViewOriginal, new SusanCorner());
+                        susan.filter(threshold, delta);
                         imageResult = susan.getImageResult();
                         setSizeImageViewResult(imageResult);
                     }

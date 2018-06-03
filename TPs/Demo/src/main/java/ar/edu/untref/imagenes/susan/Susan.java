@@ -7,24 +7,17 @@ public class Susan {
 
     private ImageView imageView;
     private Image imageResult;
-    private DetectorSusan boundaryDetectionBySusanService;
+    private DetectorSusan detector;
+    private CornerOEdge cornerOEdge;
 
-    private CornerOEdge imageElementSusan;
-
-    public Susan(ImageView imageView, 
-                 DetectorSusan boundaryDetectionBySusanService, 
-                 CornerOEdge imageElementSusan) {
-        
+    public Susan(ImageView imageView, CornerOEdge cornerOEdge) {
         this.imageView = imageView;
-        this.boundaryDetectionBySusanService = boundaryDetectionBySusanService;
-        this.imageElementSusan = imageElementSusan;
+        this.detector = new DetectorSusan();
+        this.cornerOEdge = cornerOEdge;
     }
 
     public void filter(int threshold, Double delta) {
-
-        this.imageResult = boundaryDetectionBySusanService.detect(imageView.getImage(), imageElementSusan,
-                                                                  threshold,
-                                                                  delta);
+        this.imageResult = detector.detect(imageView.getImage(), cornerOEdge, threshold, delta);
     }
 
     public Image getImageResult() {
