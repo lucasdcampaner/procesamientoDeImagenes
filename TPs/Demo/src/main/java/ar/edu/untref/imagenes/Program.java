@@ -235,7 +235,7 @@ public class Program extends Application {
         MenuItem directionalKirsh = new MenuItem("Kirsh");
         MenuItem directionalSobel = new MenuItem("Sobel");
         MenuItem directionalHoughLines = new MenuItem("Hough trans. for lines");
-        //MenuItem directionalHoughcircules = new MenuItem("Hough tr. for circules");
+        // MenuItem directionalHoughcircules = new MenuItem("Hough tr. for circules");
         directionalOptionA.setOnAction(listenerDirectionalOptionA);
         directionalKirsh.setOnAction(listenerDirectionalKirsh);
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
@@ -243,7 +243,7 @@ public class Program extends Application {
         directionalHoughLines.setOnAction(listenerDirectionalHoughLines);
 
         menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
-                directionalKirsh,directionalHoughLines);
+                directionalKirsh, directionalHoughLines);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder);
@@ -1161,24 +1161,27 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma", new ListenerResultDialogs<Double>() {
-                    @Override
-                    public void accept(Double result) {
-                        int sigma = (int) Math.round(result);
-                        Dialogs.showConfigureTwoParameters("Umbral",
-                                "Ingrese el umbral", "T1", "T2",
-                                results -> {
-                                    int t1 = (int) Math.round(results[0]);
-                                    int t2 = (int) Math.round(results[1]);
-//                                    int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3, sigma);
-//                                    Canny canny = new Canny(ui.getImageResult(matrixResult), sigma, t1, t2, 16);
-                                    Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
-                                    canny.filter();
-                                    Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(), null);
-                                    setSizeImageViewResult(filteredImage);
-                                });
-                    }
-                });
+                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma",
+                        new ListenerResultDialogs<Double>() {
+                            @Override
+                            public void accept(Double result) {
+                                int sigma = (int) Math.round(result);
+                                Dialogs.showConfigureTwoParameters("Umbral", "Ingrese el umbral", "T1", "T2",
+                                        results -> {
+                                            int t1 = (int) Math.round(results[0]);
+                                            int t2 = (int) Math.round(results[1]);
+                                            // int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3,
+                                            // sigma);
+                                            // Canny canny = new Canny(ui.getImageResult(matrixResult), sigma, t1, t2,
+                                            // 16);
+                                            Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
+                                            canny.filter();
+                                            Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(),
+                                                    null);
+                                            setSizeImageViewResult(filteredImage);
+                                        });
+                            }
+                        });
 
             }
         }
@@ -1422,20 +1425,21 @@ public class Program extends Application {
         }
     };
 
-
     private EventHandler<ActionEvent> listenerDirectionalHoughLines = new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent event) {
 
             Hough hough = new Hough();
-            int[][] matrixResult = hough.pasarPrewitt( matrixGray);
+            int[][] matrixResult;
+            matrixResult = hough.pasarPrewitt(matrixGray);
             matrixResult = hough.deteccionDeRectas(matrixResult);
-                    
+            // matrixResult = hough.deteccionDeRectas(matrixGray);
+
             setSizeImageViewResult(ui.getImageResult(matrixResult));
         }
     };
-    
+
     private Image getImageOriginal() {
         return this.imageOriginal;
     }
