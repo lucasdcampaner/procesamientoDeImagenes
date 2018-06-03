@@ -6,7 +6,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class DetectorSusan {
+public class SusanDetector {
 
     private static final double SUSAN_MASK_SIZE = 37;
     private static final int OFFSET = 3;
@@ -21,7 +21,7 @@ public class DetectorSusan {
 
         for (int row = 0; row < height; row++) {
             for (int column = 0; column < width; column++) {
-                double element = calculateElementDetectionParameter(threshold, row, column, pixelReader, image);
+                double element = calculateElement(threshold, row, column, pixelReader, image);
                 Color imageColor = pixelReader.getColor(column, row);
                 pixelWriter.setColor(column, row, imageElementSusan.calculateColorResult(element, accumulateDelta, imageColor));
             }
@@ -34,8 +34,8 @@ public class DetectorSusan {
         return (int) doubleValue;
     }
 
-    private double calculateElementDetectionParameter(Integer threshold, int row, int column, PixelReader pixelReader, Image image) {
-        AccumulationOperation susanMask[][] = Mask.build();
+    private double calculateElement(Integer threshold, int row, int column, PixelReader pixelReader, Image image) {
+        Operation susanMask[][] = Mask.createMask();
         int centralGray = toGrayScale(pixelReader.getColor(column, row));
         double accumulator = 0;
 

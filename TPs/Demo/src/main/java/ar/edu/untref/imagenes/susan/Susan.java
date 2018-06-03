@@ -7,12 +7,12 @@ public class Susan {
 
     private ImageView imageView;
     private Image imageResult;
-    private DetectorSusan detector;
+    private SusanDetector detector;
     private CornerOEdge cornerOEdge;
 
     public Susan(ImageView imageView, CornerOEdge cornerOEdge) {
         this.imageView = imageView;
-        this.detector = new DetectorSusan();
+        this.detector = new SusanDetector();
         this.cornerOEdge = cornerOEdge;
     }
 
