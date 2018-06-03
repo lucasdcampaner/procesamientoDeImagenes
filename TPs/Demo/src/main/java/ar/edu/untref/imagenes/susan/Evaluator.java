@@ -1,6 +1,6 @@
 package ar.edu.untref.imagenes.susan;
 
-public class ComparationOperation implements AccumulationOperation{
+public class Evaluator implements Operation{
 
     @Override
     public double calculate(int gray, int centralGray, Integer threshold) {

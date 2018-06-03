@@ -1,6 +1,6 @@
 package ar.edu.untref.imagenes.susan;
 
-public class ZeroOperation implements AccumulationOperation{
+public class Zero implements Operation{
 
     @Override
     public double calculate(int gray, int centralGray, Integer threshold) {

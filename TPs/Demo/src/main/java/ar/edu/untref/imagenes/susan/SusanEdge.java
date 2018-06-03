@@ -5,16 +5,15 @@ import javafx.scene.paint.Color;
 public class SusanEdge implements CornerOEdge {
 
     @Override
-    public Color calculateElement(double elementDetectionParameter, Double accumulateDelta, Color imageColor) {
+    public Color calculateColorResult(double element, Double delta, Color pixelColorOrigin) {
 
-        Color color;
-        
-        if (0.5 - accumulateDelta <= elementDetectionParameter && elementDetectionParameter <= 0.5 + accumulateDelta) {
-            color = Color.rgb(255, 255, 255);
+        Color colorResult;
+        if (0.5 - delta <= element && element <= 0.5 + delta) {
+            colorResult = Color.rgb(0, 255, 0);
         } else {
-            color = Color.BLACK; 
+            colorResult = pixelColorOrigin;
         }
 
-        return color;
+        return colorResult;
     }
 }
