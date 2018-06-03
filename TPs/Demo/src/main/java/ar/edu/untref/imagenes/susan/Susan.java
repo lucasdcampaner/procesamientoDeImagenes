@@ -16,7 +16,7 @@ public class Susan {
         this.cornerOEdge = cornerOEdge;
     }
 
-    public void filter(int threshold, Double delta) {
+    public void detect(int threshold, Double delta) {
         this.imageResult = detector.detect(imageView.getImage(), cornerOEdge, threshold, delta);
     }
 

@@ -1327,7 +1327,7 @@ public class Program extends Application {
                         //Fijo 27
                         int threshold = 27;
                         Susan susan = new Susan(imageViewOriginal, new SusanEdge());
-                        susan.filter(threshold, delta);
+                        susan.detect(threshold, delta);
                         imageResult = susan.getImageResult();
                         setSizeImageViewResult(imageResult);
                     }
@@ -1348,7 +1348,7 @@ public class Program extends Application {
                         //Fijo 27
                         int threshold = 27;
                         Susan susan = new Susan(imageViewOriginal, new SusanCorner());
-                        susan.filter(threshold, delta);
+                        susan.detect(threshold, delta);
                         imageResult = susan.getImageResult();
                         setSizeImageViewResult(imageResult);
                     }
