@@ -45,6 +45,7 @@ public class Program extends Application {
     private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
     private ActiveContours activeContours;
+    private Hough hough;
 
     private static final int DERIVATE_X = 0;
     private static final int DERIVATE_Y = 1;
@@ -229,6 +230,7 @@ public class Program extends Application {
         MenuItem canny = new MenuItem("Canny");
         MenuItem susanEdges = new MenuItem("Susan - Edges");
         MenuItem susanCorners = new MenuItem("Susan - Corners");
+        MenuItem hough = new MenuItem("Hough - Edges");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -240,9 +242,10 @@ public class Program extends Application {
         canny.setOnAction(listenerCanny);
         susanEdges.setOnAction(listenerSusanEdges);
         susanCorners.setOnAction(listenerSusanCorners);
+        hough.setOnAction(listenerHoughEdges);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners);
+                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners, hough);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1320,39 +1323,41 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado", new ListenerResultDialogs<Double>() {
-                    @Override
-                    public void accept(Double result) {
-                        Double delta = result.doubleValue();
-                        //Fijo 27
-                        int threshold = 27;
-                        Susan susan = new Susan(imageViewOriginal, new SusanEdge());
-                        susan.detect(threshold, delta);
-                        imageResult = susan.getImageResult();
-                        setSizeImageViewResult(imageResult);
-                    }
-                });
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado",
+                        new ListenerResultDialogs<Double>() {
+                            @Override
+                            public void accept(Double result) {
+                                Double delta = result.doubleValue();
+                                // Fijo 27
+                                int threshold = 27;
+                                Susan susan = new Susan(imageViewOriginal, new SusanEdge());
+                                susan.detect(threshold, delta);
+                                imageResult = susan.getImageResult();
+                                setSizeImageViewResult(imageResult);
+                            }
+                        });
 
             }
         }
     };
-    
+
     private EventHandler<ActionEvent> listenerSusanCorners = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado", new ListenerResultDialogs<Double>() {
-                    @Override
-                    public void accept(Double result) {
-                        Double delta = result.doubleValue();
-                        //Fijo 27
-                        int threshold = 27;
-                        Susan susan = new Susan(imageViewOriginal, new SusanCorner());
-                        susan.detect(threshold, delta);
-                        imageResult = susan.getImageResult();
-                        setSizeImageViewResult(imageResult);
-                    }
-                });
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado",
+                        new ListenerResultDialogs<Double>() {
+                            @Override
+                            public void accept(Double result) {
+                                Double delta = result.doubleValue();
+                                // Fijo 27
+                                int threshold = 27;
+                                Susan susan = new Susan(imageViewOriginal, new SusanCorner());
+                                susan.detect(threshold, delta);
+                                imageResult = susan.getImageResult();
+                                setSizeImageViewResult(imageResult);
+                            }
+                        });
 
             }
         }
@@ -1648,6 +1653,44 @@ public class Program extends Application {
                                 copyMainImageInNewWindow(result, true);
                             }
                         });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerHoughEdges = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+
+                int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+
+                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+                int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+                int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
+
+                List<int[][]> listMasks = new ArrayList<>();
+                listMasks.add(matrixDX);
+                listMasks.add(matrixDY);
+                listMasks.add(matrixRR);
+                listMasks.add(matrixRL);
+
+                int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+                
+                ImagePlus imageResult;
+                ImagePlus imagePlusOriginal;
+                try {
+                    imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult), "Hough-edges");
+                    imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
+                    
+                    hough = new Hough(imagePlusOriginal, imageResult);
+                    
+                    ImagePlus imageHough = hough.detectEdges();
+                    Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
+                    setSizeImageViewResult(image);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
