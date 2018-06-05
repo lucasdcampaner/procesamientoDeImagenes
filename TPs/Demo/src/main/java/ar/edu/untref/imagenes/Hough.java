@@ -3,6 +3,9 @@ package ar.edu.untref.imagenes;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 import ij.ImagePlus;
 
 public class Hough {
@@ -10,7 +13,7 @@ public class Hough {
     public Hough() {
 
     }
-    
+
     private ImagePlus imageResult;
     private ImagePlus imageOriginal;
     private ImagePlus imageFiltered;
@@ -18,6 +21,25 @@ public class Hough {
     public Hough(ImagePlus imageOriginal, ImagePlus imageFiltered) {
         this.imageOriginal = imageOriginal;
         this.imageFiltered = imageFiltered;
+    }
+
+    protected int StepsPerDegree;
+    protected int Radius;
+
+    public void ingresarValores() {
+        JTextField valorStepsPerDegree = new JTextField();
+        JTextField valorRadius = new JTextField();
+        ;
+
+        Object[] message = { "Valor de separacion de grados Theta:", valorStepsPerDegree, "Valor de vecindad:",
+                valorRadius };
+
+        int opcion = JOptionPane.showConfirmDialog(null, message, "Ingresar Valores", JOptionPane.OK_CANCEL_OPTION);
+        if (opcion == JOptionPane.OK_OPTION) {
+            StepsPerDegree = Integer.valueOf(valorStepsPerDegree.getText());
+            Radius = Integer.valueOf(valorRadius.getText());
+            // epsilon = Double.valueOf(epsi.getText());
+        }
     }
 
     public int[][] deteccionDeRectas(int[][] matrixGray) {
@@ -56,7 +78,8 @@ public class Hough {
 
         // addPointsToEdges();
         HoughLineTransformation obj = new HoughLineTransformation();
-        obj.setStepsPerDegree(1);
+        obj.setStepsPerDegree(StepsPerDegree);// 1
+        obj.setRadius(Radius);// 4
         obj.ProcessImage2(imageResult);
 
         copyImage(imageOriginal);
@@ -111,7 +134,5 @@ public class Hough {
         return normalizedMatrixR;
 
     }
-
-
 
 }

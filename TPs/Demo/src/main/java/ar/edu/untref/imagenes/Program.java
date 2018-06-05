@@ -1447,7 +1447,7 @@ public class Program extends Application {
                 imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
 
                 hough = new Hough(imagePlusOriginal, imageResult);
-
+                hough.ingresarValores();
                 ImagePlus imageHough = hough.deteccionDeRectas2();
 
                 Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
