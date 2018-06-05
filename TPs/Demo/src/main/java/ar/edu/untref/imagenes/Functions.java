@@ -1,10 +1,15 @@
 package ar.edu.untref.imagenes;
 
+import java.awt.Color;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +19,7 @@ import ij.ImagePlus;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -363,9 +369,9 @@ public class Functions {
 
             listValuesSelect.add(valueSelect);
             counter++;
-    }
+        }
 
-    return listValuesSelect;
+        return listValuesSelect;
 
     }
 
@@ -640,5 +646,133 @@ public class Functions {
         } else {
             return true;
         }
+    }
+
+    public boolean similarColors(ImagePlus image, Color averageColor, int x, int y) {
+
+        int[] rgb = new int[3];
+        image.getProcessor().getPixel(x, y, rgb);
+
+        int red = rgb[0];
+        int green = rgb[1];
+        int blue = rgb[2];
+
+        boolean similar = Math.abs(red - averageColor.getRed()) <= 50 && Math.abs(green - averageColor.getGreen()) <= 50
+                && Math.abs(blue - averageColor.getBlue()) <= 50;
+
+        return similar;
+    }
+
+    public int[] getAverageRGB(ImagePlus image, Point point1, Point point2) {
+
+        int adderRed = 0;
+        int adderGreen = 0;
+        int adderBlue = 0;
+
+        int counterPixels = 0;
+
+        int averageRed = 0;
+        int averageGreen = 0;
+        int averageBlue = 0;
+
+        int firstPointX = point1.x;
+        int firstPointY = point1.y;
+        int secondPointX = point2.x;
+        int secondPointY = point2.y;
+
+        int sinceX = 0;
+        int untilX = 0;
+        int sinceY = 0;
+        int untilY = 0;
+
+        if (firstPointX <= secondPointX) {
+            sinceX = firstPointX;
+            untilX = secondPointX;
+        } else {
+            sinceX = secondPointX;
+            untilX = firstPointX;
+        }
+
+        if (firstPointY <= secondPointY) {
+            sinceY = firstPointY;
+            untilY = secondPointY;
+        } else {
+            sinceY = secondPointY;
+            untilY = firstPointY;
+        }
+
+        for (int i = sinceX + 1; i < untilX - 1; i++) {
+            for (int j = sinceY + 1; j < untilY - 1; j++) {
+
+                int[] rgb = new int[3];
+                image.getProcessor().getPixel(i, j, rgb);
+
+                int red = rgb[0];
+                int green = rgb[1];
+                int blue = rgb[2];
+
+                adderRed += red;
+                adderGreen += green;
+                adderBlue += blue;
+
+                counterPixels++;
+            }
+        }
+
+        if (counterPixels > 0) {
+            averageRed = (int) (adderRed / counterPixels);
+            averageGreen = (int) (adderGreen / counterPixels);
+            averageBlue = (int) (adderBlue / counterPixels);
+        } else {
+            averageRed = adderRed;
+            averageGreen = adderGreen;
+            averageBlue = adderBlue;
+        }
+
+        int[] arrayAverages = new int[3];
+        arrayAverages[0] = averageRed;
+        arrayAverages[1] = averageGreen;
+        arrayAverages[2] = averageBlue;
+
+        return arrayAverages;
+    }
+
+    public List<ImagePlus> openSequenceImage(ActiveContours activeContours, int iteration, int x1, int y1, int x2,
+            int y2) {
+
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        File folder = dirChooser.showDialog(null);
+
+        if (folder != null) {
+
+            File[] selectedImages = folder.listFiles();
+            Arrays.sort(selectedImages);
+
+            List<ImagePlus> frames = new LinkedList<>();
+
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < selectedImages.length; i++) {
+
+                ImagePlus frame = new ImagePlus(selectedImages[i].getAbsolutePath());
+
+                frame = activeContours.segment(frame, new Point(x1, y1), new Point(x2, y2), iteration);
+                frames.add(frame);
+            }
+
+            long endTime = System.currentTimeMillis();
+            double duration = (endTime - startTime);
+            double averageDuration = duration / selectedImages.length;
+            double fps = (1 / averageDuration) * 1000;
+
+            DecimalFormat df = new DecimalFormat("0.##");
+            String resultFPS = df.format(fps);
+
+            String info = "Duración total: " + duration / 1000 + " seg.\n" + "Cantidad de imágenes: " + selectedImages.length
+                    + "\n" + "FPS: " + resultFPS + " fps";
+            Dialogs.showInformation(info);
+
+            return frames;
+        }
+        return null;
     }
 }

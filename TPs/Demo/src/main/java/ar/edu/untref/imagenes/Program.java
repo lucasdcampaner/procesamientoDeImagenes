@@ -1,9 +1,13 @@
 package ar.edu.untref.imagenes;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.untref.imagenes.susan.Susan;
+import ar.edu.untref.imagenes.susan.SusanCorner;
+import ar.edu.untref.imagenes.susan.SusanEdge;
 import ij.ImagePlus;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -40,6 +44,8 @@ public class Program extends Application {
     private Functions functions;
     private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
+    private ActiveContours activeContours;
+    private Hough hough;
 
     private static final int DERIVATE_X = 0;
     private static final int DERIVATE_Y = 1;
@@ -48,6 +54,8 @@ public class Program extends Application {
 
     private Group groupImageOriginal;
     private int x, y, w, h;
+
+    private int positionX, positionY, width, height;
 
     private Slider slider;
     private int[][] matrixGray;
@@ -61,6 +69,9 @@ public class Program extends Application {
     private BorderDetectors borderDetectors;
     private Softeners softeners;
 
+    private List<ImagePlus> frames;
+    private int indexFrame = 0;
+
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -69,6 +80,7 @@ public class Program extends Application {
             borderDetectors = new BorderDetectors(functions);
             generatorOfSyntheticImages = new GeneratorOfSyntheticImages();
             softeners = new Softeners(functions);
+            activeContours = new ActiveContours(functions);
             ui = new UI();
 
             Scene scene = createWindow();
@@ -76,6 +88,7 @@ public class Program extends Application {
 
             ((VBox) scene.getRoot()).getChildren().addAll(createMenuBar(), createMainLayout());
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -215,6 +228,8 @@ public class Program extends Application {
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
         MenuItem canny = new MenuItem("Canny");
+        MenuItem susanEdges = new MenuItem("Susan - Edges");
+        MenuItem susanCorners = new MenuItem("Susan - Corners");
         MenuItem hough = new MenuItem("Hough - Edges");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
@@ -225,10 +240,12 @@ public class Program extends Application {
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
         canny.setOnAction(listenerCanny);
+        susanEdges.setOnAction(listenerSusanEdges);
+        susanCorners.setOnAction(listenerSusanCorners);
         hough.setOnAction(listenerHoughEdges);
-        
+
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny, hough);
+                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners, hough);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -236,7 +253,7 @@ public class Program extends Application {
         MenuItem directionalPrewitt = new MenuItem("Prewitt");
         MenuItem directionalKirsh = new MenuItem("Kirsh");
         MenuItem directionalSobel = new MenuItem("Sobel");
-        directionalOptionA.setOnAction(listenerDirectionalOptionA);
+        directionalOptionA.setOnAction(listenerDirectionalWeight);
         directionalKirsh.setOnAction(listenerDirectionalKirsh);
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
         directionalSobel.setOnAction(listenerDirectionalSobel);
@@ -244,8 +261,16 @@ public class Program extends Application {
         menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
                 directionalKirsh);
 
+        Menu menuActiveContourns = new Menu("Active contourns");
+        MenuItem activeContourns = new MenuItem("Segmentation");
+        MenuItem activeContournsVideo = new MenuItem("Video segmentation");
+        activeContourns.setOnAction(listenerActiveContourns);
+        activeContournsVideo.setOnAction(listenerActiveContournsVideo);
+
+        menuActiveContourns.getItems().addAll(activeContourns, activeContournsVideo);
+
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
-                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder);
+                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder, menuActiveContourns);
 
         return menuBar;
     }
@@ -413,6 +438,7 @@ public class Program extends Application {
                     Image imageResult;
                     imageResult = ui.getImageResult(imageViewOriginal, x, y, w, h);
                     setSizeImageViewResult(imageResult);
+
                     ImagePlus imagePlus;
                     try {
                         imagePlus = functions.getImagePlusFromImage(imageResult, "cut_image");
@@ -491,9 +517,36 @@ public class Program extends Application {
         }
         int[][] matrixImageResult = getGrayMatrix(imagePlus);
         matrixGray = matrixImageResult;
+
+        imageViewResult.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+
+                switch (event.getButton()) {
+
+                case PRIMARY:
+                    if (indexFrame < frames.size() - 1 && imageViewResult != null) {
+                        indexFrame++;
+                        showSequenceImages();
+                    }
+                    break;
+
+                case SECONDARY:
+                    if (indexFrame > 0 && imageViewResult != null) {
+                        indexFrame--;
+                        showSequenceImages();
+                    }
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        });
     }
 
-    private void copyImageNewWindow() {
+    private void copyImageResultInNewWindow() {
 
         int w = (int) imageViewResult.getImage().getWidth();
         int h = (int) imageViewResult.getImage().getHeight();
@@ -509,9 +562,89 @@ public class Program extends Application {
         ((VBox) scene.getRoot()).getChildren().add(imageView);
 
         Stage stage = new Stage();
-        stage.setTitle("Copia de la imagen principal");
+        stage.setTitle("Copia de la imagen resultado");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void copyMainImageInNewWindow(int countIteration, boolean video) {
+
+        int w = (int) imageViewOriginal.getImage().getWidth();
+        int h = (int) imageViewOriginal.getImage().getHeight();
+
+        // Imagen original
+        ImageView imageView = new ImageView();
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(w);
+        imageView.setFitHeight(h);
+        imageView.setImage(imageViewOriginal.getImage());
+
+        Scene scene = new Scene(new VBox(), w, h);
+        ((VBox) scene.getRoot()).getChildren().add(imageView);
+
+        Stage stage = new Stage();
+        stage.setTitle("Copia de la imagen principal (" + countIteration + ")");
+        stage.setScene(scene);
+        stage.show();
+
+        imageView.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+            }
+        });
+
+        imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                positionX = (int) event.getX();
+                positionY = (int) event.getY();
+            }
+        });
+
+        imageView.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                width = (int) (event.getX() - positionX);
+                height = (int) (event.getY() - positionY);
+
+                if (width > 0 && height > 0) {
+                    try {
+                        ImagePlus imagePlus = functions.getImagePlusFromImage(imageView.getImage(), "active_contourns");
+
+                        int x1 = positionX + 2;
+                        int y1 = positionY + 2;
+                        int x2 = (int) event.getX() - 2;
+                        int y2 = (int) event.getY() - 2;
+
+                        if (!video) {
+
+                            ImagePlus imageActiveContornous = activeContours.segment(imagePlus, new Point(x1, y1),
+                                    new Point(x2, y2), countIteration);
+                            Image imageResult = SwingFXUtils.toFXImage(imageActiveContornous.getBufferedImage(), null);
+                            imageView.setImage(imageResult);
+
+                        } else {
+
+                            frames = functions.openSequenceImage(activeContours, countIteration, x1, y1, x2, y2);
+                            showSequenceImages();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void showSequenceImages() {
+
+        ImagePlus image = (ImagePlus) frames.get(indexFrame);
+
+        int[][] matrixResultR = functions.getMatrixImage(image).get(3);
+        int[][] matrixResultG = functions.getMatrixImage(image).get(2);
+        int[][] matrixResultB = functions.getMatrixImage(image).get(1);
+
+        setSizeImageViewResult(ui.getImageResultColor(matrixResultR, matrixResultG, matrixResultB));
     }
 
     private EventHandler<ActionEvent> listenerCreateCircle = new EventHandler<ActionEvent>() {
@@ -590,7 +723,7 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (imageViewResult.getImage() != null) {
-                copyImageNewWindow();
+                copyImageResultInNewWindow();
             }
         }
     };
@@ -1182,6 +1315,52 @@ public class Program extends Application {
                             }
                         });
 
+
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerSusanEdges = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado",
+                        new ListenerResultDialogs<Double>() {
+                            @Override
+                            public void accept(Double result) {
+                                Double delta = result.doubleValue();
+                                // Fijo 27
+                                int threshold = 27;
+                                Susan susan = new Susan(imageViewOriginal, new SusanEdge());
+                                susan.detect(threshold, delta);
+                                imageResult = susan.getImageResult();
+                                setSizeImageViewResult(imageResult);
+                            }
+                        });
+
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerSusanCorners = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado",
+                        new ListenerResultDialogs<Double>() {
+                            @Override
+                            public void accept(Double result) {
+                                Double delta = result.doubleValue();
+                                // Fijo 27
+                                int threshold = 27;
+                                Susan susan = new Susan(imageViewOriginal, new SusanCorner());
+                                susan.detect(threshold, delta);
+                                imageResult = susan.getImageResult();
+                                setSizeImageViewResult(imageResult);
+                            }
+                        });
+
+
             }
         }
     };
@@ -1279,6 +1458,30 @@ public class Program extends Application {
                         });
 
             }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerDirectionalWeight = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            int[][] matrixWeight = { { -1, -1, -1 }, { 1, 0, -1 }, { 1, 1, 1 } };
+
+            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
+
+            List<int[][]> listMasks = new ArrayList<>();
+            listMasks.add(matrixDX);
+            listMasks.add(matrixDY);
+            listMasks.add(matrixRR);
+            listMasks.add(matrixRL);
+
+            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+            int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+            setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
         }
     };
 
@@ -1453,7 +1656,7 @@ public class Program extends Application {
                                 Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
                                 setSizeImageViewResult(image);
 
-                            } catch (IOException e) {
+                            }  catch (IOException e) {
                                 e.printStackTrace();
                             }
                         });
@@ -1464,6 +1667,40 @@ public class Program extends Application {
     private Image getImageOriginal() {
         return this.imageOriginal;
     }
+
+    private EventHandler<ActionEvent> listenerActiveContourns = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones",
+                        new ListenerResultDialogs<Integer>() {
+                            @Override
+                            public void accept(Integer result) {
+                                copyMainImageInNewWindow(result, false);
+                            }
+                        });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerActiveContournsVideo = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones",
+                        new ListenerResultDialogs<Integer>() {
+                            @Override
+                            public void accept(Integer result) {
+                                copyMainImageInNewWindow(result, true);
+
+                            }
+                        });
+            }
+        }
+    };
+
 
     public static void main(String[] args) {
         launch(args);
