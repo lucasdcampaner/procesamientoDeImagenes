@@ -1433,10 +1433,30 @@ public class Program extends Application {
             Hough hough = new Hough();
             int[][] matrixResult;
             matrixResult = hough.pasarPrewitt(matrixGray);
-            matrixResult = hough.deteccionDeRectas(matrixResult);
-            // matrixResult = hough.deteccionDeRectas(matrixGray);
+            /*
+             * matrixResult = hough.deteccionDeRectas(matrixResult); // matrixResult =
+             * hough.deteccionDeRectas(matrixGray);
+             * 
+             * setSizeImageViewResult(ui.getImageResult(matrixResult));
+             */
 
-            setSizeImageViewResult(ui.getImageResult(matrixResult));
+            ImagePlus imageResult;
+            ImagePlus imagePlusOriginal;
+            try {
+                imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult), "Hough-edges");
+                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
+
+                hough = new Hough(imagePlusOriginal, imageResult);
+
+                ImagePlus imageHough = hough.deteccionDeRectas2();
+
+                Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
+                setSizeImageViewResult(image);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     };
 

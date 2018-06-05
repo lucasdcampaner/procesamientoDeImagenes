@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ij.ImagePlus;
+
 public class HoughLineTransformation {
 
     // The size of the neighbourhood in which to search for other local maxima
@@ -179,15 +181,32 @@ public class HoughLineTransformation {
 
     public void ProcessImage(int[][] fastBitmap) {
 
-        this.height = fastBitmap.length;
-        this.width = fastBitmap[0].length;
+        this.width = fastBitmap.length;
+        this.height = fastBitmap[0].length;
 
         init();
         // Now find edge points and update the hough array
-        for (int x = 0; x < height; x++) {
-            for (int y = 0; y < width; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 // Find non-black pixels
                 if (fastBitmap[x][y] > 160) { // if (fastBitmap[x][y] == 255) {
+                    addPoint(x, y);
+                }
+            }
+        }
+    }
+
+    public void ProcessImage2(ImagePlus fastBitmap) {
+
+        this.width = fastBitmap.getWidth();
+        this.height = fastBitmap.getHeight();
+
+        init();
+        // Now find edge points and update the hough array
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                // Find non-black pixels
+                if (fastBitmap.getPixel(x, y)[0] > 150) { // if (fastBitmap[x][y] == 255) {
                     addPoint(x, y);
                 }
             }

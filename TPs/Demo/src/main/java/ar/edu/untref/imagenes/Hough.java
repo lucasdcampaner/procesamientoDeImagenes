@@ -1,11 +1,23 @@
 package ar.edu.untref.imagenes;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import ij.ImagePlus;
 
 public class Hough {
 
     public Hough() {
 
+    }
+    
+    private ImagePlus imageResult;
+    private ImagePlus imageOriginal;
+    private ImagePlus imageFiltered;
+
+    public Hough(ImagePlus imageOriginal, ImagePlus imageFiltered) {
+        this.imageOriginal = imageOriginal;
+        this.imageFiltered = imageFiltered;
     }
 
     public int[][] deteccionDeRectas(int[][] matrixGray) {
@@ -19,9 +31,9 @@ public class Hough {
 
         List<HoughLine> recuperados = obj.getLines();
 
-        int height = matrixGray.length;
-        int width = matrixGray[0].length;
-        int[][] nuevaMatrix = new int[height][width];
+        int width = matrixGray.length;
+        int height = matrixGray[0].length;
+        int[][] nuevaMatrix = new int[width][height];
 
         for (HoughLine item : recuperados) {
             if (item.getRelativeIntensity() > 0.18) {
@@ -32,6 +44,43 @@ public class Hough {
 
         return matrixGray;
         // return nuevaMatrix;
+    }
+
+    public ImagePlus deteccionDeRectas2() {
+
+        int height = imageOriginal.getWidth();
+        int width = imageOriginal.getHeight();
+        // initialize();
+        imageResult = new ImagePlus();
+        imageResult = imageFiltered;
+
+        // addPointsToEdges();
+        HoughLineTransformation obj = new HoughLineTransformation();
+        obj.setStepsPerDegree(1);
+        obj.ProcessImage2(imageResult);
+
+        copyImage(imageOriginal);
+
+        List<HoughLine> recuperados = obj.getLines();
+        for (HoughLine item : recuperados) {
+            if (item.getRelativeIntensity() > 0.2) {
+                item.DrawLine2(imageResult);
+                // item.DrawLine(nuevaMatrix, 255); //
+            }
+        }
+
+        // return getImageResult(imageResult);
+        return imageResult;
+    }
+
+    private void copyImage(ImagePlus imagen) {
+        int height = imageOriginal.getWidth();
+        int width = imageOriginal.getHeight();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                imageResult.getProcessor().putPixel(i, j, imagen.getPixel(i, j));
+            }
+        }
     }
 
     public int[][] pasarPrewitt(int[][] matrixGray) {
@@ -62,4 +111,7 @@ public class Hough {
         return normalizedMatrixR;
 
     }
+
+
+
 }
