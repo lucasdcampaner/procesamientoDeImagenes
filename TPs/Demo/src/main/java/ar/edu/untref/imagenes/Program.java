@@ -1315,6 +1315,7 @@ public class Program extends Application {
                             }
                         });
 
+
             }
         }
     };
@@ -1358,6 +1359,7 @@ public class Program extends Application {
                                 setSizeImageViewResult(imageResult);
                             }
                         });
+
 
             }
         }
@@ -1625,6 +1627,47 @@ public class Program extends Application {
         }
     };
 
+    private EventHandler<ActionEvent> listenerHoughEdges = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigureTwoParameters("Configurar valores",
+                        "Ingrese los valores para la parametrización Hough", "Separación de grados", "Vecindad",
+                        result -> {
+                            Hough hough = new Hough();
+                            int[][] matrixResult;
+                            matrixResult = hough.pasarPrewitt(matrixGray);
+
+                            ImagePlus imageResult;
+                            ImagePlus imagePlusOriginal;
+                            try {
+                                imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult),
+                                        "Hough-edges");
+                                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
+
+                                hough = new Hough(imagePlusOriginal, imageResult);
+               
+                                hough.setStepsPerDegree(result[0].intValue());
+                                hough.setRadius(result[1].intValue());
+                                ImagePlus imageHough = hough.deteccionDeRectas2();
+
+                                Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
+                                setSizeImageViewResult(image);
+
+                            }  catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+            }
+        }
+    };
+
+    private Image getImageOriginal() {
+        return this.imageOriginal;
+    }
+
     private EventHandler<ActionEvent> listenerActiveContourns = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1651,53 +1694,13 @@ public class Program extends Application {
                             @Override
                             public void accept(Integer result) {
                                 copyMainImageInNewWindow(result, true);
+
                             }
                         });
             }
         }
     };
 
-    private EventHandler<ActionEvent> listenerHoughEdges = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent event) {
-            if (getImageOriginal() != null) {
-
-                int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-
-                int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
-                int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
-                int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
-                int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
-
-                List<int[][]> listMasks = new ArrayList<>();
-                listMasks.add(matrixDX);
-                listMasks.add(matrixDY);
-                listMasks.add(matrixRR);
-                listMasks.add(matrixRL);
-
-                int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
-                
-                ImagePlus imageResult;
-                ImagePlus imagePlusOriginal;
-                try {
-                    imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult), "Hough-edges");
-                    imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
-                    
-                    hough = new Hough(imagePlusOriginal, imageResult);
-                    
-                    ImagePlus imageHough = hough.detectEdges();
-                    Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
-                    setSizeImageViewResult(image);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
-
-    private Image getImageOriginal() {
-        return this.imageOriginal;
-    }
 
     public static void main(String[] args) {
         launch(args);

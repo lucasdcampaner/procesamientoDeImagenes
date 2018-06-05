@@ -39,6 +39,10 @@ public class Functions {
     public Functions(Stage stage) {
         this.stage = stage;
     }
+    
+    public Functions() {
+        //this.stage = stage;
+    }
 
     public Image openImage(boolean mainImage) {
 
