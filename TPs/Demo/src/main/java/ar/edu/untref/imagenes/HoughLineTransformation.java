@@ -179,34 +179,34 @@ public class HoughLineTransformation {
         }
     }
 
-    public void ProcessImage(int[][] fastBitmap) {
+    public void ProcessImage(int[][] matrix) {
 
-        this.width = fastBitmap.length;
-        this.height = fastBitmap[0].length;
+        this.width = matrix.length;
+        this.height = matrix[0].length;
 
         init();
         // Now find edge points and update the hough array
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 // Find non-black pixels
-                if (fastBitmap[x][y] > 160) { // if (fastBitmap[x][y] == 255) {
+                if (matrix[x][y] > 160) { // if (matrix[x][y] == 255) {
                     addPoint(x, y);
                 }
             }
         }
     }
 
-    public void ProcessImage2(ImagePlus fastBitmap) {
+    public void ProcessImage2(ImagePlus matrix) {
 
-        this.width = fastBitmap.getWidth();
-        this.height = fastBitmap.getHeight();
+        this.width = matrix.getWidth();
+        this.height = matrix.getHeight();
 
         init();
         // Now find edge points and update the hough array
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 // Find non-black pixels
-                if (fastBitmap.getPixel(x, y)[0] > 150) { // if (fastBitmap[x][y] == 255) {
+                if (matrix.getPixel(x, y)[0] > 150) { // if (matrix[x][y] == 255) {
                     addPoint(x, y);
                 }
             }
@@ -311,14 +311,14 @@ public class HoughLineTransformation {
 
     public int[][] getHoughArrayImage() {
         int max = getMaximumValue();
-        int[][] fastBitmap = new int[maxTheta][doubleHeight];
+        int[][] matrix = new int[maxTheta][doubleHeight];
         for (int t = 0; t < maxTheta; t++) {
             for (int r = 0; r < doubleHeight; r++) {
                 double value = 255 * ((double) houghArray[t][r]) / max;
                 int v = 255 - (int) value;
-                fastBitmap[t][r] = v;
+                matrix[t][r] = v;
             }
         }
-        return fastBitmap;
+        return matrix;
     }
 }

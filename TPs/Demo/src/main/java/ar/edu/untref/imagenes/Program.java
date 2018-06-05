@@ -215,6 +215,7 @@ public class Program extends Application {
         MenuItem crossesByZero = new MenuItem("Crosses by zero");
         MenuItem pendingOfCrosses = new MenuItem("Pending of crosses");
         MenuItem canny = new MenuItem("Canny");
+        MenuItem hough = new MenuItem("Hough - Edges");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -224,9 +225,10 @@ public class Program extends Application {
         crossesByZero.setOnAction(listenerCrossesByZero);
         pendingOfCrosses.setOnAction(listenerPendingOfCrosses);
         canny.setOnAction(listenerCanny);
-
+        hough.setOnAction(listenerHoughEdges);
+        
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny);
+                crossesByZero, pendingOfCrosses, canny, hough);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -234,16 +236,13 @@ public class Program extends Application {
         MenuItem directionalPrewitt = new MenuItem("Prewitt");
         MenuItem directionalKirsh = new MenuItem("Kirsh");
         MenuItem directionalSobel = new MenuItem("Sobel");
-        MenuItem directionalHoughLines = new MenuItem("Hough trans. for lines");
-        // MenuItem directionalHoughcircules = new MenuItem("Hough tr. for circules");
         directionalOptionA.setOnAction(listenerDirectionalOptionA);
         directionalKirsh.setOnAction(listenerDirectionalKirsh);
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
         directionalSobel.setOnAction(listenerDirectionalSobel);
-        directionalHoughLines.setOnAction(listenerDirectionalHoughLines);
 
         menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
-                directionalKirsh, directionalHoughLines);
+                directionalKirsh);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
                 menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder);
@@ -1425,38 +1424,40 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerDirectionalHoughLines = new EventHandler<ActionEvent>() {
+    private EventHandler<ActionEvent> listenerHoughEdges = new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent event) {
 
-            Hough hough = new Hough();
-            int[][] matrixResult;
-            matrixResult = hough.pasarPrewitt(matrixGray);
-            /*
-             * matrixResult = hough.deteccionDeRectas(matrixResult); // matrixResult =
-             * hough.deteccionDeRectas(matrixGray);
-             * 
-             * setSizeImageViewResult(ui.getImageResult(matrixResult));
-             */
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigureTwoParameters("Configurar valores",
+                        "Ingrese los valores para la parametrización Hough", "Separación de grados", "Vecindad",
+                        result -> {
+                            Hough hough = new Hough();
+                            int[][] matrixResult;
+                            matrixResult = hough.pasarPrewitt(matrixGray);
 
-            ImagePlus imageResult;
-            ImagePlus imagePlusOriginal;
-            try {
-                imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult), "Hough-edges");
-                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
+                            ImagePlus imageResult;
+                            ImagePlus imagePlusOriginal;
+                            try {
+                                imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult),
+                                        "Hough-edges");
+                                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
 
-                hough = new Hough(imagePlusOriginal, imageResult);
-                hough.ingresarValores();
-                ImagePlus imageHough = hough.deteccionDeRectas2();
+                                hough = new Hough(imagePlusOriginal, imageResult);
+               
+                                hough.setStepsPerDegree(result[0].intValue());
+                                hough.setRadius(result[1].intValue());
+                                ImagePlus imageHough = hough.deteccionDeRectas2();
 
-                Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
-                setSizeImageViewResult(image);
+                                Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
+                                setSizeImageViewResult(image);
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
             }
-
         }
     };
 

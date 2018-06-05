@@ -112,46 +112,6 @@ public class HoughLine implements Comparable {
         this.relativeIntensity = relativeIntensity;
     }
 
-    public void DrawLine(int[][] fastBitmap, int gray) {
-
-        int height = fastBitmap.length;
-        int width = fastBitmap[0].length;
-
-        // During processing h_h is doubled so that -ve r values
-        int houghHeight = (int) (Math.sqrt(2) * Math.max(height, width)) / 2;
-
-        // Find edge points and vote in array
-        float centerX = width / 2;
-        float centerY = height / 2;
-
-        // Draw edges in output array
-        double tsin = Math.sin(theta);
-        double tcos = Math.cos(theta);
-
-        // if (theta < Math.PI * 0.25 || theta > Math.PI * 0.75) { //original
-        // if (theta < Math.PI * 0.15 || theta > Math.PI * 0.85) {
-        // Draw vertical-ish lines
-        for (int y = 0; y < width; y++) {
-            int x = (int) ((((radius - houghHeight) - ((y - centerY) * tsin)) / tcos) + centerX);
-            if (x < height && x >= 0) {
-                // fastBitmap.setGray(x, y, gray);
-                fastBitmap[x][y] = gray;
-                // imageResult.getProcessor().putPixel(x, y, Color.RED.getRGB());
-            }
-        }
-        // } else {
-        // Draw horizontal-sh lines
-        for (int x = 0; x < height; x++) {
-            int y = (int) ((((radius - houghHeight) - ((x - centerX) * tcos)) / tsin) + centerY);
-            if (y < width && y >= 0) {
-                // fastBitmap.setGray(x, y, gray);
-                fastBitmap[x][y] = gray;
-                // imageResult.getProcessor().putPixel(x, y, Color.BLUE.getRGB());
-            }
-        }
-        // }
-    }
-
     public void DrawLine2(ImagePlus imageResult) {
 
         int height = imageResult.getHeight();
@@ -174,8 +134,8 @@ public class HoughLine implements Comparable {
             for (int y = 0; y < width; y++) {
                 int x = (int) ((((radius - houghHeight) - ((y - centerY) * tsin)) / tcos) + centerX);
                 if (x < height && x >= 0) {
-                    // fastBitmap.setGray(x, y, gray);
-                    // fastBitmap[x][y] = gray;
+                    // matrix.setGray(x, y, gray);
+                    // matrix[x][y] = gray;
                     imageResult.getProcessor().putPixel(x, y, Color.RED.getRGB());
                 }
             }
@@ -184,8 +144,8 @@ public class HoughLine implements Comparable {
             for (int x = 0; x < height; x++) {
                 int y = (int) ((((radius - houghHeight) - ((x - centerX) * tcos)) / tsin) + centerY);
                 if (y < width && y >= 0) {
-                    // fastBitmap.setGray(x, y, gray);
-                    // fastBitmap[x][y] = gray;
+                    // matrix.setGray(x, y, gray);
+                    // matrix[x][y] = gray;
                     imageResult.getProcessor().putPixel(x, y, Color.BLUE.getRGB());
                 }
             }
