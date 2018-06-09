@@ -1,8 +1,10 @@
-package ar.edu.untref.imagenes;
+package ar.edu.untref.imagenes.Hough;
 
 import java.util.List;
 
-
+import ar.edu.untref.imagenes.BorderDetectors;
+import ar.edu.untref.imagenes.Functions;
+import ar.edu.untref.imagenes.Modifiers;
 import ij.ImagePlus;
 
 public class Hough {

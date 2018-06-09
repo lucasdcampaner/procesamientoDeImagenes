@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.untref.imagenes.Hough.Hough;
 import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.susan.SusanCorner;
 import ar.edu.untref.imagenes.susan.SusanEdge;
