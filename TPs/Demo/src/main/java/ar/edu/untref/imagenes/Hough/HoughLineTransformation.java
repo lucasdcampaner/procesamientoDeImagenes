@@ -1,4 +1,4 @@
-package ar.edu.untref.imagenes;
+package ar.edu.untref.imagenes.Hough;
 
 import java.util.ArrayList;
 import java.util.Collections;
