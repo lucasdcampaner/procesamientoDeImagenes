@@ -1674,14 +1674,17 @@ public class Program extends Application {
             if (getImageOriginal() != null) {
                 Image image = getImageOriginal();
                 DetectorCircle houghCircle = new DetectorCircle();
-                houghCircle.setConfigHoughCircle(20, 30);
-                houghCircle.setEdgeCanny(image, 7, 2, 2);
-                try {
+                Dialogs.showParametersHoughCircles(parameters -> {
+                    Float sigma = (float) Math.round(parameters[0]);
+                    Integer t1 = (int) Math.round(parameters[1]);
+                    Integer t2 = (int) Math.round(parameters[2]);
+                    Integer radius = (int) Math.round(parameters[3]);
+                    Float threshold = (float) Math.round(parameters[4]);
+                    houghCircle.setEdgeCanny(image, t2, t1, sigma);
+                    houghCircle.setConfigHoughCircle(radius, threshold);
                     imageResult = SwingFXUtils.toFXImage(houghCircle.detectCircles(image), null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                setSizeImageViewResult(imageResult);
+                    setSizeImageViewResult(imageResult);
+                });
             }
         }
     };
