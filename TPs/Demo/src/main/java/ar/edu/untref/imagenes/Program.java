@@ -1669,28 +1669,19 @@ public class Program extends Application {
     };
 
     private EventHandler<ActionEvent> listenerHoughCircles = new EventHandler<ActionEvent>() {
-        int sigma;
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Hough circle", "Sigma para Canny", new ListenerResultDialogs<Double>() {
-                    @Override
-                    public void accept(Double result) {
-                        sigma = (int) Math.round(result);
-                        Dialogs.showConfigureTwoParameters("Hough circle", "Umbral para Canny", "T1", "T2", results -> {
-                            DetectorCircle detectoCircle = new DetectorCircle();
-                            int t1 = (int) Math.round(results[0]);
-                            int t2 = (int) Math.round(results[1]);
-                            detectoCircle.setEdgeCanny(getImageOriginal(), t1, t2, sigma);
-                            Dialogs.showConfigureTwoParameters("Hough circle", "Parametros", "Radio", "Punto minimo", results2 -> {
-                                int radio = (int) Math.round(results[0]);
-                                float puntoMinimo = (float) Math.round(results[1]);
-                                detectoCircle.setConfigHoughCircle(radio, puntoMinimo);
-                                setSizeImageViewResult(SwingFXUtils.toFXImage(detectoCircle.detectCircles(getImageOriginal()), null));
-                            });
-                        });
-                    }
-                });
+                Image image = getImageOriginal();
+                DetectorCircle houghCircle = new DetectorCircle();
+                houghCircle.setConfigHoughCircle(20, 30);
+                houghCircle.setEdgeCanny(image, 7, 2, 2);
+                try {
+                    imageResult = SwingFXUtils.toFXImage(houghCircle.detectCircles(image), null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                setSizeImageViewResult(imageResult);
             }
         }
     };
