@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.untref.imagenes.Hough.DetectorCircle;
 import ar.edu.untref.imagenes.Hough.Hough;
 import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.susan.SusanCorner;
@@ -231,7 +232,8 @@ public class Program extends Application {
         MenuItem canny = new MenuItem("Canny");
         MenuItem susanEdges = new MenuItem("Susan - Edges");
         MenuItem susanCorners = new MenuItem("Susan - Corners");
-        MenuItem hough = new MenuItem("Hough - Edges");
+        MenuItem houghEdges = new MenuItem("Hough - Edges");
+        MenuItem houghCircles = new MenuItem("Hough - Circles");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -243,10 +245,11 @@ public class Program extends Application {
         canny.setOnAction(listenerCanny);
         susanEdges.setOnAction(listenerSusanEdges);
         susanCorners.setOnAction(listenerSusanCorners);
-        hough.setOnAction(listenerHoughEdges);
+        houghEdges.setOnAction(listenerHoughEdges);
+        houghCircles.setOnAction(listenerHoughCircles);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners, hough);
+                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners, houghEdges, houghCircles);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1661,6 +1664,33 @@ public class Program extends Application {
                                 e.printStackTrace();
                             }
                         });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerHoughCircles = new EventHandler<ActionEvent>() {
+        int sigma;
+        @Override
+        public void handle(ActionEvent event) {
+            if (getImageOriginal() != null) {
+                Dialogs.showConfigurationParameterDistribution("Hough circle", "Sigma para Canny", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        sigma = (int) Math.round(result);
+                        Dialogs.showConfigureTwoParameters("Hough circle", "Umbral para Canny", "T1", "T2", results -> {
+                            DetectorCircle detectoCircle = new DetectorCircle();
+                            int t1 = (int) Math.round(results[0]);
+                            int t2 = (int) Math.round(results[1]);
+                            detectoCircle.setEdgeCanny(getImageOriginal(), t1, t2, sigma);
+                            Dialogs.showConfigureTwoParameters("Hough circle", "Parametros", "Radio", "Punto minimo", results2 -> {
+                                int radio = (int) Math.round(results[0]);
+                                float puntoMinimo = (float) Math.round(results[1]);
+                                detectoCircle.setConfigHoughCircle(radio, puntoMinimo);
+                                setSizeImageViewResult(SwingFXUtils.toFXImage(detectoCircle.detectCircles(getImageOriginal()), null));
+                            });
+                        });
+                    }
+                });
             }
         }
     };
