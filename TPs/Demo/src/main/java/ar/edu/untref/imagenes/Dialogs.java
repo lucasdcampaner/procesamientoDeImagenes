@@ -230,5 +230,60 @@ public class Dialogs {
         listenerDialog.accept(valor);
 
     }
+    
+    public static void showParametersHoughCircles(ListenerResultDialogs<Double[]> listenerResultDialogs) {
+
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Hough circles");
+        dialog.setHeaderText("Filtro Canny");
+
+        ButtonType loginButtonType = new ButtonType("Aceptar", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField sigma = new TextField();
+        TextField t1 = new TextField();
+        TextField t2 = new TextField();
+        TextField radius = new TextField();
+        TextField threshold = new TextField();
+
+        grid.add(new Label("Sigma"), 0, 0);
+        grid.add(sigma, 1, 0);
+        grid.add(new Label("T1"), 0, 1);
+        grid.add(t1, 1, 1);
+        grid.add(new Label("T2"), 0, 2);
+        grid.add(t2, 1, 2);
+        grid.add(new Label("Radius"), 0, 3);
+        grid.add(radius, 1, 3);
+        grid.add(new Label("Threshold"), 0, 4);
+        grid.add(threshold, 1, 4);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(() -> sigma.requestFocus());
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                Double[] array = { Double.valueOf(sigma.getText()), 
+                                   Double.valueOf(t1.getText()),
+                                   Double.valueOf(t2.getText()),
+                                   Double.valueOf(radius.getText()),
+                                   Double.valueOf(threshold.getText())};
+                listenerResultDialogs.accept(array);
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> parameters = dialog.showAndWait();
+
+        parameters.ifPresent(value -> {
+            Double[] array = { Double.valueOf(value.getKey()), Double.valueOf(value.getValue()) };
+            listenerResultDialogs.accept(array);
+        });
+    }
 
 }
