@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.edu.untref.imagenes.LevelSet.LevelContours;
 import ij.ImagePlus;
 
 public class ActiveContours {
@@ -57,73 +58,59 @@ public class ActiveContours {
 
     public ImagePlus segment(ImagePlus imagePlus, Point point1, Point point2, int countIteration) {
 
-        int w = imagePlus.getWidth();
-        int h = imagePlus.getHeight();
+        LevelContours obj = new LevelContours(imagePlus, point1, point2);
+        obj.run(imagePlus.getProcessor(), countIteration);
+        // obj.getImpSeg().show(); //prueba
+        // return obj.getImpSeg(); //aca devuelve la misma imagen, no quiero perder la
+        // original
+        return imagePlus; // devuelvo la original para poder hacer otra seleccion
 
-        matrixTheta = new int[w][h];
-
-        Curve selectedCurve = getCurve(point1.x, point1.y, point2.x, point2.y);
-
-        int sinceX = selectedCurve.getSince().x;
-        int untilX = selectedCurve.getUntil().x;
-        int sinceY = selectedCurve.getSince().y;
-        int untilY = selectedCurve.getUntil().y;
-
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-
-                if (inEdge(i, j, sinceX, untilX, sinceY, untilY)) {
-                    matrixTheta[i][j] = L_IN;
-                    pointsLIn.add(new Point(i, j));
-                } else if (aroundTheEdge(i, j, sinceX, untilX, sinceY, untilY)) {
-                    matrixTheta[i][j] = L_OUT;
-                    pointsLOut.add(new Point(i, j));
-                } else if (insideEdge(i, j, sinceX, untilX, sinceY, untilY)) {
-                    matrixTheta[i][j] = OBJECT;
-                } else {
-                    matrixTheta[i][j] = BACKGROUND;
-                }
-            }
-        }
-
-        averageColors = functions.getAverageRGB(imagePlus, point1, point2);
-
-        for (int i = 0; i < countIteration; i++) {
-
-            for (int j = 0; j < pointsLOut.size(); j++) {
-                Point point = pointsLOut.get(j);
-                expand(imagePlus, pointsLOut, averageColors, point);
-            }
-
-            for (int j = 0; j < pointsLIn.size(); j++) {
-                Point point = pointsLIn.get(j);
-                removeLInNoCorrespondent(imagePlus, point);
-            }
-
-            for (int j = 0; j < pointsLIn.size(); j++) {
-                Point point = pointsLIn.get(j);
-                contract(imagePlus, pointsLIn, averageColors, point);
-            }
-
-            for (int j = 0; j < pointsLOut.size(); j++) {
-                Point point = pointsLOut.get(j);
-                removeLOutNoCorrespondent(imagePlus, point);
-            }
-        }
-
-        for (Point point : pointsLIn) {
-            imagePlus.getProcessor().putPixel(point.x, point.y, Color.GREEN.getRGB());
-        }
-
-        for (Point point : pointsLOut) {
-            imagePlus.getProcessor().putPixel(point.x, point.y, Color.RED.getRGB());
-        }
-
-        // paintTheta(matrixTheta, imagePlus);
-        pointsLIn.clear();
-        pointsLOut.clear();
-
-        return imagePlus;
+        // oriiiiiiginal 5/6/18
+        /*
+         * int w = imagePlus.getWidth(); int h = imagePlus.getHeight();
+         * 
+         * matrixTheta = new int[w][h];
+         * 
+         * Curve selectedCurve = getCurve(point1.x, point1.y, point2.x, point2.y);
+         * 
+         * int sinceX = selectedCurve.getSince().x; int untilX =
+         * selectedCurve.getUntil().x; int sinceY = selectedCurve.getSince().y; int
+         * untilY = selectedCurve.getUntil().y;
+         * 
+         * for (int i = 0; i < w; i++) { for (int j = 0; j < h; j++) {
+         * 
+         * if (inEdge(i, j, sinceX, untilX, sinceY, untilY)) { matrixTheta[i][j] = L_IN;
+         * pointsLIn.add(new Point(i, j)); } else if (aroundTheEdge(i, j, sinceX,
+         * untilX, sinceY, untilY)) { matrixTheta[i][j] = L_OUT; pointsLOut.add(new
+         * Point(i, j)); } else if (insideEdge(i, j, sinceX, untilX, sinceY, untilY)) {
+         * matrixTheta[i][j] = OBJECT; } else { matrixTheta[i][j] = BACKGROUND; } } }
+         * 
+         * averageColors = functions.getAverageRGB(imagePlus, point1, point2);
+         * 
+         * for (int i = 0; i < countIteration; i++) {
+         * 
+         * for (int j = 0; j < pointsLOut.size(); j++) { Point point =
+         * pointsLOut.get(j); expand(imagePlus, pointsLOut, averageColors, point); }
+         * 
+         * for (int j = 0; j < pointsLIn.size(); j++) { Point point = pointsLIn.get(j);
+         * removeLInNoCorrespondent(imagePlus, point); }
+         * 
+         * for (int j = 0; j < pointsLIn.size(); j++) { Point point = pointsLIn.get(j);
+         * contract(imagePlus, pointsLIn, averageColors, point); }
+         * 
+         * for (int j = 0; j < pointsLOut.size(); j++) { Point point =
+         * pointsLOut.get(j); removeLOutNoCorrespondent(imagePlus, point); } }
+         * 
+         * for (Point point : pointsLIn) { imagePlus.getProcessor().putPixel(point.x,
+         * point.y, Color.GREEN.getRGB()); }
+         * 
+         * for (Point point : pointsLOut) { imagePlus.getProcessor().putPixel(point.x,
+         * point.y, Color.RED.getRGB()); }
+         * 
+         * // paintTheta(matrixTheta, imagePlus); pointsLIn.clear(); pointsLOut.clear();
+         * 
+         * return imagePlus;
+         */
     }
 
     private void removeLOutNoCorrespondent(ImagePlus imagePlus, Point point) {
