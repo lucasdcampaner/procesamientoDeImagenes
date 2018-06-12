@@ -58,15 +58,13 @@ public class LevelSetListDisplay {
     public void setBackground(ImageProcessor background) {
         im = (ColorProcessor) background.duplicate().convertToRGB();
         if (imp == null) {
-            imp = new ImagePlus("Level set iterations", im); // esta es la q necesitamos con bordes color
+            imp = new ImagePlus("Level set iterations", im);
         } else {
             imp.setProcessor(im);
         }
 
         im.snapshot();
-        // pruebo con imp.setProcessor(im);
-        // imp.setProcessor(im);
-        imp.show(); // no me salen bordes color....
+        imp.show(); 
     }
 
     /**
@@ -91,7 +89,6 @@ public class LevelSetListDisplay {
      *            Iterator to the list of outside points
      */
     protected void update(Iterator<Point> lin, Iterator<Point> lout) {
-        // Discard previous level set display
         im.reset();
         im.snapshot();
 

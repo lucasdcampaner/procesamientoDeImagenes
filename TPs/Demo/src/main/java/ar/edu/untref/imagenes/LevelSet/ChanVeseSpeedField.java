@@ -22,7 +22,6 @@ public class ChanVeseSpeedField extends SpeedField {
     public ChanVeseSpeedField(ImageProcessor im, BinaryProcessor init) {
         this.im = im;
         initialise(init);
-        IJ.log("ChanVeseSpeedField");
     }
 
     public int computeSpeed(FastLevelSet.Byte2D phi, Point p) {

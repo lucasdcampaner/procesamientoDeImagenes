@@ -58,12 +58,6 @@ public class FastLevelSet {
         private int width;
 
         /**
-         * @param h
-         *            Number of rows
-         */
-        private int height;
-
-        /**
          * @the contents of the matrix
          */
         private byte[] vals;
@@ -76,7 +70,6 @@ public class FastLevelSet {
          */
         public Byte2D(int w, int h) {
             width = w;
-            height = h;
             vals = new byte[w * h];
         }
 
@@ -237,9 +230,9 @@ public class FastLevelSet {
     public boolean segment() {
         boolean converged = false;
 
-        System.out.println("speedIterations:" + params.speedIterations + " smoothIterations:" + params.smoothIterations
-                + " maxIterations:" + params.maxIterations + " gaussWidth:" + params.gaussWidth + " gaussSigma:"
-                + params.gaussSigma);
+//        System.out.println("speedIterations:" + params.speedIterations + " smoothIterations:" + params.smoothIterations
+//                + " maxIterations:" + params.maxIterations + " gaussWidth:" + params.gaussWidth + " gaussSigma:"
+//                + params.gaussSigma);
 
         for (int nIts = 0; nIts < params.maxIterations; ++nIts) {
             // IJ.log("Iteration: " + (nIts + 1) + "/" + params.maxIterations);
@@ -870,92 +863,12 @@ public class FastLevelSet {
             }
         }
     }
-
-    /**
-     * Add a class to be notified of iterations
-     * 
-     * @param li
-     *            The class to be notified
-     */
-    // public void addIterationListener(LevelSetIterationListener li) {
-    // iterationListerners.add(li);
-    // }
-    //
-    // /**
-    // * Add a class to be notified of list changes
-    // * @param li The class to be notified
-    // */
-    // public void addListListener(LevelSetListListener li) {
-    // listListerners.add(li);
-    // }
-    //
-    // /**
-    // * Notify listeners of a completed full iteration
-    // * @param full The number of completed full iterations
-    // * @param fullT The total number of full iterations
-    // */
-    // protected void notifyFull(int full, int fullT) {
-    // for (LevelSetIterationListener li : iterationListerners) {
-    // li.fullIteration(full, fullT);
-    // }
-    //
-    // for (LevelSetListListener li : listListerners) {
-    // li.fullIteration(lin.iterator(), lout.iterator());
-    // }
-    // }
-    //
-    // /**
-    // * Notify listeners of a completed speed iteration
-    // * @param full The number of completed full iterations
-    // * @param fullT The total number of full iterations
-    // * @param speed The number of completed speed iterations in this cycle
-    // * @param speedT The total number of speed iterations in this cycle
-    // */
-    // protected void notifySpeed(int full, int fullT, int speed, int speedT) {
-    // for (LevelSetIterationListener li : iterationListerners) {
-    // li.speedIteration(full, fullT, speed, speedT);
-    // }
-    //
-    // for (LevelSetListListener li : listListerners) {
-    // li.speedIteration(lin.iterator(), lout.iterator());
-    // }
-    // }
-    //
-    // /**
-    // * Notify listeners of a completed smooth iteration
-    // * @param full The number of completed full iterations
-    // * @param fullT The total number of full iterations
-    // * @param smooth The number of completed smooth iterations in this cycle
-    // * @param smoothT The total number of smooth iterations in this cycle
-    // */
-    // protected void notifySmooth(int full, int fullT, int smooth, int smoothT) {
-    // for (LevelSetIterationListener li : iterationListerners) {
-    // li.smoothIteration(full, fullT, smooth, smoothT);
-    // }
-    //
-    // for (LevelSetListListener li : listListerners) {
-    // li.smoothIteration(lin.iterator(), lout.iterator());
-    // }
-    // }
-    //
-    // /**
-    // * Check if escape key pressed, print an error message if so
-    // * @return true if escape pressed, false otherwise
-    // */
-    // protected static boolean escapePressed() {
-    // boolean b = IJ.escapePressed();
-    // if (b) {
-    // error("Escape pressed, terminating.");
-    // }
-    // IJ.resetEscape();
-    // return b;
-    // }
-    //
-    // /**
-    // * Bring up an error message (note does not exit)
-    // * @param msg The error message to be displayed
-    // */
-    // private static void error(String msg) {
-    // IJ.error("FastLevelSet error", msg);
-    // }
+    
+    public List<Point> getLIn() {
+        return lin;
+    }
+    
+    public List<Point> getLOut() {
+        return lout;
+    }
 }

@@ -38,20 +38,8 @@ public class Initialiser {
     public static BinaryProcessor getInitialisation(ImagePlus imp, ImageProcessor im, String method) {
         BinaryProcessor init;
 
-        // init = autoThreshold(im, "Default");//esta es toda la imagen
-        init = initFromRoi(imp); // falla xq viene imp.roi en null, sin seleccion
+        init = initFromRoi(imp);
         return init;
-
-        /*
-         * if (method == null) { init = autoThreshold(im, "Otsu"); }
-         * 
-         * if (method == useRoiStr) { init = initFromRoi(imp); } else if
-         * (method.startsWith(imagePrefix)) { init =
-         * initFromBinaryImage(method.substring(imagePrefix.length())); } else { init =
-         * autoThreshold(im, method); }
-         * 
-         * return init;
-         */
     }
 
     /**
@@ -74,28 +62,6 @@ public class Initialiser {
     }
 
     /**
-     * Create a binary image using {@link ij.process.AutoThresholder
-     * AutoThresholder}
-     * 
-     * @param im
-     *            The image to be thresholded (will be duplicated)
-     * @param method
-     *            The name of the method from AutoThresholder
-     */
-    private static BinaryProcessor autoThreshold(ImageProcessor im, String method) {
-        AutoThresholder thresholder = new AutoThresholder();
-        int threshold = thresholder.getThreshold(method, im.getHistogram());
-
-        ImageProcessor init = im.duplicate();
-        init.threshold(threshold);
-        // init.convertToByte(false);
-        // return new BinaryProcessor((ByteProcessor)init);
-        ImageProcessor dd = init.convertToByte(true);
-        ByteProcessor init2 = dd.convertToByteProcessor();
-        return new BinaryProcessor(init2);
-    }
-
-    /**
      * Create an initialisation image from an ROI
      * 
      * @param imp:
@@ -108,11 +74,7 @@ public class Initialiser {
         ImageProcessor mask = imp.getMask();
         Roi roi = imp.getRoi();
 
-        // roi and mask: roi is the bounding box for the mask
-        // roi only: rectangular roi
-
         if (roi == null) {
-            // IJ.error("No ROI found");
             return null;
         }
 
@@ -150,30 +112,4 @@ public class Initialiser {
 
         return titles;
     }
-
-    /**
-     * Create an initialisation image from an existing ImageJ window
-     * 
-     * @param imageTitle:
-     *            The title of the ImageJ window holding a single (non-stack) binary
-     *            image
-     * @return The binary initialisation
-     * @todo Consistent handling of binary images
-     */
-    private static BinaryProcessor initFromBinaryImage(String imageTitle) {
-        ImagePlus imp = WindowManager.getImage(imageTitle);
-
-        if (imp == null || imp.getImageStackSize() != 1 || !imp.getProcessor().isBinary()) {
-            // IJ.error("Initialisation image must be a single binary image");
-            return null;
-        }
-
-        ImageProcessor im = imp.getProcessor();
-        if (imp.getType() != ImagePlus.GRAY8) {
-            im = im.convertToByte(false);
-        }
-
-        return new BinaryProcessor((ByteProcessor) im);
-    }
-
 }
