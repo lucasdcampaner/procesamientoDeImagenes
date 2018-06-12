@@ -4,7 +4,6 @@ import ij.process.*;
 import ij.IJ;
 import java.util.LinkedList;
 
-import ar.edu.untref.imagenes.Point;
 import ar.edu.untref.imagenes.LevelSet.FastLevelSet.Byte2D;
 
 

@@ -2,7 +2,6 @@ package ar.edu.untref.imagenes.LevelSet;
 
 import java.util.Iterator;
 
-import ar.edu.untref.imagenes.Point;
 import ij.ImagePlus;
 import ij.process.*;
 

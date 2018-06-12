@@ -1,4 +1,4 @@
-package ar.edu.untref.imagenes;
+package ar.edu.untref.imagenes.LevelSet;
 
 public class Point {
     /**

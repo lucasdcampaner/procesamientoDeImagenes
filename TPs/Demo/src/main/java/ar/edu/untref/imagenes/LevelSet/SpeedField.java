@@ -1,7 +1,5 @@
 package ar.edu.untref.imagenes.LevelSet;
 
-import ar.edu.untref.imagenes.Point;
-
 public abstract class SpeedField {
     /**
      * Compute the speed at a single point

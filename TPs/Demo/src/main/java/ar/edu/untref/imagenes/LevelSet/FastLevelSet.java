@@ -2,7 +2,6 @@ package ar.edu.untref.imagenes.LevelSet;
 
 import java.util.List;
 
-import ar.edu.untref.imagenes.Point;
 import ij.process.BinaryProcessor;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
