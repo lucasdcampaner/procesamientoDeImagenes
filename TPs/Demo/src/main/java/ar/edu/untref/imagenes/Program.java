@@ -8,6 +8,7 @@ import java.util.List;
 import ar.edu.untref.imagenes.Hough.DetectorCircle;
 import ar.edu.untref.imagenes.Hough.HarrisCornersDetector;
 import ar.edu.untref.imagenes.Hough.Hough;
+import ar.edu.untref.imagenes.sift.Sift;
 import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.susan.SusanCorner;
 import ar.edu.untref.imagenes.susan.SusanEdge;
@@ -520,6 +521,8 @@ public class Program extends Application {
         imageViewResult.setFitHeight(image.getHeight());
         imageViewResult.setFitWidth(image.getWidth());
         imageViewResult.setImage(image);
+
+        this.imageResult = image;
 
         layoutImageResult.getChildren().add(imageViewResult);
 
@@ -1739,6 +1742,10 @@ public class Program extends Application {
         return this.imageOriginal;
     }
 
+    private Image getImageResult() {
+        return this.imageResult;
+    }
+
     private EventHandler<ActionEvent> listenerActiveContourns = new EventHandler<ActionEvent>() {
 
         @Override
@@ -1776,13 +1783,20 @@ public class Program extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            if (imageOriginal != null && imageResult != null) {
+            if (getImageOriginal() != null && getImageResult() != null) {
                 Dialogs.showParametersSift(parameters -> {
                     Integer iterations = (int) Math.round(parameters[0]);
                     Float stop = (float) Math.round(parameters[1]);
                     Integer estimator = (int) Math.round(parameters[2]);
                     Float comparation = (float) Math.round(parameters[3]);
                 });
+                Sift sift = new Sift();
+                try {
+                    sift.aplicar(SwingFXUtils.fromFXImage(imageOriginal, null),
+                            SwingFXUtils.fromFXImage(imageResult, null));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
