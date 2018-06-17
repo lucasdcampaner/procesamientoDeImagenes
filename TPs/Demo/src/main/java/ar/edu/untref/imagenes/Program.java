@@ -106,6 +106,8 @@ public class Program extends Application {
 
         MenuItem open = new MenuItem("Open image");
         open.setOnAction(listenerOpen);
+        MenuItem openSecond = new MenuItem("Open second image");
+        openSecond.setOnAction(listenerOpenSecond);
         MenuItem openRAW = new MenuItem("Open image RAW");
         openRAW.setOnAction(listenerOpenRAW);
         MenuItem save = new MenuItem("Save");
@@ -113,7 +115,7 @@ public class Program extends Application {
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(listenerExit);
 
-        menuFile.getItems().addAll(open, openRAW, save, exit);
+        menuFile.getItems().addAll(open, openSecond, openRAW, save, exit);
 
         // Menu geometric figures
         Menu geometricFigures = new Menu("Geometric figures");
@@ -275,10 +277,14 @@ public class Program extends Application {
         activeContourns.setOnAction(listenerActiveContourns);
         activeContournsVideo.setOnAction(listenerActiveContournsVideo);
 
-        menuActiveContourns.getItems().addAll(activeContourns, activeContournsVideo);
+        Menu menuSift = new Menu("Sift");
+        MenuItem siftDetect = new MenuItem("Detect");
+        menuSift.getItems().addAll(siftDetect);
+        siftDetect.setOnAction(listenerSiftDetect);
 
         menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
-                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder, menuActiveContourns);
+                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder, menuActiveContourns,
+                menuSift);
 
         return menuBar;
     }
@@ -757,6 +763,16 @@ public class Program extends Application {
             Image image = functions.openImage(true);
             if (image != null) {
                 setSizeImageViewOriginal(image);
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerOpenSecond = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            Image image = functions.openImage(true);
+            if (image != null) {
+                setSizeImageViewResult(image);
             }
         }
     };
@@ -1752,6 +1768,21 @@ public class Program extends Application {
 
                             }
                         });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerSiftDetect = new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent event) {
+            if (imageOriginal != null && imageResult != null) {
+                Dialogs.showParametersSift(parameters -> {
+                    Integer iterations = (int) Math.round(parameters[0]);
+                    Float stop = (float) Math.round(parameters[1]);
+                    Integer estimator = (int) Math.round(parameters[2]);
+                    Float comparation = (float) Math.round(parameters[3]);
+                });
             }
         }
     };
