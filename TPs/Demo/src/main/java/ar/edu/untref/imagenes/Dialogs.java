@@ -286,4 +286,47 @@ public class Dialogs {
         });
     }
 
+    public static void showParametersSift(ListenerResultDialogs<Double[]> listenerResultDialogs) {
+
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Sift");
+        ButtonType loginButtonType = new ButtonType("Aceptar", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        TextField iterations = new TextField();
+        TextField stop = new TextField();
+        TextField estimator = new TextField();
+        TextField comparator = new TextField();
+        grid.add(new Label("Iterations"), 0, 0);
+        grid.add(iterations, 1, 0);
+        grid.add(new Label("Stop"), 0, 1);
+        grid.add(stop, 1, 1);
+        grid.add(new Label("Estimator"), 0, 2);
+        grid.add(estimator, 1, 2);
+        grid.add(new Label("Comparator"), 0, 3);
+        grid.add(comparator, 1, 3);
+        dialog.getDialogPane().setContent(grid);
+        Platform.runLater(() -> iterations.requestFocus());
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                Double[] array = { Double.valueOf(iterations.getText()), 
+                                   Double.valueOf(stop.getText()),
+                                   Double.valueOf(estimator.getText()),
+                                   Double.valueOf(comparator.getText())};
+                listenerResultDialogs.accept(array);
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> parameters = dialog.showAndWait();
+
+        parameters.ifPresent(value -> {
+            Double[] array = { Double.valueOf(value.getKey()), Double.valueOf(value.getValue()) };
+            listenerResultDialogs.accept(array);
+        });
+    }
+
 }
