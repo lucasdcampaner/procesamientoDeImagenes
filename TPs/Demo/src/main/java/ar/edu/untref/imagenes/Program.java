@@ -1,11 +1,13 @@
 package ar.edu.untref.imagenes;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import ar.edu.untref.imagenes.Hough.DetectorCircle;
+import ar.edu.untref.imagenes.Hough.HarrisCornersDetector;
 import ar.edu.untref.imagenes.Hough.Hough;
 import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.susan.SusanCorner;
@@ -234,6 +236,7 @@ public class Program extends Application {
         MenuItem susanCorners = new MenuItem("Susan - Corners");
         MenuItem houghEdges = new MenuItem("Hough - Edges");
         MenuItem houghCircles = new MenuItem("Hough - Circles");
+        MenuItem harrisCorner = new MenuItem("Harris corner detector");
         sobel.setOnAction(listenerSobelColor);
         prewitt.setOnAction(listenerPrewittColor);
         prewittX.setOnAction(listenerPrewittX);
@@ -247,9 +250,11 @@ public class Program extends Application {
         susanCorners.setOnAction(listenerSusanCorners);
         houghEdges.setOnAction(listenerHoughEdges);
         houghCircles.setOnAction(listenerHoughCircles);
+        harrisCorner.setOnAction(listenerHarrisCorner);
 
         menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners, houghEdges, houghCircles);
+                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners, houghEdges, houghCircles,
+                harrisCorner);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -1319,7 +1324,6 @@ public class Program extends Application {
                             }
                         });
 
-
             }
         }
     };
@@ -1363,7 +1367,6 @@ public class Program extends Application {
                                 setSizeImageViewResult(imageResult);
                             }
                         });
-
 
             }
         }
@@ -1652,7 +1655,7 @@ public class Program extends Application {
                                 imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
 
                                 hough = new Hough(imagePlusOriginal, imageResult);
-               
+
                                 hough.setStepsPerDegree(result[0].intValue());
                                 hough.setRadius(result[1].intValue());
                                 ImagePlus imageHough = hough.deteccionDeRectas2();
@@ -1660,7 +1663,7 @@ public class Program extends Application {
                                 Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
                                 setSizeImageViewResult(image);
 
-                            }  catch (IOException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         });
@@ -1685,6 +1688,34 @@ public class Program extends Application {
                     imageResult = SwingFXUtils.toFXImage(houghCircle.detectCircles(image), null);
                     setSizeImageViewResult(imageResult);
                 });
+            }
+        }
+    };
+
+    private EventHandler<ActionEvent> listenerHarrisCorner = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            if (getImageOriginal() != null) {
+
+                Dialogs.showConfigurationParameterDistribution("Harris", "Ingrese un valor de sigma entre 1 y 3",
+                        resultP -> {
+
+                            ImagePlus imagePlusOriginal;
+                            try {
+
+                                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
+
+                                HarrisCornersDetector harris = new HarrisCornersDetector(resultP);
+                                ImagePlus imageHough = harris.getImageResult(harris.ProcessImage(imagePlusOriginal));
+
+                                Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
+                                setSizeImageViewResult(image);
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
             }
         }
     };
@@ -1725,7 +1756,6 @@ public class Program extends Application {
             }
         }
     };
-
 
     public static void main(String[] args) {
         launch(args);
