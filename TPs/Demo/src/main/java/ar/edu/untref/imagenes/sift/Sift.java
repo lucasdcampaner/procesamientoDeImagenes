@@ -26,7 +26,7 @@ public class Sift {
     private static Double porcentaje = 0.5;
     private static int limiteMatches = 8;
 
-    public static void aplicar(BufferedImage img1, BufferedImage img2) throws Exception {
+    public void aplicar(BufferedImage img1, BufferedImage img2) throws Exception {
 
         MBFImage query = ImageUtilities.createMBFImage(img1, true);
         MBFImage target = ImageUtilities.createMBFImage(img2, true);

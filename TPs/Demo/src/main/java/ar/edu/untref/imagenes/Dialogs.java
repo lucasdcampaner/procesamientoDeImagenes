@@ -67,7 +67,7 @@ public class Dialogs {
     public static void showConfigurationParameterDistribution(String title, String message,
             ListenerResultDialogs<Double> listenerDialog) {
 
-        TextInputDialog dialog = new TextInputDialog();
+        TextInputDialog dialog = new TextInputDialog("1.2");
         dialog.setTitle(title);
         dialog.setHeaderText(message);
 
@@ -296,10 +296,10 @@ public class Dialogs {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
-        TextField iterations = new TextField();
-        TextField stop = new TextField();
-        TextField estimator = new TextField();
-        TextField comparator = new TextField();
+        TextField iterations = new TextField("1500");
+        TextField stop = new TextField("5.0");
+        TextField estimator = new TextField("0.5");
+        TextField comparator = new TextField("8");
         grid.add(new Label("Iterations"), 0, 0);
         grid.add(iterations, 1, 0);
         grid.add(new Label("Stop"), 0, 1);

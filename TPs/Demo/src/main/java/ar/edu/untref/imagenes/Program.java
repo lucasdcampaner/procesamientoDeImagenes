@@ -1785,18 +1785,21 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null && getImageResult() != null) {
                 Dialogs.showParametersSift(parameters -> {
-                    Integer iterations = (int) Math.round(parameters[0]);
-                    Float stop = (float) Math.round(parameters[1]);
-                    Integer estimator = (int) Math.round(parameters[2]);
-                    Float comparation = (float) Math.round(parameters[3]);
+                    int iterations = (int) Math.round(parameters[0]);
+                    double stop = parameters[1];
+                    double estimator = parameters[2];
+                    int comparation = (int) Math.round(parameters[3]);
+                    
+                    Sift sift = new Sift();
+                    try {
+                        sift.ingresarValores(iterations, stop, estimator, comparation);
+                        sift.aplicar(SwingFXUtils.fromFXImage(imageOriginal, null), SwingFXUtils.fromFXImage(imageResult, null));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    
                 });
-                Sift sift = new Sift();
-                try {
-                    sift.aplicar(SwingFXUtils.fromFXImage(imageOriginal, null),
-                            SwingFXUtils.fromFXImage(imageResult, null));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+               
             }
         }
     };
