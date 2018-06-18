@@ -123,7 +123,14 @@ public class HarrisCornersDetector {
     public ImagePlus getImageResult(List<IntPoint> points) {
         ImagePlus result = this.imageOriginal;
         for (IntPoint point : points) {
-            result.getProcessor().putPixel(point.x, point.y, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x - 1, point.y, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x - 1, point.y - 1, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x - 1, point.y + 1, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x + 1, point.y, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x + 1, point.y - 1, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x + 1, point.y + 1, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x, point.y + 1, Color.RED.getRGB());
+            result.getProcessor().putPixel(point.x, point.y - 1, Color.RED.getRGB());
         }
         return result;
     }
