@@ -49,7 +49,6 @@ public class Program extends Application {
     private GeneratorOfSyntheticImages generatorOfSyntheticImages;
     private UI ui;
     private ActiveContours activeContours;
-    private Hough hough;
 
     private static final int DERIVATE_X = 0;
     private static final int DERIVATE_Y = 1;
@@ -1792,8 +1791,8 @@ public class Program extends Application {
                     
                     Sift sift = new Sift();
                     try {
-                        sift.ingresarValores(iterations, stop, estimator, comparation);
-                        sift.aplicar(SwingFXUtils.fromFXImage(imageOriginal, null), SwingFXUtils.fromFXImage(imageResult, null));
+                        sift.enterValues(iterations, stop, estimator, comparation);
+                        sift.apply(SwingFXUtils.fromFXImage(imageOriginal, null), SwingFXUtils.fromFXImage(imageResult, null));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

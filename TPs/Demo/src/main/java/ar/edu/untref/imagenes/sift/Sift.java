@@ -21,12 +21,12 @@ import org.openimaj.math.model.fit.RANSAC;
 
 public class Sift {
 
-    private static int iteraciones = 1500;
-    private static Double limite = 5.0;
-    private static Double porcentaje = 0.5;
-    private static int limiteMatches = 8;
+    private static int iterations = 1500;
+    private static Double limit = 5.0;
+    private static Double percent = 0.5;
+    private static int limitMatch = 8;
 
-    public void aplicar(BufferedImage img1, BufferedImage img2) throws Exception {
+    public void apply(BufferedImage img1, BufferedImage img2) throws Exception {
 
         MBFImage query = ImageUtilities.createMBFImage(img1, true);
         MBFImage target = ImageUtilities.createMBFImage(img2, true);
@@ -42,10 +42,10 @@ public class Sift {
 
         matcher.setModelFeatures(queryKeypoints);
         matcher.findMatches(targetKeypoints);
-
-        RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(limite, iteraciones,
-                new RANSAC.PercentageInliersStoppingCondition(porcentaje));
-        matcher = new ConsistentLocalFeatureMatcher2d<Keypoint>(new FastBasicKeypointMatcher<Keypoint>(limiteMatches),
+ 
+        RobustAffineTransformEstimator modelFitter = new RobustAffineTransformEstimator(limit, iterations,
+                new RANSAC.PercentageInliersStoppingCondition(percent));
+        matcher = new ConsistentLocalFeatureMatcher2d<Keypoint>(new FastBasicKeypointMatcher<Keypoint>(limitMatch),
                 modelFitter);
 
         matcher.setModelFeatures(queryKeypoints);
@@ -60,12 +60,13 @@ public class Sift {
                         + String.valueOf(matcher.getMatches().size()));
         DisplayUtilities.display(consistentMatches);
     }
-    public void ingresarValores(int cantidadIteraciones, double limiteEstimador, double porcentajeParada,
-            int limiteComparacion) {
-        iteraciones = cantidadIteraciones;
-        limite = limiteEstimador;
-        porcentaje = porcentajeParada;
-        limiteMatches = limiteComparacion;
+    
+    public void enterValues(int countIteration, double limitEstimator, double porcentStop,
+            int limitComparation) {
+        iterations = countIteration;
+        limit = limitEstimator;
+        percent = porcentStop;
+        limitMatch = limitComparation;
     }
 
 }

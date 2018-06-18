@@ -10,7 +10,7 @@ public class HarrisCornersDetector {
 
     private double k = 0.04f; // Default value is 0.04, it is used to relate the
     // trace to the determinant of the structure tensor in the Harris measure.
-    private double threshold = 20000f; // Harris threshold. Default value is 20000.
+    private double threshold = 1000f; // Harris threshold. Default value is 1000.
     private int suppression = 3; // Non-maximum suppression window radius. Default value is 3.
     private double sigma = 1.2; // Gaussian smoothing sigma. Default value is 1.2.
     private double[] kernel; // for gaussian Distribution list
