@@ -1718,13 +1718,15 @@ public class Program extends Application {
                 Dialogs.showConfigurationParameterDistribution("Harris", "Ingrese un valor de sigma entre 1 y 3",
                         resultP -> {
 
+                            ImagePlus imagePlusPrewitt;
                             ImagePlus imagePlusOriginal;
                             try {
-
-                                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
+                                
+                                imagePlusPrewitt = functions.getImagePlusFromImage(applyPrewitt(), "Prewitt-harris");
+                                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Original-harris");
 
                                 HarrisCornersDetector harris = new HarrisCornersDetector(resultP);
-                                ImagePlus imageHough = harris.getImageResult(harris.ProcessImage(imagePlusOriginal));
+                                ImagePlus imageHough = harris.getImageResult(harris.ProcessImage(imagePlusPrewitt, imagePlusOriginal));
 
                                 Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
                                 setSizeImageViewResult(image);
@@ -1736,6 +1738,33 @@ public class Program extends Application {
             }
         }
     };
+    
+    private Image applyPrewitt() {
+        int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
+
+        int[][] matrixDXR = borderDetectors
+                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
+        int[][] matrixDXG = borderDetectors
+                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
+        int[][] matrixDXB = borderDetectors
+                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
+
+        int[][] matrixDYR = borderDetectors
+                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
+        int[][] matrixDYG = borderDetectors
+                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
+        int[][] matrixDYB = borderDetectors
+                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
+
+        int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
+        int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
+        int[][] matrixResultB = Modifiers.calculateGradient(matrixDXB, matrixDYB);
+        int[][] normalizedMatrixR = functions.normalizeMatrix(matrixResultR);
+        int[][] normalizedMatrixG = functions.normalizeMatrix(matrixResultG);
+        int[][] normalizedMatrixB = functions.normalizeMatrix(matrixResultB);
+
+        return ui.getImageResultColor(normalizedMatrixR, normalizedMatrixG, normalizedMatrixB);
+    }
 
     private Image getImageOriginal() {
         return this.imageOriginal;

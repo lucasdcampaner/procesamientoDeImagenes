@@ -15,6 +15,7 @@ public class HarrisCornersDetector {
     private double sigma = 1.2; // Gaussian smoothing sigma. Default value is 1.2.
     private double[] kernel; // for gaussian Distribution list
     private int size = 7; // size for gaussian mask
+    private ImagePlus imagePrewitt;
     private ImagePlus imageOriginal;
 
     public HarrisCornersDetector(double sigma) {
@@ -31,9 +32,10 @@ public class HarrisCornersDetector {
         this.kernel = Distribution.Kernel1D(size, sigma);
     }
 
-    public List<IntPoint> ProcessImage(ImagePlus matrix) {
+    public List<IntPoint> ProcessImage(ImagePlus matrix, ImagePlus imageOriginal) {
 
-        this.imageOriginal = matrix;
+        this.imagePrewitt = matrix;
+        this.imageOriginal = imageOriginal;
 
         int width = matrix.getWidth();
         int height = matrix.getHeight();
