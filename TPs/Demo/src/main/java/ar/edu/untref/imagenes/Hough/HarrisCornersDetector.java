@@ -17,8 +17,8 @@ public class HarrisCornersDetector {
     private int size = 7; // size for gaussian mask
     private ImagePlus imageOriginal;
 
-    public HarrisCornersDetector(double sigma) {
-        init(k, threshold, sigma, suppression, size);
+    public HarrisCornersDetector(double vsigma ,double vthreshold ) {
+        init(k, vthreshold, vsigma, suppression, size);
     }
 
     private void init(double k, double threshold, double sigma, int suppression, int size) {

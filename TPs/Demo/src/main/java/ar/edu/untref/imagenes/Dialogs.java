@@ -92,8 +92,8 @@ public class Dialogs {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField r1 = new TextField();
-        TextField r2 = new TextField();
+        TextField r1 = new TextField("1.2");
+        TextField r2 = new TextField("1000");
 
         grid.add(new Label(label1), 0, 0);
         grid.add(r1, 1, 0);

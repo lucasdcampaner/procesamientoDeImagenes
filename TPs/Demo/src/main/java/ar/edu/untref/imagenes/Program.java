@@ -1715,17 +1715,17 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Harris", "Ingrese un valor de sigma entre 1 y 3",
+                Dialogs.showConfigureTwoParameters("Configurar valores Harris",
+                        "Ingrese los valores", "Sigma", "Umbral",
                         resultP -> {
-
-                            ImagePlus imagePlusPrewitt;
+                                       ImagePlus imagePlusPrewitt;
                             ImagePlus imagePlusOriginal;
                             try {
                                 
                                 imagePlusPrewitt = functions.getImagePlusFromImage(applyPrewitt(), "Prewitt-harris");
                                 imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Original-harris");
 
-                                HarrisCornersDetector harris = new HarrisCornersDetector(resultP);
+                                HarrisCornersDetector harris = new HarrisCornersDetector(resultP[0],resultP[1]);
                                 ImagePlus imageHough = harris.getImageResult(harris.ProcessImage(imagePlusPrewitt, imagePlusOriginal));
 
                                 Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
