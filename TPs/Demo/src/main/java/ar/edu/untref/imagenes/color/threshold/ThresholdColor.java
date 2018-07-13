@@ -175,30 +175,85 @@ public class ThresholdColor {
 
         for (int i = 0; i < setCodewordsClustered.size(); i++) { // Aca tengo los c1, c2...
 
-            if (setCodewordsClustered.get(i).size() > 0) {
+            int[] uk = new int[3];
+            int counter = 1;
 
-                int[] uk = new int[3];
+            for (int[] cij : setCodewordsClustered.get(i)) { // Aca tengo los ij de c1, c2...
+
+                int rij = matrixR[cij[0]][cij[1]];
+                int gij = matrixG[cij[0]][cij[1]];
+                int bij = matrixB[cij[0]][cij[1]];
+
+                rk += rij;
+                gk += gij;
+                bk += bij;
+
+                counter++;
+            }
+
+            rk = rk / counter;
+            gk = gk / counter;
+            bk = bk / counter;
+
+            uk[0] = rk;
+            uk[1] = gk;
+            uk[2] = bk;
+
+            listMeanClass.add(uk);
+        }
+
+        return listMeanClass;
+    }
+
+    /*
+     * Devuelve los sigmas correspondientes a las variazas de los que se encuentran dentro de las clases
+     */
+    private List<Double> calculateVarianceWithinClass(List<int[]> listMeanClass,
+            List<List<int[]>> setCodewordsClustered) {
+
+        List<Double> listSigmaK = new ArrayList<>();
+
+        for (int[] uk : listMeanClass) {
+
+            int rk = uk[0];
+            int gk = uk[1];
+            int bk = uk[2];
+
+            double sigmaK = 0;
+
+            for (int i = 0; i < setCodewordsClustered.size(); i++) { // Aca tengo los c1, c2...
+
+                int summation = 0;
+                int counter = 1;
 
                 for (int[] cij : setCodewordsClustered.get(i)) { // Aca tengo los ij de c1, c2...
 
-                    rk += matrixR[cij[0]][cij[1]];
-                    gk += matrixG[cij[0]][cij[1]];
-                    bk += matrixB[cij[0]][cij[1]];
+                    int rij = matrixR[cij[0]][cij[1]];
+                    int gij = matrixG[cij[0]][cij[1]];
+                    int bij = matrixB[cij[0]][cij[1]];
+
+                    int sqrRij = (int) Math.pow((rij - rk), 2); // (rij - rk) ^ 2 --> R2
+                    int sqrGij = (int) Math.pow((gij - gk), 2); // (gij - gk) ^ 2 --> G2
+                    int sqrBij = (int) Math.pow((bij - bk), 2); // (bij - bk) ^ 2 --> B2
+
+                    summation += sqrRij + sqrGij + sqrBij; // SUMATORIA de (R2 + G2 + B2)
+                    counter++;
                 }
 
-                rk = rk / setCodewordsClustered.get(i).size();
-                gk = gk / setCodewordsClustered.get(i).size();
-                bk = bk / setCodewordsClustered.get(i).size();
-
-                uk[0] = rk;
-                uk[1] = gk;
-                uk[2] = bk;
-                
-                listMeanClass.add(uk);
+                sigmaK = (1 / counter) * Math.sqrt(summation); // 1 / N * { SUMATORIA ^ (1/2) }
             }
+
+            listSigmaK.add(sigmaK);
         }
-        
-        return listMeanClass;
+
+        return listSigmaK;
+    }
+
+    /*
+     * Devuelve los sigmas correspondientes a las variazas de los que se encuentran entre las clases
+     */
+    private void calculateVarianceBetweenClass() {
+
     }
 
     public void applyAlgorithm() {
@@ -207,6 +262,7 @@ public class ThresholdColor {
         List<int[][]> listCodewords = codewordsPixel(listMatrixThresholded);
         List<List<int[]>> setCodewordsClustered = clusterCodewords(listCodewords);
         List<int[]> listMeanClass = calculateMeanClass(setCodewordsClustered);
+        List<Double> listSigmaK = calculateVarianceWithinClass(listMeanClass, setCodewordsClustered);
     }
 
 }
