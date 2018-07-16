@@ -11,15 +11,23 @@ public class ThresholdColor {
     private int[][] matrixG;
     private int[][] matrixB;
 
-    private ThresholdColor(int[][] matrixR, int[][] matrixG, int[][] matrixB) {
-
+    public ThresholdColor(int[][] matrixR, int[][] matrixG, int[][] matrixB) {
         this.matrixR = matrixR;
         this.matrixG = matrixG;
         this.matrixB = matrixB;
     }
 
+    public void applyAlgorithm() {
+
+        /* 1) */ List<int[][]> listMatrixThresholded = applyOtsuByBand();
+        /* 2) */ List<int[][]> listCodewords = codewordsPixel(listMatrixThresholded);
+                 List<List<int[]>> setCodewordsClustered = clusterCodewords(listCodewords);
+        /* 3) */ List<int[]> listMeanClass = calculateMeanClass(setCodewordsClustered);
+        /* 4) */ List<Double> listSigmaK = calculateVarianceWithinClass(listMeanClass, setCodewordsClustered);
+    }
+
     /*
-     * Aplica Otsu por cada banda y devuelve un listado con las matrices de cada banda respectivamente
+     * 1) Aplica Otsu por cada banda y devuelve un listado con las matrices de cada banda respectivamente
      */
     private List<int[][]> applyOtsuByBand() {
 
@@ -37,7 +45,7 @@ public class ThresholdColor {
     }
 
     /*
-     * Codifica los valores de las matrices, que fueron resultado de Otsu, en 1 y 0 para cada banda respectivamente
+     * 2) Codifica los valores de las matrices, que fueron resultado de Otsu, en 1 y 0 para cada banda respectivamente
      */
     private List<int[][]> codewordsPixel(List<int[][]> listMatrixThresholded) {
 
@@ -57,6 +65,7 @@ public class ThresholdColor {
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
 
+                // tr[i][j] esto puede ser solamente 255 o 0 porque paso por Otsu
                 // RED
                 if (matrixR[i][j] > tr[i][j]) {
                     codewordRij[i][j] = 1;
@@ -88,8 +97,8 @@ public class ThresholdColor {
     }
 
     /*
-     * Agrupa la posicion ij de todos los valores que contengan la misma codificacion en un solo grupo. Por ejemplo,
-     * todos los de (1,0,0) van a un grupo C1
+     * Agrupa la posicion ij de todos los valores que contengan la misma codificacion en un solo grupo. 
+     * Por ejemplo, todos los de (1,0,0) van a un grupo C1
      */
     private List<List<int[]>> clusterCodewords(List<int[][]> listCodewords) {
 
@@ -163,7 +172,7 @@ public class ThresholdColor {
     }
 
     /*
-     * Calcula la media de cada grupo
+     * 3) Calcula la media de cada grupo
      */
     private List<int[]> calculateMeanClass(List<List<int[]>> setCodewordsClustered) {
 
@@ -206,7 +215,7 @@ public class ThresholdColor {
     }
 
     /*
-     * Devuelve los sigmas correspondientes a las variazas de los que se encuentran dentro de las clases
+     * 4) Devuelve los sigmas correspondientes a las variazas de los que se encuentran dentro de las clases
      */
     private List<Double> calculateVarianceWithinClass(List<int[]> listMeanClass,
             List<List<int[]>> setCodewordsClustered) {
@@ -250,19 +259,10 @@ public class ThresholdColor {
     }
 
     /*
-     * Devuelve los sigmas correspondientes a las variazas de los que se encuentran entre las clases
+     * 5) Devuelve los sigmas correspondientes a las variazas de los que se encuentran entre las clases
      */
     private void calculateVarianceBetweenClass() {
 
-    }
-
-    public void applyAlgorithm() {
-
-        List<int[][]> listMatrixThresholded = applyOtsuByBand();
-        List<int[][]> listCodewords = codewordsPixel(listMatrixThresholded);
-        List<List<int[]>> setCodewordsClustered = clusterCodewords(listCodewords);
-        List<int[]> listMeanClass = calculateMeanClass(setCodewordsClustered);
-        List<Double> listSigmaK = calculateVarianceWithinClass(listMeanClass, setCodewordsClustered);
     }
 
 }
