@@ -19,11 +19,12 @@ public class ThresholdColor {
 
     public void applyAlgorithm() {
 
-        /* 1) */ List<int[][]> listMatrixThresholded = applyOtsuByBand();
-        /* 2) */ List<int[][]> listCodewords = codewordsPixel(listMatrixThresholded);
-                 List<List<int[]>> setCodewordsClustered = clusterCodewords(listCodewords);
-        /* 3) */ List<int[]> listMeanClass = calculateMeanClass(setCodewordsClustered);
-        /* 4) */ List<Double> listSigmaK = calculateVarianceWithinClass(listMeanClass, setCodewordsClustered);
+        /* 1)  */ List<int[][]> listMatrixThresholded = applyOtsuByBand();
+        /* 2a) */ List<int[][]> listCodewords = codewordsPixel(listMatrixThresholded);
+        /* 2b) */ List<List<int[]>> setCodewordsClustered = clusterCodewords(listCodewords);
+        /* 3)  */ List<int[]> listMeanClass = calculateMeanClass(setCodewordsClustered);
+        /* 4a) */ List<Double> listSigmaK = calculateVarianceWithinClass(listMeanClass, setCodewordsClustered);
+        /* 4b) */ Double[] setSigmaKJ = calculateVarianceBetweenClass(listMeanClass);
     }
 
     /*
@@ -45,7 +46,7 @@ public class ThresholdColor {
     }
 
     /*
-     * 2) Codifica los valores de las matrices, que fueron resultado de Otsu, en 1 y 0 para cada banda respectivamente
+     * 2a) Codifica los valores de las matrices, que fueron resultado de Otsu, en 1 y 0 para cada banda respectivamente
      */
     private List<int[][]> codewordsPixel(List<int[][]> listMatrixThresholded) {
 
@@ -97,7 +98,7 @@ public class ThresholdColor {
     }
 
     /*
-     * Agrupa la posicion ij de todos los valores que contengan la misma codificacion en un solo grupo. 
+     * 2b) Agrupa la posicion ij de todos los valores que contengan la misma codificacion en un solo grupo. 
      * Por ejemplo, todos los de (1,0,0) van a un grupo C1
      */
     private List<List<int[]>> clusterCodewords(List<int[][]> listCodewords) {
@@ -215,7 +216,7 @@ public class ThresholdColor {
     }
 
     /*
-     * 4) Devuelve los sigmas correspondientes a las variazas de los que se encuentran dentro de las clases
+     * 4a) Devuelve los sigmas correspondientes a las variazas de los que se encuentran dentro de las clases
      */
     private List<Double> calculateVarianceWithinClass(List<int[]> listMeanClass,
             List<List<int[]>> setCodewordsClustered) {
@@ -259,10 +260,28 @@ public class ThresholdColor {
     }
 
     /*
-     * 5) Devuelve los sigmas correspondientes a las variazas de los que se encuentran entre las clases
+     * 4b) Devuelve los sigmas correspondientes a las variazas de los que se encuentran entre las clases
      */
-    private void calculateVarianceBetweenClass() {
+    private Double[] calculateVarianceBetweenClass(List<int[]> listMeanClass) {
 
+        Double[] sigmaKJ = {};
+        Double memberR = 0.0;
+        Double memberG = 0.0;
+        Double memberB = 0.0;
+        int counter = 0;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (i != j) {
+                    memberR = Math.pow(listMeanClass.get(i)[0] - listMeanClass.get(j)[0], 2);
+                    memberG = Math.pow(listMeanClass.get(i)[1] - listMeanClass.get(j)[1], 2);
+                    memberB = Math.pow(listMeanClass.get(i)[2] - listMeanClass.get(j)[2], 2);
+                    sigmaKJ[counter] = Math.sqrt(memberR + memberG + memberB);
+                    counter++;
+                }
+            }
+        }
+        return sigmaKJ;
     }
 
 }
