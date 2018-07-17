@@ -8,6 +8,7 @@ import java.util.List;
 import ar.edu.untref.imagenes.Hough.DetectorCircle;
 import ar.edu.untref.imagenes.Hough.HarrisCornersDetector;
 import ar.edu.untref.imagenes.Hough.Hough;
+import ar.edu.untref.imagenes.color.threshold.ThresholdColor;
 import ar.edu.untref.imagenes.sift.Sift;
 import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.susan.SusanCorner;
@@ -165,9 +166,11 @@ public class Program extends Application {
         thresholdOtsu.setOnAction(listenerThresholdOtsu);
         MenuItem equalizeImage = new MenuItem("Equalize image");
         equalizeImage.setOnAction(listenerEqualizeImage);
+        MenuItem thresholdColor = new MenuItem("Threshold color");
+        thresholdColor.setOnAction(listenerThresholdColor);
 
         menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, thresholdGlobal,
-                thresholdOtsu, equalizeImage);
+                thresholdOtsu, equalizeImage, thresholdColor);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
@@ -802,6 +805,31 @@ public class Program extends Application {
                 slider.setVisible(true);
                 int[][] newMatrix = Modifiers.thresholdize(matrixGray, (int) slider.getValue());
                 setSizeImageViewResult(ui.getImageResult(newMatrix));
+            }
+        }
+    };
+    
+    private EventHandler<ActionEvent> listenerThresholdColor = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+            ImagePlus imagePlus;
+            
+            if (getImageOriginal() != null) {
+               
+                try {
+                    imagePlus = functions.getImagePlusFromImage(imageOriginal, "threshold_color");
+                    
+                    int[][] matrixR = functions.getMatrixImage(imagePlus).get(3);
+                    int[][] matrixG = functions.getMatrixImage(imagePlus).get(2);
+                    int[][] matrixB = functions.getMatrixImage(imagePlus).get(1);
+                    
+                    ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
+                    
+                    setSizeImageViewResult(thresholdColor.applyAlgorithm());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
