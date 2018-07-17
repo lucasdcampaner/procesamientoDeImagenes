@@ -127,33 +127,33 @@ public class ThresholdColor {
                 int vG = codewordGij[i][j];
                 int vB = codewordBij[i][j];
 
-                int[] value = new int[2];
-                value[0] = i;
-                value[1] = j;
+                int[] position = new int[2];
+                position[0] = i;
+                position[1] = j;
 
                 if (vR == 0 && vG == 0 && vB == 0) {
-                    c1.add(value);
+                    c1.add(position);
 
                 } else if (vR == 0 && vG == 0 && vB == 1) {
-                    c2.add(value);
+                    c2.add(position);
 
                 } else if (vR == 0 && vG == 1 && vB == 0) {
-                    c3.add(value);
+                    c3.add(position);
 
                 } else if (vR == 0 && vG == 1 && vB == 1) {
-                    c4.add(value);
+                    c4.add(position);
 
                 } else if (vR == 1 && vG == 0 && vB == 0) {
-                    c5.add(value);
+                    c5.add(position);
 
                 } else if (vR == 1 && vG == 0 && vB == 1) {
-                    c6.add(value);
+                    c6.add(position);
 
                 } else if (vR == 1 && vG == 1 && vB == 0) {
-                    c7.add(value);
+                    c7.add(position);
 
                 } else if (vR == 1 && vG == 1 && vB == 1) {
-                    c8.add(value);
+                    c8.add(position);
 
                 }
             }
