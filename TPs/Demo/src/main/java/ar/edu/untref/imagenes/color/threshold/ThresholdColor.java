@@ -11,6 +11,8 @@ public class ThresholdColor {
     private int[][] matrixG;
     private int[][] matrixB;
 
+    private int[][] matrixClass;
+
     public ThresholdColor(int[][] matrixR, int[][] matrixG, int[][] matrixB) {
         this.matrixR = matrixR;
         this.matrixG = matrixG;
@@ -19,16 +21,25 @@ public class ThresholdColor {
 
     public void applyAlgorithm() {
 
-        /* 1)  */ List<int[][]> listMatrixThresholded = applyOtsuByBand();
-        /* 2a) */ List<int[][]> listCodewords = codewordsPixel(listMatrixThresholded);
-        /* 2b) */ List<List<int[]>> setCodewordsClustered = clusterCodewords(listCodewords);
-        /* 3)  */ List<int[]> listMeanClass = calculateMeanClass(setCodewordsClustered);
-        /* 4a) */ List<Double> listSigmaK = calculateVarianceWithinClass(listMeanClass, setCodewordsClustered);
-        /* 4b) */ Double[] setSigmaKJ = calculateVarianceBetweenClass(listMeanClass);
+        /* 1) */ List<int[][]> listMatrixThresholded = applyOtsuByBand();
+        /* 2a) */ List<int[][]> listClass = classPixel(listMatrixThresholded);
+        /* 2b) */ List<List<int[]>> listClassClustered = clusterClass(listClass);
+        boolean mergeIsRequired = true;
+        int maxAttemptMerge = 20;
+        int attempt = 0;
+        while (mergeIsRequired && attempt < maxAttemptMerge) {
+            /* 3) */ List<int[]> listMeanClass = calculateMeanClass(listClassClustered);
+            /* 4a) */ List<Double> listSigmaK = calculateVarianceWithinClass(listMeanClass, listClassClustered);
+            /* 4b) */ Double[][] listSigmaKJ = calculateVarianceBetweenClass(listMeanClass);
+            /* 5) */ mergeIsRequired = mergeClass(listSigmaK, listSigmaKJ);
+
+            attempt++;
+        }
     }
 
     /*
-     * 1) Aplica Otsu por cada banda y devuelve un listado con las matrices de cada banda respectivamente
+     * 1) Aplica Otsu por cada banda y devuelve un listado con las matrices de cada
+     * banda respectivamente
      */
     private List<int[][]> applyOtsuByBand() {
 
@@ -46,11 +57,12 @@ public class ThresholdColor {
     }
 
     /*
-     * 2a) Codifica los valores de las matrices, que fueron resultado de Otsu, en 1 y 0 para cada banda respectivamente
+     * 2a) Codifica los valores de las matrices, que fueron resultado de Otsu, en 1
+     * y 0 para cada banda respectivamente
      */
-    private List<int[][]> codewordsPixel(List<int[][]> listMatrixThresholded) {
+    private List<int[][]> classPixel(List<int[][]> listMatrixThresholded) {
 
-        List<int[][]> listCodewords = new ArrayList<>();
+        List<int[][]> listClass = new ArrayList<>();
 
         int[][] tr = listMatrixThresholded.get(0);
         int[][] tg = listMatrixThresholded.get(1);
@@ -90,22 +102,23 @@ public class ThresholdColor {
             }
         }
 
-        listCodewords.add(codewordRij);
-        listCodewords.add(codewordGij);
-        listCodewords.add(codewordBij);
+        listClass.add(codewordRij);
+        listClass.add(codewordGij);
+        listClass.add(codewordBij);
 
-        return listCodewords;
+        return listClass;
     }
 
     /*
-     * 2b) Agrupa la posicion ij de todos los valores que contengan la misma codificacion en un solo grupo. 
-     * Por ejemplo, todos los de (1,0,0) van a un grupo C1
+     * 2b) Agrupa la posicion ij de todos los valores que contengan la misma
+     * codificacion en un solo grupo. Por ejemplo, todos los de (1,0,0) van a un
+     * grupo C1
      */
-    private List<List<int[]>> clusterCodewords(List<int[][]> listCodewords) {
+    private List<List<int[]>> clusterClass(List<int[][]> listClass) {
 
-        int[][] codewordRij = listCodewords.get(0);
-        int[][] codewordGij = listCodewords.get(1);
-        int[][] codewordBij = listCodewords.get(2);
+        int[][] codewordRij = listClass.get(0);
+        int[][] codewordGij = listClass.get(1);
+        int[][] codewordBij = listClass.get(2);
 
         List<int[]> c1 = new ArrayList<>(); // (0,0,0)
         List<int[]> c2 = new ArrayList<>(); // (0,0,1)
@@ -121,6 +134,8 @@ public class ThresholdColor {
         int w = codewordRij.length;
         int h = codewordRij[0].length;
 
+        matrixClass = new int[w][h];
+
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
 
@@ -134,28 +149,35 @@ public class ThresholdColor {
 
                 if (vR == 0 && vG == 0 && vB == 0) {
                     c1.add(position);
+                    matrixClass[i][j] = 0;
 
                 } else if (vR == 0 && vG == 0 && vB == 1) {
                     c2.add(position);
+                    matrixClass[i][j] = 1;
 
                 } else if (vR == 0 && vG == 1 && vB == 0) {
                     c3.add(position);
+                    matrixClass[i][j] = 2;
 
                 } else if (vR == 0 && vG == 1 && vB == 1) {
                     c4.add(position);
+                    matrixClass[i][j] = 3;
 
                 } else if (vR == 1 && vG == 0 && vB == 0) {
                     c5.add(position);
+                    matrixClass[i][j] = 4;
 
                 } else if (vR == 1 && vG == 0 && vB == 1) {
                     c6.add(position);
+                    matrixClass[i][j] = 5;
 
                 } else if (vR == 1 && vG == 1 && vB == 0) {
                     c7.add(position);
+                    matrixClass[i][j] = 6;
 
                 } else if (vR == 1 && vG == 1 && vB == 1) {
                     c8.add(position);
-
+                    matrixClass[i][j] = 7;
                 }
             }
         }
@@ -216,7 +238,8 @@ public class ThresholdColor {
     }
 
     /*
-     * 4a) Devuelve los sigmas correspondientes a las variazas de los que se encuentran dentro de las clases
+     * 4a) Devuelve los sigmas correspondientes a las variazas de los que se
+     * encuentran dentro de las clases
      */
     private List<Double> calculateVarianceWithinClass(List<int[]> listMeanClass,
             List<List<int[]>> setCodewordsClustered) {
@@ -260,15 +283,15 @@ public class ThresholdColor {
     }
 
     /*
-     * 4b) Devuelve los sigmas correspondientes a las variazas de los que se encuentran entre las clases
+     * 4b) Devuelve los sigmas correspondientes a las variazas de los que se
+     * encuentran entre las clases
      */
-    private Double[] calculateVarianceBetweenClass(List<int[]> listMeanClass) {
+    private Double[][] calculateVarianceBetweenClass(List<int[]> listMeanClass) {
 
-        Double[] sigmaKJ = {};
+        Double[][] listSigmaKJ = {};
         Double memberR = 0.0;
         Double memberG = 0.0;
         Double memberB = 0.0;
-        int counter = 0;
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -276,12 +299,43 @@ public class ThresholdColor {
                     memberR = Math.pow(listMeanClass.get(i)[0] - listMeanClass.get(j)[0], 2);
                     memberG = Math.pow(listMeanClass.get(i)[1] - listMeanClass.get(j)[1], 2);
                     memberB = Math.pow(listMeanClass.get(i)[2] - listMeanClass.get(j)[2], 2);
-                    sigmaKJ[counter] = Math.sqrt(memberR + memberG + memberB);
-                    counter++;
+                    listSigmaKJ[i][j] = Math.sqrt(memberR + memberG + memberB);
                 }
             }
         }
-        return sigmaKJ;
+        return listSigmaKJ;
+    }
+
+    /*
+     * 5) Mezcla
+     */
+    private boolean mergeClass(List<Double> listSigmaK, Double[][] listSigmaKJ) {
+
+        boolean mergeIsRequired = false;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (i != j) {
+                    if (listSigmaK.get(i) >= listSigmaKJ[i][j] || listSigmaK.get(j) >= listSigmaKJ[i][j]) {
+                        merge(i, j);
+                        mergeIsRequired = true;
+                    }
+                }
+            }
+        }
+        return mergeIsRequired;
+    }
+
+    private void merge(int class1, int class2) {
+
+        for (int i = 0; i < matrixClass.length; i++) {
+            for (int j = 0; j < matrixClass[i].length; j++) {
+
+                if (matrixClass[i][j] == class2) {
+                    matrixClass[i][j] = class1;
+                }
+            }
+        }
     }
 
 }
