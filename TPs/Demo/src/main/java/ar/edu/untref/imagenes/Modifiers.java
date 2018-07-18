@@ -367,7 +367,7 @@ public class Modifiers {
                 }
             }
         }
-        Dialogs.showInformation("Valor optimo de umbral: " + valorOptimoDeUmbral);
+//        Dialogs.showInformation("Valor optimo de umbral: " + valorOptimoDeUmbral);
 
         return matrixAux;
     }
