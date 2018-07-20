@@ -8,12 +8,14 @@ import java.util.List;
 import ar.edu.untref.imagenes.Hough.DetectorCircle;
 import ar.edu.untref.imagenes.Hough.HarrisCornersDetector;
 import ar.edu.untref.imagenes.Hough.Hough;
-import ar.edu.untref.imagenes.color.threshold.ThresholdColor;
 import ar.edu.untref.imagenes.sift.Sift;
 import ar.edu.untref.imagenes.susan.Susan;
 import ar.edu.untref.imagenes.susan.SusanCorner;
 import ar.edu.untref.imagenes.susan.SusanEdge;
 import ij.ImagePlus;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -36,6 +38,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import listener.ListenerResultDialogs;
 
 public class Program extends Application {
@@ -75,6 +78,8 @@ public class Program extends Application {
 
     private List<ImagePlus> frames;
     private int indexFrame = 0;
+
+    private List<ImagePlus> imagesThresholded;
 
     @Override
     public void start(Stage primaryStage) {
@@ -545,14 +550,14 @@ public class Program extends Application {
                 switch (event.getButton()) {
 
                 case PRIMARY:
-                    if (indexFrame < frames.size() - 1 && imageViewResult != null) {
+                    if (frames != null && indexFrame < frames.size() - 1 && imageViewResult != null) {
                         indexFrame++;
                         showSequenceImages();
                     }
                     break;
 
                 case SECONDARY:
-                    if (indexFrame > 0 && imageViewResult != null) {
+                    if (frames != null && indexFrame > 0 && imageViewResult != null) {
                         indexFrame--;
                         showSequenceImages();
                     }
@@ -644,7 +649,8 @@ public class Program extends Application {
 
                         } else {
 
-                            frames = functions.openSequenceImage(activeContours, countIteration, x1, y1, x2, y2);
+                            frames = functions.openSequenceImageActiveContours(activeContours, countIteration, x1, y1,
+                                    x2, y2);
                             showSequenceImages();
                         }
                     } catch (IOException e) {
@@ -808,28 +814,30 @@ public class Program extends Application {
             }
         }
     };
-    
+
+    private int countFrame = 0;
     private EventHandler<ActionEvent> listenerThresholdColor = new EventHandler<ActionEvent>() {
+
         @Override
         public void handle(ActionEvent event) {
 
-            ImagePlus imagePlus;
-            
             if (getImageOriginal() != null) {
-               
-                try {
-                    imagePlus = functions.getImagePlusFromImage(imageOriginal, "threshold_color");
-                    
-                    int[][] matrixR = functions.getMatrixImage(imagePlus).get(3);
-                    int[][] matrixG = functions.getMatrixImage(imagePlus).get(2);
-                    int[][] matrixB = functions.getMatrixImage(imagePlus).get(1);
-                    
-                    ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
-                    
-                    setSizeImageViewResult(thresholdColor.applyAlgorithm());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
+                imagesThresholded = functions.openSequence(ui);
+
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), ev -> {
+
+                    if (countFrame < imagesThresholded.size()) {
+
+                        ImagePlus imagePlus = imagesThresholded.get(countFrame);
+                        Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
+                        setSizeImageViewResult(frame);
+                        countFrame++;
+                    }
+                }));
+
+                timeline.setCycleCount(Animation.INDEFINITE);
+                timeline.play();
             }
         }
     };
@@ -1743,18 +1751,18 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigureTwoParameters("Configurar valores Harris",
-                        "Ingrese los valores", "Sigma", "Umbral",
-                        resultP -> {
-                                       ImagePlus imagePlusPrewitt;
+                Dialogs.showConfigureTwoParameters("Configurar valores Harris", "Ingrese los valores", "Sigma",
+                        "Umbral", resultP -> {
+                            ImagePlus imagePlusPrewitt;
                             ImagePlus imagePlusOriginal;
                             try {
-                                
+
                                 imagePlusPrewitt = functions.getImagePlusFromImage(applyPrewitt(), "Prewitt-harris");
                                 imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Original-harris");
 
-                                HarrisCornersDetector harris = new HarrisCornersDetector(resultP[0],resultP[1]);
-                                ImagePlus imageHough = harris.getImageResult(harris.ProcessImage(imagePlusPrewitt, imagePlusOriginal));
+                                HarrisCornersDetector harris = new HarrisCornersDetector(resultP[0], resultP[1]);
+                                ImagePlus imageHough = harris
+                                        .getImageResult(harris.ProcessImage(imagePlusPrewitt, imagePlusOriginal));
 
                                 Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
                                 setSizeImageViewResult(image);
@@ -1766,23 +1774,23 @@ public class Program extends Application {
             }
         }
     };
-    
+
     private Image applyPrewitt() {
         int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
 
-        int[][] matrixDXR = borderDetectors
-                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
-        int[][] matrixDXG = borderDetectors
-                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
-        int[][] matrixDXB = borderDetectors
-                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
+        int[][] matrixDXR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X)
+                .get(0);
+        int[][] matrixDXG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X)
+                .get(1);
+        int[][] matrixDXB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X)
+                .get(2);
 
-        int[][] matrixDYR = borderDetectors
-                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
-        int[][] matrixDYG = borderDetectors
-                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
-        int[][] matrixDYB = borderDetectors
-                .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
+        int[][] matrixDYR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y)
+                .get(0);
+        int[][] matrixDYG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y)
+                .get(1);
+        int[][] matrixDYB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y)
+                .get(2);
 
         int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
         int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
@@ -1845,17 +1853,18 @@ public class Program extends Application {
                     double stop = parameters[1];
                     double estimator = parameters[2];
                     int comparation = (int) Math.round(parameters[3]);
-                    
+
                     Sift sift = new Sift();
                     try {
                         sift.enterValues(iterations, stop, estimator, comparation);
-                        sift.apply(SwingFXUtils.fromFXImage(imageOriginal, null), SwingFXUtils.fromFXImage(imageResult, null));
+                        sift.apply(SwingFXUtils.fromFXImage(imageOriginal, null),
+                                SwingFXUtils.fromFXImage(imageResult, null));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    
+
                 });
-               
+
             }
         }
     };

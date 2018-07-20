@@ -15,6 +15,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import ar.edu.untref.imagenes.color.threshold.ThresholdColor;
 import ij.ImagePlus;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -737,7 +738,7 @@ public class Functions {
         return arrayAverages;
     }
 
-    public List<ImagePlus> openSequenceImage(ActiveContours activeContours, int iteration, int x1, int y1, int x2,
+    public List<ImagePlus> openSequenceImageActiveContours(ActiveContours activeContours, int iteration, int x1, int y1, int x2,
             int y2) {
 
         DirectoryChooser dirChooser = new DirectoryChooser();
@@ -773,6 +774,42 @@ public class Functions {
 
             return frames;
         }
+        return null;
+    }
+    
+    public List<ImagePlus> openSequence(UI ui) {
+        
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        File folder = dirChooser.showDialog(null);
+
+        if (folder != null) {
+
+            File[] selectedImages = folder.listFiles();
+            Arrays.sort(selectedImages);
+
+            List<ImagePlus> frames = new LinkedList<>();
+
+            for (int i = 0; i < selectedImages.length; i++) {
+
+                ImagePlus frame = new ImagePlus(selectedImages[i].getAbsolutePath());
+
+                int[][] matrixR = getMatrixImage(frame).get(3);
+                int[][] matrixG = getMatrixImage(frame).get(2);
+                int[][] matrixB = getMatrixImage(frame).get(1);
+                
+                ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
+                
+                try {
+                    frame = getImagePlusFromImage(thresholdColor.applyAlgorithm(), "threshold_color" + i);
+                    frames.add(frame);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return frames;
+        }
+        
         return null;
     }
 }
