@@ -493,6 +493,17 @@ public class Functions {
         return imagePlus;
     }
 
+    public ImagePlus getImagePlusFromImage(Image image) {
+        BufferedImage buffer = SwingFXUtils.fromFXImage(image,
+                new BufferedImage((int) image.getWidth(), (int) image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+        // File outputfile = new File(name + ".png");
+        // ImageIO.write(buffer, "png", outputfile);
+
+        ImagePlus imagePlus = new ImagePlus("ff", buffer);
+        // imagePlus.setImage(image);
+        return imagePlus;
+    }
+
     public double calcularSumaValores(int[] array) {
         double media = 0.0;
         for (int i = 0; i < array.length; i++) {
@@ -829,15 +840,11 @@ public class Functions {
 
                 ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
 
-                try {
-                    frame = getImagePlusFromImage(thresholdColor.applyAlgorithm(), "threshold_color" + i);
-                    // autograbo ahora
-                    saveImageAutoFolder(frame, folder.getAbsolutePath(), String.valueOf(i + 1));
+                frame = getImagePlusFromImage(thresholdColor.applyAlgorithm());// , "threshold_color" + i); //fix velocidad!
+                // autograbo ahora
+                saveImageAutoFolder(frame, folder.getAbsolutePath(), String.valueOf(i + 1));
 
-                    frames.add(frame);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                frames.add(frame);
             }
 
             return frames;
@@ -849,20 +856,16 @@ public class Functions {
     public ImagePlus getThresholdColorImage(UI ui, Image imageOriginal) {
 
         ImagePlus frame = null;
-        try {
-            frame = getImagePlusFromImage(imageOriginal, "threshold_color");
 
-            int[][] matrixR = getMatrixImage(frame).get(3);// 1 no va, es un posible error de origen
-            int[][] matrixG = getMatrixImage(frame).get(2);
-            int[][] matrixB = getMatrixImage(frame).get(1);// 3 no va, es un posible error de origen
+        frame = getImagePlusFromImage(imageOriginal);
 
-            ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
+        int[][] matrixR = getMatrixImage(frame).get(3);// 1 no va, es un posible error de origen
+        int[][] matrixG = getMatrixImage(frame).get(2);
+        int[][] matrixB = getMatrixImage(frame).get(1);// 3 no va, es un posible error de origen
 
-            frame = getImagePlusFromImage(thresholdColor.applyAlgorithm(), "threshold_color_result");
+        ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
 
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        frame = getImagePlusFromImage(thresholdColor.applyAlgorithm());
 
         return frame;
     }

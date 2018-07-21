@@ -809,6 +809,7 @@ public class Program extends Application {
     };
 
     private int countFrame = 0;
+    private int veces = 0;
     private EventHandler<ActionEvent> listenerThresholdColor = new EventHandler<ActionEvent>() {
 
         @Override
@@ -816,29 +817,31 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
                 // cuando abrió una imagen lado izquierdo (no quiere usar carpeta con secuencias)
-
                 ImagePlus imagePlus = functions.getThresholdColorImage(ui, getImageOriginal());
                 Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
                 setSizeImageViewResult(frame);
-            }
-
-            else {
-
+            } else {
                 imagesThresholded = functions.openSequenceAndGetThresholdColorListImages(ui);
 
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), ev -> {
+                do { // loop
+                    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(400), ev -> {
 
-                    if (countFrame < imagesThresholded.size()) {
+                        if (countFrame < imagesThresholded.size()) {
 
-                        ImagePlus imagePlus = imagesThresholded.get(countFrame);
-                        Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
-                        setSizeImageViewResult(frame);
-                        countFrame++;
-                    }
-                }));
+                            ImagePlus imagePlus = imagesThresholded.get(countFrame);
+                            Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
+                            setSizeImageViewResult(frame);
+                            countFrame++;
+                        } else {
+                            countFrame = 0; // reseteo
+                        }
 
-                timeline.setCycleCount(Animation.INDEFINITE);
-                timeline.play();
+                    }));
+
+                    timeline.setCycleCount(Animation.INDEFINITE);
+                    timeline.play();
+                    veces++;
+                } while (veces < 2);
             }
         }
     };
@@ -852,7 +855,6 @@ public class Program extends Application {
                     int[][] matrixAdded = Modifiers.thresholdizeGlobal(matrixGray, result);
                     setSizeImageViewResult(ui.getImageResult(matrixAdded));
                 });
-
             }
         }
     };
