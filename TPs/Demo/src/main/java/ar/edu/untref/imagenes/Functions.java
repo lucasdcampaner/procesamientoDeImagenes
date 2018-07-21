@@ -52,8 +52,7 @@ public class Functions {
     public Image openImage(boolean mainImage) {
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters()
-                .add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.pgm", "*.ppm"));
         File file = fileChooser.showOpenDialog(stage);
 
         if (file != null) {
@@ -425,8 +424,7 @@ public class Functions {
         return matrixResult;
     }
 
-    public int[][] applyGaussian(int[][] matrix, List<int[]> pixelsSelected, double standardDeviation,
-            double middleValue, boolean additive) {
+    public int[][] applyGaussian(int[][] matrix, List<int[]> pixelsSelected, double standardDeviation, double middleValue, boolean additive) {
 
         int[][] matrixResult = matrix;
 
@@ -562,8 +560,7 @@ public class Functions {
         int x_mask = x - center;
         int y_mask = y - center;
 
-        return (1 / (Math.sqrt(2 * Math.PI) * Math.pow(sigma, 2)))
-                * Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
+        return (1 / (Math.sqrt(2 * Math.PI) * Math.pow(sigma, 2))) * Math.exp(-((Math.pow(x_mask, 2) + Math.pow(y_mask, 2)) / (Math.pow(sigma, 2))));
     }
 
     public double getGaussianLaplacianValue(int x, int y, int center, double sigma) {
@@ -767,8 +764,7 @@ public class Functions {
         return arrayAverages;
     }
 
-    public List<ImagePlus> openSequenceImageActiveContours(ActiveContours activeContours, int iteration, int x1, int y1,
-            int x2, int y2) {
+    public List<ImagePlus> openSequenceImageActiveContours(ActiveContours activeContours, int iteration, int x1, int y1, int x2, int y2) {
 
         DirectoryChooser dirChooser = new DirectoryChooser();
         File folder = dirChooser.showDialog(null);
@@ -797,8 +793,8 @@ public class Functions {
             DecimalFormat df = new DecimalFormat("0.##");
             String resultFPS = df.format(fps);
 
-            String info = "Duración total: " + duration / 1000 + " seg.\n" + "Cantidad de imágenes: "
-                    + selectedImages.length + "\n" + "FPS: " + resultFPS + " fps";
+            String info = "Duración total: " + duration / 1000 + " seg.\n" + "Cantidad de imágenes: " + selectedImages.length + "\n" + "FPS: "
+                    + resultFPS + " fps";
             Dialogs.showInformation(info);
 
             return frames;
@@ -806,7 +802,7 @@ public class Functions {
         return null;
     }
 
-    public List<ImagePlus> openSequence(UI ui) {
+    public List<ImagePlus> openSequenceAndGetThresholdColorListImages(UI ui) {
 
         DirectoryChooser dirChooser = new DirectoryChooser();
         File folder = dirChooser.showDialog(null);
@@ -816,7 +812,6 @@ public class Functions {
             File[] selectedImages = folder.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File pathname) {
-                    // String name = pathname.getName().toLowerCase();
                     return pathname.isFile();
                 }
             });
@@ -828,9 +823,9 @@ public class Functions {
 
                 ImagePlus frame = new ImagePlus(selectedImages[i].getAbsolutePath());
 
-                int[][] matrixR = getMatrixImage(frame).get(1);
+                int[][] matrixR = getMatrixImage(frame).get(3);// 1 no va, es un posible error de origen
                 int[][] matrixG = getMatrixImage(frame).get(2);
-                int[][] matrixB = getMatrixImage(frame).get(3);
+                int[][] matrixB = getMatrixImage(frame).get(1);// 3 no va, es un posible error de origen
 
                 ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
 
@@ -849,5 +844,26 @@ public class Functions {
         }
 
         return null;
+    }
+
+    public ImagePlus getThresholdColorImage(UI ui, Image imageOriginal) {
+
+        ImagePlus frame = null;
+        try {
+            frame = getImagePlusFromImage(imageOriginal, "threshold_color");
+
+            int[][] matrixR = getMatrixImage(frame).get(3);// 1 no va, es un posible error de origen
+            int[][] matrixG = getMatrixImage(frame).get(2);
+            int[][] matrixB = getMatrixImage(frame).get(1);// 3 no va, es un posible error de origen
+
+            ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
+
+            frame = getImagePlusFromImage(thresholdColor.applyAlgorithm(), "threshold_color_result");
+
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        return frame;
     }
 }

@@ -174,8 +174,8 @@ public class Program extends Application {
         MenuItem thresholdColor = new MenuItem("Threshold color");
         thresholdColor.setOnAction(listenerThresholdColor);
 
-        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, thresholdGlobal,
-                thresholdOtsu, equalizeImage, thresholdColor);
+        menuFunctions.getItems().addAll(negative, grayHistogram, contrast, contrastGamma, threshold, thresholdGlobal, thresholdOtsu, equalizeImage,
+                thresholdColor);
 
         // Menu noise
         Menu menuNoise = new Menu("Noise");
@@ -194,8 +194,8 @@ public class Program extends Application {
         MenuItem saltAndPepper = new MenuItem("Salt and pepper");
         saltAndPepper.setOnAction(listenerSaltAndPepper);
 
-        menuNoise.getItems().addAll(noiseGaussiano, noiseGaussianoAditive, noiseRayleigh, noiseRayleighMultiplicative,
-                noiseExponencial, noiseExponencialMultiplicative, saltAndPepper);
+        menuNoise.getItems().addAll(noiseGaussiano, noiseGaussianoAditive, noiseRayleigh, noiseRayleighMultiplicative, noiseExponencial,
+                noiseExponencialMultiplicative, saltAndPepper);
 
         // Menu Suavizado
         Menu menuSuavizado = new Menu("Smoothing");
@@ -213,8 +213,8 @@ public class Program extends Application {
         isotropicaFilter.setOnAction(listenerIsotropicFilter);
         MenuItem anisotropicaFilter = new MenuItem("AnIsotropic Diffusion");
         anisotropicaFilter.setOnAction(listenerAnisotropicFilter);
-        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter,
-                laplacianoMarrHildreth, isotropicaFilter, anisotropicaFilter);
+        menuSuavizado.getItems().addAll(filtroMedia, filtroMediana, filtroMedianaPonderada, gaussianFilter, laplacianoMarrHildreth, isotropicaFilter,
+                anisotropicaFilter);
 
         // Menu synthetic images
         Menu menuSyntheticImages = new Menu("Synthetic images");
@@ -227,8 +227,8 @@ public class Program extends Application {
         generateSyntheticImagesGaussian.setOnAction(listenerGenerateSyntheticImagesGaussian);
         generateSyntheticImagesExponential.setOnAction(listenerGenerateSyntheticImagesExponential);
 
-        menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper,
-                generateSyntheticImagesGaussian, generateSyntheticImagesExponential);
+        menuSyntheticImages.getItems().addAll(generateSyntheticImagesRayleigh, generateSyntheticImagesSaltAndPepper, generateSyntheticImagesGaussian,
+                generateSyntheticImagesExponential);
 
         // Menu deteccion de bordes
         Menu menuBorderDetection = new Menu("Border detection");
@@ -261,9 +261,8 @@ public class Program extends Application {
         houghCircles.setOnAction(listenerHoughCircles);
         harrisCorner.setOnAction(listenerHarrisCorner);
 
-        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano,
-                crossesByZero, pendingOfCrosses, canny, susanEdges, susanCorners, houghEdges, houghCircles,
-                harrisCorner);
+        menuBorderDetection.getItems().addAll(prewitt, prewittX, prewittY, highPassFilter, sobel, laplaciano, crossesByZero, pendingOfCrosses, canny,
+                susanEdges, susanCorners, houghEdges, houghCircles, harrisCorner);
 
         // Menu deteccion de bordes
         Menu menuDirectionalBorder = new Menu("Directional Border");
@@ -276,8 +275,7 @@ public class Program extends Application {
         directionalPrewitt.setOnAction(listenerDirectionalPrewitt);
         directionalSobel.setOnAction(listenerDirectionalSobel);
 
-        menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel,
-                directionalKirsh);
+        menuDirectionalBorder.getItems().addAll(directionalOptionA, directionalPrewitt, directionalSobel, directionalKirsh);
 
         Menu menuActiveContourns = new Menu("Active contourns");
         MenuItem activeContourns = new MenuItem("Segmentation");
@@ -290,9 +288,8 @@ public class Program extends Application {
         menuSift.getItems().addAll(siftDetect);
         siftDetect.setOnAction(listenerSiftDetect);
 
-        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise,
-                menuSuavizado, menuSyntheticImages, menuBorderDetection, menuDirectionalBorder, menuActiveContourns,
-                menuSift);
+        menuBar.getMenus().addAll(menuFile, geometricFigures, gradients, menuOperations, menuFunctions, menuNoise, menuSuavizado, menuSyntheticImages,
+                menuBorderDetection, menuDirectionalBorder, menuActiveContourns, menuSift);
 
         return menuBar;
     }
@@ -421,8 +418,8 @@ public class Program extends Application {
         Label averageLevelsOfGray = ui.createLabel("Average levels of gray: ");
         Label averageLevelsOfGrayValue = ui.createLabel("0");
 
-        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG,
-                labelB, valueB, numberOfPixel, numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
+        layoutInfo.getChildren().addAll(pixelInformation, labelX, posX, labelY, posY, labelR, valueR, labelG, valueG, labelB, valueB, numberOfPixel,
+                numberOfPixelValue, averageLevelsOfGray, averageLevelsOfGrayValue);
 
         imageViewOriginal.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
@@ -431,12 +428,12 @@ public class Program extends Application {
                 posY.setText(String.valueOf((int) event.getY()));
 
                 Image image = imageViewOriginal.getImage();
-                valueR.setText(String.valueOf(functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()),
-                        changePosYDoubleToInt(event.getY())).intValue()));
-                valueG.setText(String.valueOf(functions.getValuePixelGreenRGB(image,
-                        changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
-                valueB.setText(String.valueOf(functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()),
-                        changePosYDoubleToInt(event.getY())).intValue()));
+                valueR.setText(String.valueOf(
+                        functions.getValuePixelRedRGB(image, changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
+                valueG.setText(String.valueOf(
+                        functions.getValuePixelGreenRGB(image, changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
+                valueB.setText(String.valueOf(
+                        functions.getValuePixelBlueRGB(image, changePosXDoubleToInt(event.getX()), changePosYDoubleToInt(event.getY())).intValue()));
             }
         });
 
@@ -466,8 +463,7 @@ public class Program extends Application {
                         imagePlus = functions.getImagePlusFromImage(imageResult, "cut_image");
                         int[][] matrixImageResult = getGrayMatrix(imagePlus);
                         numberOfPixelValue.setText(String.valueOf(functions.getNumberOfPixel(matrixImageResult)));
-                        averageLevelsOfGrayValue
-                                .setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
+                        averageLevelsOfGrayValue.setText(String.valueOf(functions.averageLevelsOfGray(matrixImageResult)));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -515,8 +511,7 @@ public class Program extends Application {
         layoutImageOriginal.getChildren().add(imageViewOriginal);
         groupImageOriginal.getChildren().add(imageViewOriginal);
 
-        new SelectorImage(groupImageOriginal, imageViewOriginal.getX(), imageViewOriginal.getY(), image.getWidth(),
-                image.getHeight());
+        new SelectorImage(groupImageOriginal, imageViewOriginal.getX(), imageViewOriginal.getY(), image.getWidth(), image.getHeight());
     }
 
     private void setSizeImageViewResult(Image image) {
@@ -535,7 +530,7 @@ public class Program extends Application {
 
         ImagePlus imagePlus = null;
         try {
-            imagePlus = functions.getImagePlusFromImage(this.imageResult, "main_image"); //ex this.imageOriginal
+            imagePlus = functions.getImagePlusFromImage(this.imageResult, "main_image"); // ex this.imageOriginal
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -642,15 +637,13 @@ public class Program extends Application {
 
                         if (!video) {
 
-                            ImagePlus imageActiveContornous = activeContours.segment(imagePlus, new Point(x1, y1),
-                                    new Point(x2, y2), countIteration);
+                            ImagePlus imageActiveContornous = activeContours.segment(imagePlus, new Point(x1, y1), new Point(x2, y2), countIteration);
                             Image imageResult = SwingFXUtils.toFXImage(imageActiveContornous.getBufferedImage(), null);
                             imageView.setImage(imageResult);
 
                         } else {
 
-                            frames = functions.openSequenceImageActiveContours(activeContours, countIteration, x1, y1,
-                                    x2, y2);
+                            frames = functions.openSequenceImageActiveContours(activeContours, countIteration, x1, y1, x2, y2);
                             showSequenceImages();
                         }
                     } catch (IOException e) {
@@ -821,9 +814,17 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            //if (getImageOriginal() != null) {
+            if (getImageOriginal() != null) {
+                // cuando abrió una imagen lado izquierdo (no quiere usar carpeta con secuencias)
 
-                imagesThresholded = functions.openSequence(ui);
+                ImagePlus imagePlus = functions.getThresholdColorImage(ui, getImageOriginal());
+                Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
+                setSizeImageViewResult(frame);
+            }
+
+            else {
+
+                imagesThresholded = functions.openSequenceAndGetThresholdColorListImages(ui);
 
                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), ev -> {
 
@@ -838,7 +839,7 @@ public class Program extends Application {
 
                 timeline.setCycleCount(Animation.INDEFINITE);
                 timeline.play();
-           // }
+            }
         }
     };
 
@@ -963,10 +964,9 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                Dialogs.showConfigureTwoParameters("Configurar valores",
-                        "Ingrese valores de r1 y r2 entre 0 y 255.\n\nSiendo r1 < r2", "R1", "R2", result -> {
-                            int[][] matrixAdded = Modifiers.contrast(matrixGray, result[0].intValue(),
-                                    result[1].intValue());
+                Dialogs.showConfigureTwoParameters("Configurar valores", "Ingrese valores de r1 y r2 entre 0 y 255.\n\nSiendo r1 < r2", "R1", "R2",
+                        result -> {
+                            int[][] matrixAdded = Modifiers.contrast(matrixGray, result[0].intValue(), result[1].intValue());
                             setSizeImageViewResult(ui.getImageResult(matrixAdded));
                         });
             }
@@ -1019,10 +1019,10 @@ public class Program extends Application {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigureTwoParameters("Distribución Gaussiana",
-                            "Ingrese los valores de la media y la desviación estandar entre 0 y 255",
-                            "Desviación estandar", "Media", resultGuassian -> {
-                                int[][] matrixResult = functions.applyGaussian(matrixGray, pixelsSelected,
-                                        resultGuassian[0], resultGuassian[1], false);
+                            "Ingrese los valores de la media y la desviación estandar entre 0 y 255", "Desviación estandar", "Media",
+                            resultGuassian -> {
+                                int[][] matrixResult = functions.applyGaussian(matrixGray, pixelsSelected, resultGuassian[0], resultGuassian[1],
+                                        false);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             });
                 });
@@ -1038,10 +1038,10 @@ public class Program extends Application {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
                     Dialogs.showConfigureTwoParameters("Distribución Gaussiana",
-                            "Ingrese los valores de la media y la desviación estandar entre 0 y 255",
-                            "Desviación estandar", "Media", resultGuassian -> {
-                                int[][] matrixResult = functions.applyGaussian(matrixGray, pixelsSelected,
-                                        resultGuassian[0], resultGuassian[1], true);
+                            "Ingrese los valores de la media y la desviación estandar entre 0 y 255", "Desviación estandar", "Media",
+                            resultGuassian -> {
+                                int[][] matrixResult = functions.applyGaussian(matrixGray, pixelsSelected, resultGuassian[0], resultGuassian[1],
+                                        true);
                                 int[][] imageNormalized = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(imageNormalized));
                             });
@@ -1057,11 +1057,10 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(result -> {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
-                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
-                            "Ingrese un phi entre 0 y 255", phi -> {
-                                int[][] matrixResult = functions.applyRayleigh(matrixGray, pixelsSelected, phi, false);
-                                setSizeImageViewResult(ui.getImageResult(matrixResult));
-                            });
+                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh", "Ingrese un phi entre 0 y 255", phi -> {
+                        int[][] matrixResult = functions.applyRayleigh(matrixGray, pixelsSelected, phi, false);
+                        setSizeImageViewResult(ui.getImageResult(matrixResult));
+                    });
                 });
             }
         }
@@ -1074,12 +1073,11 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(result -> {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
-                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh",
-                            "Ingrese un phi entre 0 y 255", phi -> {
-                                int[][] matrixResult = functions.applyRayleigh(matrixGray, pixelsSelected, phi, true);
-                                int[][] imageNormalized = functions.dinamicRange(matrixResult);
-                                setSizeImageViewResult(ui.getImageResult(imageNormalized));
-                            });
+                    Dialogs.showConfigurationParameterDistribution("Distribución Rayleigh", "Ingrese un phi entre 0 y 255", phi -> {
+                        int[][] matrixResult = functions.applyRayleigh(matrixGray, pixelsSelected, phi, true);
+                        int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                        setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                    });
                 });
             }
         }
@@ -1093,12 +1091,10 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(result -> {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
-                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial",
-                            "Ingrese un lambda entre 0 y 1", lambda -> {
-                                int[][] matrixResult = functions.applyExponencial(matrixGray, pixelsSelected, lambda,
-                                        false);
-                                setSizeImageViewResult(ui.getImageResult(matrixResult));
-                            });
+                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial", "Ingrese un lambda entre 0 y 1", lambda -> {
+                        int[][] matrixResult = functions.applyExponencial(matrixGray, pixelsSelected, lambda, false);
+                        setSizeImageViewResult(ui.getImageResult(matrixResult));
+                    });
                 });
             }
         }
@@ -1112,14 +1108,12 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(result -> {
                     List<int[]> pixelsSelected = functions.getPixelsToContaminate(matrixGray, result);
 
-                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial",
-                            "Ingrese un lambda entre 0 y 1", lambda -> {
-                                int[][] matrixResult = functions.applyExponencial(matrixGray, pixelsSelected, lambda,
-                                        true);
+                    Dialogs.showConfigurationParameterDistribution("Distribución Exponencial", "Ingrese un lambda entre 0 y 1", lambda -> {
+                        int[][] matrixResult = functions.applyExponencial(matrixGray, pixelsSelected, lambda, true);
 
-                                int[][] imageNormalized = functions.dinamicRange(matrixResult);
-                                setSizeImageViewResult(ui.getImageResult(imageNormalized));
-                            });
+                        int[][] imageNormalized = functions.dinamicRange(matrixResult);
+                        setSizeImageViewResult(ui.getImageResult(imageNormalized));
+                    });
                 });
             }
         }
@@ -1133,12 +1127,10 @@ public class Program extends Application {
                 Dialogs.showConfigurationPercentNoise(resultP -> {
                     pixelsSelected = functions.getPixelsToContaminate(matrixGray, resultP);
                 });
-                Dialogs.showConfigureOneParameter("Distribución Sal y pimienta",
-                        "Ingrese el valor de p1 entre 0 y 1 (p2 será: 1-p1).\n", result -> {
-                            int[][] matrixAdded = functions.applySaltAndPepper(matrixGray, pixelsSelected,
-                                    result[0].doubleValue(), result[1].doubleValue());
-                            setSizeImageViewResult(ui.getImageResult(matrixAdded));
-                        });
+                Dialogs.showConfigureOneParameter("Distribución Sal y pimienta", "Ingrese el valor de p1 entre 0 y 1 (p2 será: 1-p1).\n", result -> {
+                    int[][] matrixAdded = functions.applySaltAndPepper(matrixGray, pixelsSelected, result[0].doubleValue(), result[1].doubleValue());
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
             }
         }
     };
@@ -1245,19 +1237,13 @@ public class Program extends Application {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
 
-                int[][] matrixDXR = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
-                int[][] matrixDXG = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
-                int[][] matrixDXB = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
+                int[][] matrixDXR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
+                int[][] matrixDXG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
+                int[][] matrixDXB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
 
-                int[][] matrixDYR = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
-                int[][] matrixDYG = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
-                int[][] matrixDYB = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
+                int[][] matrixDYR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
+                int[][] matrixDYG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
+                int[][] matrixDYB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
 
                 int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
                 int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
@@ -1280,19 +1266,13 @@ public class Program extends Application {
 
                 int[][] matrixWeight = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 
-                int[][] matrixDXR = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
-                int[][] matrixDXG = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
-                int[][] matrixDXB = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
+                int[][] matrixDXR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
+                int[][] matrixDXG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
+                int[][] matrixDXB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
 
-                int[][] matrixDYR = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
-                int[][] matrixDYG = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
-                int[][] matrixDYB = borderDetectors
-                        .applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
+                int[][] matrixDYR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
+                int[][] matrixDYG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
+                int[][] matrixDYB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
 
                 int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
                 int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
@@ -1325,23 +1305,20 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano",
-                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
+                        new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray,
-                                        result.intValue(), 1.0);
+                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(), 1.0);
 
-                                Dialogs.showConfigurationParameterDistribution("Umbral",
-                                        "Ingrese un valor de umbral entre 0 y 255",
+                                Dialogs.showConfigurationParameterDistribution("Umbral", "Ingrese un valor de umbral entre 0 y 255",
                                         new ListenerResultDialogs<Double>() {
 
                                             @Override
                                             public void accept(Double result) {
 
-                                                int[][] matrixPending = borderDetectors
-                                                        .pendingOfCrossesByZero(matrixFiltered, result.intValue());
+                                                int[][] matrixPending = borderDetectors.pendingOfCrossesByZero(matrixFiltered, result.intValue());
                                                 setSizeImageViewResult(ui.getImageResult(matrixPending));
                                             }
                                         });
@@ -1355,27 +1332,24 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma",
-                        new ListenerResultDialogs<Double>() {
-                            @Override
-                            public void accept(Double result) {
-                                int sigma = (int) Math.round(result);
-                                Dialogs.showConfigureTwoParameters("Umbral", "Ingrese el umbral", "T1", "T2",
-                                        results -> {
-                                            int t1 = (int) Math.round(results[0]);
-                                            int t2 = (int) Math.round(results[1]);
-                                            // int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3,
-                                            // sigma);
-                                            // Canny canny = new Canny(ui.getImageResult(matrixResult), sigma, t1, t2,
-                                            // 16);
-                                            Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
-                                            canny.filter();
-                                            Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(),
-                                                    null);
-                                            setSizeImageViewResult(filteredImage);
-                                        });
-                            }
+                Dialogs.showConfigurationParameterDistribution("Filtro gaussiano", "Sigma", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        int sigma = (int) Math.round(result);
+                        Dialogs.showConfigureTwoParameters("Umbral", "Ingrese el umbral", "T1", "T2", results -> {
+                            int t1 = (int) Math.round(results[0]);
+                            int t2 = (int) Math.round(results[1]);
+                            // int[][] matrixResult = softeners.applyGaussianFilter(matrixGray, 3,
+                            // sigma);
+                            // Canny canny = new Canny(ui.getImageResult(matrixResult), sigma, t1, t2,
+                            // 16);
+                            Canny canny = new Canny(imageOriginal, sigma, t1, t2, 16);
+                            canny.filter();
+                            Image filteredImage = SwingFXUtils.toFXImage(canny.getImageBordered(), null);
+                            setSizeImageViewResult(filteredImage);
                         });
+                    }
+                });
 
             }
         }
@@ -1385,19 +1359,18 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado",
-                        new ListenerResultDialogs<Double>() {
-                            @Override
-                            public void accept(Double result) {
-                                Double delta = result.doubleValue();
-                                // Fijo 27
-                                int threshold = 27;
-                                Susan susan = new Susan(imageViewOriginal, new SusanEdge());
-                                susan.detect(threshold, delta);
-                                imageResult = susan.getImageResult();
-                                setSizeImageViewResult(imageResult);
-                            }
-                        });
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        Double delta = result.doubleValue();
+                        // Fijo 27
+                        int threshold = 27;
+                        Susan susan = new Susan(imageViewOriginal, new SusanEdge());
+                        susan.detect(threshold, delta);
+                        imageResult = susan.getImageResult();
+                        setSizeImageViewResult(imageResult);
+                    }
+                });
 
             }
         }
@@ -1407,19 +1380,18 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado",
-                        new ListenerResultDialogs<Double>() {
-                            @Override
-                            public void accept(Double result) {
-                                Double delta = result.doubleValue();
-                                // Fijo 27
-                                int threshold = 27;
-                                Susan susan = new Susan(imageViewOriginal, new SusanCorner());
-                                susan.detect(threshold, delta);
-                                imageResult = susan.getImageResult();
-                                setSizeImageViewResult(imageResult);
-                            }
-                        });
+                Dialogs.showConfigurationParameterDistribution("Susan (umbral = 27)", "Delta acumulado", new ListenerResultDialogs<Double>() {
+                    @Override
+                    public void accept(Double result) {
+                        Double delta = result.doubleValue();
+                        // Fijo 27
+                        int threshold = 27;
+                        Susan susan = new Susan(imageViewOriginal, new SusanCorner());
+                        susan.detect(threshold, delta);
+                        imageResult = susan.getImageResult();
+                        setSizeImageViewResult(imageResult);
+                    }
+                });
 
             }
         }
@@ -1432,13 +1404,12 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano",
-                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
+                        new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray,
-                                        result.intValue(), 1.0);
+                                int[][] matrixFiltered = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(), 1.0);
                                 int[][] matrixResult = borderDetectors.pendingOfCrossesByZero(matrixFiltered, 0);
                                 setSizeImageViewResult(ui.getImageResult(matrixResult));
                             }
@@ -1454,13 +1425,12 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano",
-                        "Ingrese un valor de sigma mayor a 0", new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Laplaciano Gaussiano", "Ingrese un valor de sigma mayor a 0",
+                        new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
-                                int[][] matrixResult = softeners.applyGaussianLaplacianFilter(matrixGray,
-                                        result.intValue(), 1.0);
+                                int[][] matrixResult = softeners.applyGaussianLaplacianFilter(matrixGray, result.intValue(), 1.0);
                                 int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
                                 setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
                             }
@@ -1476,20 +1446,18 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Eleccion de gradiente",
-                        "Escriba 1 para Loretz, 2 para Lecrer", new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Eleccion de gradiente", "Escriba 1 para Loretz, 2 para Lecrer",
+                        new ListenerResultDialogs<Double>() {
 
                             @Override
                             public void accept(Double result) {
                                 int gradientSelection = (int) Math.round(result);
 
-                                Dialogs.showConfigureTwoParameters("Difusion Anisotropica",
-                                        "Ingrese cantidad de repeticiones y el valor de sigma", "Repeticiones", "Sigma",
-                                        results -> {
+                                Dialogs.showConfigureTwoParameters("Difusion Anisotropica", "Ingrese cantidad de repeticiones y el valor de sigma",
+                                        "Repeticiones", "Sigma", results -> {
                                             int count = (int) Math.round(results[0]);
                                             double sigma = results[1];
-                                            int[][] matrixResult = softeners.applyAnisotropicFilter(matrixGray, count,
-                                                    sigma, gradientSelection);
+                                            int[][] matrixResult = softeners.applyAnisotropicFilter(matrixGray, count, sigma, gradientSelection);
                                             setSizeImageViewResult(ui.getImageResult(matrixResult));
                                         });
                             }
@@ -1506,8 +1474,8 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Eleccion de repeticiones",
-                        "Ingrese una cantidad de repeticiones", new ListenerResultDialogs<Double>() {
+                Dialogs.showConfigurationParameterDistribution("Eleccion de repeticiones", "Ingrese una cantidad de repeticiones",
+                        new ListenerResultDialogs<Double>() {
                             @Override
                             public void accept(Double result) {
                                 int count = (int) Math.round(result);
@@ -1583,12 +1551,11 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana", "Ingrese un valor de sigma",
-                        resultP -> {
+                Dialogs.showConfigurationParameterDistribution("Distribución Gaussiana", "Ingrese un valor de sigma", resultP -> {
 
-                            int[][] matrixAdded = softeners.applyGaussianFilter(matrixGray, 3, resultP);
-                            setSizeImageViewResult(ui.getImageResult(matrixAdded));
-                        });
+                    int[][] matrixAdded = softeners.applyGaussianFilter(matrixGray, 3, resultP);
+                    setSizeImageViewResult(ui.getImageResult(matrixAdded));
+                });
             }
         }
     };
@@ -1693,9 +1660,8 @@ public class Program extends Application {
         public void handle(ActionEvent event) {
 
             if (getImageOriginal() != null) {
-                Dialogs.showConfigureTwoParameters("Configurar valores",
-                        "Ingrese los valores para la parametrización Hough", "Separación de grados", "Vecindad",
-                        result -> {
+                Dialogs.showConfigureTwoParameters("Configurar valores", "Ingrese los valores para la parametrización Hough", "Separación de grados",
+                        "Vecindad", result -> {
                             Hough hough = new Hough();
                             int[][] matrixResult;
                             matrixResult = hough.pasarPrewitt(matrixGray);
@@ -1703,8 +1669,7 @@ public class Program extends Application {
                             ImagePlus imageResult;
                             ImagePlus imagePlusOriginal;
                             try {
-                                imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult),
-                                        "Hough-edges");
+                                imageResult = functions.getImagePlusFromImage(ui.getImageResult(matrixResult), "Hough-edges");
                                 imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Hough-edges-2");
 
                                 hough = new Hough(imagePlusOriginal, imageResult);
@@ -1751,26 +1716,24 @@ public class Program extends Application {
 
             if (getImageOriginal() != null) {
 
-                Dialogs.showConfigureTwoParameters("Configurar valores Harris", "Ingrese los valores", "Sigma",
-                        "Umbral", resultP -> {
-                            ImagePlus imagePlusPrewitt;
-                            ImagePlus imagePlusOriginal;
-                            try {
+                Dialogs.showConfigureTwoParameters("Configurar valores Harris", "Ingrese los valores", "Sigma", "Umbral", resultP -> {
+                    ImagePlus imagePlusPrewitt;
+                    ImagePlus imagePlusOriginal;
+                    try {
 
-                                imagePlusPrewitt = functions.getImagePlusFromImage(applyPrewitt(), "Prewitt-harris");
-                                imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Original-harris");
+                        imagePlusPrewitt = functions.getImagePlusFromImage(applyPrewitt(), "Prewitt-harris");
+                        imagePlusOriginal = functions.getImagePlusFromImage(imageOriginal, "Original-harris");
 
-                                HarrisCornersDetector harris = new HarrisCornersDetector(resultP[0], resultP[1]);
-                                ImagePlus imageHough = harris
-                                        .getImageResult(harris.ProcessImage(imagePlusPrewitt, imagePlusOriginal));
+                        HarrisCornersDetector harris = new HarrisCornersDetector(resultP[0], resultP[1]);
+                        ImagePlus imageHough = harris.getImageResult(harris.ProcessImage(imagePlusPrewitt, imagePlusOriginal));
 
-                                Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
-                                setSizeImageViewResult(image);
+                        Image image = SwingFXUtils.toFXImage(imageHough.getBufferedImage(), null);
+                        setSizeImageViewResult(image);
 
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         }
     };
@@ -1778,19 +1741,13 @@ public class Program extends Application {
     private Image applyPrewitt() {
         int[][] matrixWeight = { { -1, 0, 1 }, { -1, 0, 1 }, { -1, 0, 1 } };
 
-        int[][] matrixDXR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X)
-                .get(0);
-        int[][] matrixDXG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X)
-                .get(1);
-        int[][] matrixDXB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X)
-                .get(2);
+        int[][] matrixDXR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(0);
+        int[][] matrixDXG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(1);
+        int[][] matrixDXB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_X).get(2);
 
-        int[][] matrixDYR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y)
-                .get(0);
-        int[][] matrixDYG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y)
-                .get(1);
-        int[][] matrixDYB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y)
-                .get(2);
+        int[][] matrixDYR = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(0);
+        int[][] matrixDYG = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(1);
+        int[][] matrixDYB = borderDetectors.applyBorderDetectorToImageColor(matrixColor, matrixWeight, DERIVATE_Y).get(2);
 
         int[][] matrixResultR = Modifiers.calculateGradient(matrixDXR, matrixDYR);
         int[][] matrixResultG = Modifiers.calculateGradient(matrixDXG, matrixDYG);
@@ -1815,13 +1772,12 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones",
-                        new ListenerResultDialogs<Integer>() {
-                            @Override
-                            public void accept(Integer result) {
-                                copyMainImageInNewWindow(result, false);
-                            }
-                        });
+                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones", new ListenerResultDialogs<Integer>() {
+                    @Override
+                    public void accept(Integer result) {
+                        copyMainImageInNewWindow(result, false);
+                    }
+                });
             }
         }
     };
@@ -1831,14 +1787,13 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (getImageOriginal() != null) {
-                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones",
-                        new ListenerResultDialogs<Integer>() {
-                            @Override
-                            public void accept(Integer result) {
-                                copyMainImageInNewWindow(result, true);
+                Dialogs.showConfigurationParameter("Iteraciones", "Ingrese la cantidad de iteraciones", new ListenerResultDialogs<Integer>() {
+                    @Override
+                    public void accept(Integer result) {
+                        copyMainImageInNewWindow(result, true);
 
-                            }
-                        });
+                    }
+                });
             }
         }
     };
@@ -1857,8 +1812,7 @@ public class Program extends Application {
                     Sift sift = new Sift();
                     try {
                         sift.enterValues(iterations, stop, estimator, comparation);
-                        sift.apply(SwingFXUtils.fromFXImage(imageOriginal, null),
-                                SwingFXUtils.fromFXImage(imageResult, null));
+                        sift.apply(SwingFXUtils.fromFXImage(imageOriginal, null), SwingFXUtils.fromFXImage(imageResult, null));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
