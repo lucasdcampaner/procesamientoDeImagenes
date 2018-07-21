@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +20,7 @@ import javax.imageio.ImageIO;
 
 import ar.edu.untref.imagenes.color.threshold.ThresholdColor;
 import ij.ImagePlus;
+import ij.io.FileSaver;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -40,9 +44,9 @@ public class Functions {
     public Functions(Stage stage) {
         this.stage = stage;
     }
-    
+
     public Functions() {
-        //this.stage = stage;
+        // this.stage = stage;
     }
 
     public Image openImage(boolean mainImage) {
@@ -125,6 +129,30 @@ public class Functions {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void saveImageAutoFolder(ImagePlus image, String folder, String name) {
+
+        try {
+            File file = new File(folder + "\\resultados");
+            if (!file.exists()) {
+
+                Path path = Paths.get(folder + "\\resultados");
+                Files.createDirectories(path);
+
+            }
+
+        } catch (IOException e) {
+            System.err.println("Cannot create directories - " + e);
+        }
+
+        // crear directo el archivo
+        File file = new File(folder + "\\resultados\\" + name + ".png");
+
+        if (file != null) {
+            FileSaver o = new FileSaver(image);
+            o.saveAsPng(folder + "\\resultados\\" + name + ".png");
         }
     }
 
@@ -540,7 +568,8 @@ public class Functions {
 
     public double getGaussianLaplacianValue(int x, int y, int center, double sigma) {
 
-        // G(x,y) = -1/((2.π)^(1/2).Ω^3) * [2 - ((x^2 + y^2) / Ω^2)] * e^-[ 2(x^2 + y^2) / 2Ω^2]
+        // G(x,y) = -1/((2.π)^(1/2).Ω^3) * [2 - ((x^2 + y^2) / Ω^2)] * e^-[ 2(x^2 + y^2)
+        // / 2Ω^2]
 
         int x_mask = x - center;
         int y_mask = y - center;
@@ -738,8 +767,8 @@ public class Functions {
         return arrayAverages;
     }
 
-    public List<ImagePlus> openSequenceImageActiveContours(ActiveContours activeContours, int iteration, int x1, int y1, int x2,
-            int y2) {
+    public List<ImagePlus> openSequenceImageActiveContours(ActiveContours activeContours, int iteration, int x1, int y1,
+            int x2, int y2) {
 
         DirectoryChooser dirChooser = new DirectoryChooser();
         File folder = dirChooser.showDialog(null);
@@ -768,23 +797,29 @@ public class Functions {
             DecimalFormat df = new DecimalFormat("0.##");
             String resultFPS = df.format(fps);
 
-            String info = "Duración total: " + duration / 1000 + " seg.\n" + "Cantidad de imágenes: " + selectedImages.length
-                    + "\n" + "FPS: " + resultFPS + " fps";
+            String info = "Duración total: " + duration / 1000 + " seg.\n" + "Cantidad de imágenes: "
+                    + selectedImages.length + "\n" + "FPS: " + resultFPS + " fps";
             Dialogs.showInformation(info);
 
             return frames;
         }
         return null;
     }
-    
+
     public List<ImagePlus> openSequence(UI ui) {
-        
+
         DirectoryChooser dirChooser = new DirectoryChooser();
         File folder = dirChooser.showDialog(null);
 
         if (folder != null) {
 
-            File[] selectedImages = folder.listFiles();
+            File[] selectedImages = folder.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    // String name = pathname.getName().toLowerCase();
+                    return pathname.isFile();
+                }
+            });
             Arrays.sort(selectedImages);
 
             List<ImagePlus> frames = new LinkedList<>();
@@ -793,14 +828,17 @@ public class Functions {
 
                 ImagePlus frame = new ImagePlus(selectedImages[i].getAbsolutePath());
 
-                int[][] matrixR = getMatrixImage(frame).get(3);
+                int[][] matrixR = getMatrixImage(frame).get(1);
                 int[][] matrixG = getMatrixImage(frame).get(2);
-                int[][] matrixB = getMatrixImage(frame).get(1);
-                
+                int[][] matrixB = getMatrixImage(frame).get(3);
+
                 ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
-                
+
                 try {
                     frame = getImagePlusFromImage(thresholdColor.applyAlgorithm(), "threshold_color" + i);
+                    // autograbo ahora
+                    saveImageAutoFolder(frame, folder.getAbsolutePath(), String.valueOf(i + 1));
+
                     frames.add(frame);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -809,7 +847,7 @@ public class Functions {
 
             return frames;
         }
-        
+
         return null;
     }
 }

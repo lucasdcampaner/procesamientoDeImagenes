@@ -535,7 +535,7 @@ public class Program extends Application {
 
         ImagePlus imagePlus = null;
         try {
-            imagePlus = functions.getImagePlusFromImage(this.imageOriginal, "main_image");
+            imagePlus = functions.getImagePlusFromImage(this.imageResult, "main_image"); //ex this.imageOriginal
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -821,7 +821,7 @@ public class Program extends Application {
         @Override
         public void handle(ActionEvent event) {
 
-            if (getImageOriginal() != null) {
+            //if (getImageOriginal() != null) {
 
                 imagesThresholded = functions.openSequence(ui);
 
@@ -838,7 +838,7 @@ public class Program extends Application {
 
                 timeline.setCycleCount(Animation.INDEFINITE);
                 timeline.play();
-            }
+           // }
         }
     };
 
