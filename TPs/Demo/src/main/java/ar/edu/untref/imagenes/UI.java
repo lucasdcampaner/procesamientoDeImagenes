@@ -121,16 +121,19 @@ public class UI {
 
         int w = matrixR.length;
         int h = matrixR[0].length;
-        BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+        ImagePlus imageResult = new ImagePlus();
 
+        imageResult.setImage(new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR));
+        int[] bgr = new int[3];
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                java.awt.Color c = new java.awt.Color(matrixB[i][j], matrixG[i][j], matrixR[i][j]);
-                image.setRGB(i, j, c.getRGB());
+                bgr[0] = matrixB[i][j];
+                bgr[1] = matrixG[i][j];
+                bgr[2] = matrixR[i][j];
+                imageResult.getProcessor().putPixel(i, j, bgr);
             }
         }
-
-        return SwingFXUtils.toFXImage(image, null);
+        return SwingFXUtils.toFXImage(imageResult.getBufferedImage(), null);
     }
 
     public WritableImage getImageResult(ImageView imageOriginal, int x, int y, int w, int h) {
