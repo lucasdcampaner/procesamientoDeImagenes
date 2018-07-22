@@ -79,7 +79,7 @@ public class Program extends Application {
     private List<ImagePlus> frames;
     private int indexFrame = 0;
 
-    private List<ImagePlus> imagesThresholded;
+    private List<Image> imagesThresholdedList;
 
     @Override
     public void start(Stage primaryStage) {
@@ -529,11 +529,11 @@ public class Program extends Application {
         layoutImageResult.getChildren().add(imageViewResult);
 
         ImagePlus imagePlus = null;
-        try {
-            imagePlus = functions.getImagePlusFromImage(this.imageResult, "main_image"); // ex this.imageOriginal
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // try {
+        imagePlus = functions.getImagePlusFromImage(this.imageResult);// , "main_image"); // ex this.imageOriginal
+        // } catch (IOException e) {
+        // e.printStackTrace();
+        // }
         int[][] matrixImageResult = getGrayMatrix(imagePlus);
         matrixGray = matrixImageResult;
 
@@ -809,7 +809,6 @@ public class Program extends Application {
     };
 
     private int countFrame = 0;
-    private int veces = 0;
     private EventHandler<ActionEvent> listenerThresholdColor = new EventHandler<ActionEvent>() {
 
         @Override
@@ -821,27 +820,18 @@ public class Program extends Application {
                 Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
                 setSizeImageViewResult(frame);
             } else {
-                imagesThresholded = functions.openSequenceAndGetThresholdColorListImages(ui);
+                imagesThresholdedList = functions.openSequenceAndGetThresholdColorImageList(ui);
 
-                do { // loop
-                    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(400), ev -> {
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(300), ev -> {
 
-                        if (countFrame < imagesThresholded.size()) {
+                    if (countFrame < imagesThresholdedList.size()) {
+                        setSizeImageViewResult(imagesThresholdedList.get(countFrame));
+                        countFrame++;
+                    }
+                }));
 
-                            ImagePlus imagePlus = imagesThresholded.get(countFrame);
-                            Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
-                            setSizeImageViewResult(frame);
-                            countFrame++;
-                        } else {
-                            countFrame = 0; // reseteo
-                        }
-
-                    }));
-
-                    timeline.setCycleCount(Animation.INDEFINITE);
-                    timeline.play();
-                    veces++;
-                } while (veces < 2);
+                timeline.setCycleCount(Animation.INDEFINITE);
+                timeline.play();
             }
         }
     };

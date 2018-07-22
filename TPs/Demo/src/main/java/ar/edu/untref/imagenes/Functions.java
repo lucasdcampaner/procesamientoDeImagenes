@@ -20,10 +20,10 @@ import javax.imageio.ImageIO;
 
 import ar.edu.untref.imagenes.color.threshold.ThresholdColor;
 import ij.ImagePlus;
-import ij.io.FileSaver;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -131,7 +131,7 @@ public class Functions {
         }
     }
 
-    public void saveImageAutoFolder(ImagePlus image, String folder, String name) {
+    public void saveImageAutoFolder(Image image, String folder, String name) {
 
         try {
             File file = new File(folder + "\\resultados");
@@ -150,8 +150,12 @@ public class Functions {
         File file = new File(folder + "\\resultados\\" + name + ".png");
 
         if (file != null) {
-            FileSaver o = new FileSaver(image);
-            o.saveAsPng(folder + "\\resultados\\" + name + ".png");
+            BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+            try {
+                ImageIO.write(bImage, "png", file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -177,6 +181,39 @@ public class Functions {
                 matrixR[i][j] = rgb[0];
                 matrixG[i][j] = rgb[1];
                 matrixB[i][j] = rgb[2];
+            }
+        }
+
+        listMatrix.add(matrixGray);
+        listMatrix.add(matrixR);
+        listMatrix.add(matrixG);
+        listMatrix.add(matrixB);
+
+        return listMatrix;
+    }
+
+    public List<int[][]> getMatrixImageJavaFx(Image image) {
+
+        int w = (int) image.getWidth();
+        int h = (int) image.getHeight();
+
+        List<int[][]> listMatrix = new ArrayList<>();
+
+        int[][] matrixGray = new int[w][h];
+        int[][] matrixR = new int[w][h];
+        int[][] matrixG = new int[w][h];
+        int[][] matrixB = new int[w][h];
+
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+
+                PixelReader pixelReader = image.getPixelReader();
+                javafx.scene.paint.Color color = pixelReader.getColor(i, j);
+
+                matrixGray[i][j] = (int) (color.getRed() * 255); // si es gris la imagen, las tres bandas tienen el mismo numero?
+                matrixR[i][j] = (int) (color.getRed() * 255);
+                matrixG[i][j] = (int) (color.getGreen() * 255);
+                matrixB[i][j] = (int) (color.getBlue() * 255);
             }
         }
 
@@ -496,11 +533,8 @@ public class Functions {
     public ImagePlus getImagePlusFromImage(Image image) {
         BufferedImage buffer = SwingFXUtils.fromFXImage(image,
                 new BufferedImage((int) image.getWidth(), (int) image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
-        // File outputfile = new File(name + ".png");
-        // ImageIO.write(buffer, "png", outputfile);
 
-        ImagePlus imagePlus = new ImagePlus("ff", buffer);
-        // imagePlus.setImage(image);
+        ImagePlus imagePlus = new ImagePlus("Converted", buffer);
         return imagePlus;
     }
 
@@ -813,7 +847,7 @@ public class Functions {
         return null;
     }
 
-    public List<ImagePlus> openSequenceAndGetThresholdColorListImages(UI ui) {
+    public List<Image> openSequenceAndGetThresholdColorImageList(UI ui) {
 
         DirectoryChooser dirChooser = new DirectoryChooser();
         File folder = dirChooser.showDialog(null);
@@ -828,28 +862,26 @@ public class Functions {
             });
             Arrays.sort(selectedImages);
 
-            List<ImagePlus> frames = new LinkedList<>();
+            List<Image> frames = new LinkedList<>();
 
             for (int i = 0; i < selectedImages.length; i++) {
 
-                ImagePlus frame = new ImagePlus(selectedImages[i].getAbsolutePath());
+                Image frame = new Image(new File(selectedImages[i].getAbsolutePath()).toURI().toString());
 
-                int[][] matrixR = getMatrixImage(frame).get(3);// 1 no va, es un posible error de origen
-                int[][] matrixG = getMatrixImage(frame).get(2);
-                int[][] matrixB = getMatrixImage(frame).get(1);// 3 no va, es un posible error de origen
+                int[][] matrixR = getMatrixImageJavaFx(frame).get(3);// 1 no va, es un posible error de origen
+                int[][] matrixG = getMatrixImageJavaFx(frame).get(2); // en los 3 antes estaba " = getMatrixImage("
+                int[][] matrixB = getMatrixImageJavaFx(frame).get(1);// 3 no va, es un posible error de origen
 
                 ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
 
-                frame = getImagePlusFromImage(thresholdColor.applyAlgorithm());// , "threshold_color" + i); //fix velocidad!
+                frame = thresholdColor.applyAlgorithm();
                 // autograbo ahora
                 saveImageAutoFolder(frame, folder.getAbsolutePath(), String.valueOf(i + 1));
 
                 frames.add(frame);
             }
-
             return frames;
         }
-
         return null;
     }
 
