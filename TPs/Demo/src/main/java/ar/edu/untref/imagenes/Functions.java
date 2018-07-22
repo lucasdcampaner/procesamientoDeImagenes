@@ -868,9 +868,11 @@ public class Functions {
 
                 Image frame = new Image(new File(selectedImages[i].getAbsolutePath()).toURI().toString());
 
-                int[][] matrixR = getMatrixImageJavaFx(frame).get(3);// 1 no va, es un posible error de origen
-                int[][] matrixG = getMatrixImageJavaFx(frame).get(2); // en los 3 antes estaba " = getMatrixImage("
-                int[][] matrixB = getMatrixImageJavaFx(frame).get(1);// 3 no va, es un posible error de origen
+                List<int[][]> listMatrixRgb = getMatrixImageJavaFx(frame); //una sola ves por frame se ejecuta ahora
+
+                int[][] matrixR = listMatrixRgb.get(3);// 1 no va, es un posible error de origen
+                int[][] matrixG = listMatrixRgb.get(2); // en los 3 antes estaba " = getMatrixImage("
+                int[][] matrixB = listMatrixRgb.get(1);// 3 no va, es un posible error de origen
 
                 ThresholdColor thresholdColor = new ThresholdColor(ui, matrixR, matrixG, matrixB);
 

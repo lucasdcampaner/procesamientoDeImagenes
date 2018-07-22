@@ -514,6 +514,22 @@ public class Program extends Application {
         new SelectorImage(groupImageOriginal, imageViewOriginal.getX(), imageViewOriginal.getY(), image.getWidth(), image.getHeight());
     }
 
+    private void setSizeImageViewResultFaster(Image image) {
+
+        layoutImageResult.getChildren().remove(imageViewResult);
+
+        imageViewResult = new ImageView();
+        imageViewResult.setPreserveRatio(true);
+        imageViewResult.setFitHeight(image.getHeight());
+        imageViewResult.setFitWidth(image.getWidth());
+        imageViewResult.setImage(image);
+
+        layoutImageResult.getChildren().add(imageViewResult);
+
+        this.imageResult = image;
+
+    }
+
     private void setSizeImageViewResult(Image image) {
 
         layoutImageResult.getChildren().remove(imageViewResult);
@@ -524,16 +540,12 @@ public class Program extends Application {
         imageViewResult.setFitWidth(image.getWidth());
         imageViewResult.setImage(image);
 
-        this.imageResult = image;
-
         layoutImageResult.getChildren().add(imageViewResult);
 
+        this.imageResult = image;
+
         ImagePlus imagePlus = null;
-        // try {
-        imagePlus = functions.getImagePlusFromImage(this.imageResult);// , "main_image"); // ex this.imageOriginal
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
+        imagePlus = functions.getImagePlusFromImage(this.imageResult);
         int[][] matrixImageResult = getGrayMatrix(imagePlus);
         matrixGray = matrixImageResult;
 
@@ -818,14 +830,14 @@ public class Program extends Application {
                 // cuando abrió una imagen lado izquierdo (no quiere usar carpeta con secuencias)
                 ImagePlus imagePlus = functions.getThresholdColorImage(ui, getImageOriginal());
                 Image frame = SwingFXUtils.toFXImage(imagePlus.getBufferedImage(), null);
-                setSizeImageViewResult(frame);
+                setSizeImageViewResultFaster(frame);
             } else {
                 imagesThresholdedList = functions.openSequenceAndGetThresholdColorImageList(ui);
 
                 Timeline timeline = new Timeline(new KeyFrame(Duration.millis(300), ev -> {
 
                     if (countFrame < imagesThresholdedList.size()) {
-                        setSizeImageViewResult(imagesThresholdedList.get(countFrame));
+                        setSizeImageViewResultFaster(imagesThresholdedList.get(countFrame));
                         countFrame++;
                     }
                 }));

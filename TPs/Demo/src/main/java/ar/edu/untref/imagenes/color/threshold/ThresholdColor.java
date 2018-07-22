@@ -146,8 +146,8 @@ public class ThresholdColor {
     }
 
     /*
-     * 2b) Agrupa la posicion ij de todos los valores que contengan la misma codificacion en un solo grupo. Por ejemplo,
-     * todos los de (1,0,0) van a un grupo C1
+     * 2b) Agrupa la posicion ij de todos los valores que contengan la misma codificacion en un solo grupo. Por ejemplo, todos los de (1,0,0) van a un
+     * grupo C1
      */
     private void clusterClass(List<int[][]> listClass) {
 
@@ -282,8 +282,7 @@ public class ThresholdColor {
             for (int classNumber2 = 0; classNumber2 < 8; classNumber2++) {
                 if (classNumber1 != classNumber2) {
                     if (vectorVariance[classNumber1] >= this.calculateVarianceBetweenClass(classNumber1, classNumber2)
-                            || vectorVariance[classNumber2] >= this.calculateVarianceBetweenClass(classNumber1,
-                                    classNumber2)) {
+                            || vectorVariance[classNumber2] >= this.calculateVarianceBetweenClass(classNumber1, classNumber2)) {
                         merge(classNumber1, classNumber2);
                         mergeIsRequired = true;
                     }

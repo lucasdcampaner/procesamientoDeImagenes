@@ -293,8 +293,7 @@ public class Modifiers {
             amountIterations++;
         }
 
-        Dialogs.showInformation(
-                "Valor de umbral: " + newValueThreshold + "\nCantidad de iteraciones: " + amountIterations);
+        Dialogs.showInformation("Valor de umbral: " + newValueThreshold + "\nCantidad de iteraciones: " + amountIterations);
 
         return thresholdMatrix;
     }
@@ -367,7 +366,7 @@ public class Modifiers {
                 }
             }
         }
-//        Dialogs.showInformation("Valor optimo de umbral: " + valorOptimoDeUmbral);
+        // Dialogs.showInformation("Valor optimo de umbral: " + valorOptimoDeUmbral);
 
         return matrixAux;
     }
@@ -396,9 +395,7 @@ public class Modifiers {
 
         // Computar la varianza entre clases
         totalDeUmbral = (valor1 * umbralClase1) + (valor2 * umbralClase2);
-        valorVarianza = valor1 * Math.pow(umbralClase1 - totalDeUmbral, 2)
-                + valor2 * Math.pow(umbralClase2 - totalDeUmbral, 2);
+        valorVarianza = valor1 * Math.pow(umbralClase1 - totalDeUmbral, 2) + valor2 * Math.pow(umbralClase2 - totalDeUmbral, 2);
         return valorVarianza;
     }
-
 }
