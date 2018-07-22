@@ -1587,29 +1587,29 @@ public class Program extends Application {
         }
     };
 
-    private EventHandler<ActionEvent> listenerDirectionalOptionA = new EventHandler<ActionEvent>() {
-
-        @Override
-        public void handle(ActionEvent event) {
-
-            int[][] matrixWeight = { { -1, -1, -1 }, { 1, -2, 1 }, { 1, 1, 1 } };
-
-            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
-            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
-            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
-            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
-
-            List<int[][]> listMasks = new ArrayList<>();
-            listMasks.add(matrixDX);
-            listMasks.add(matrixDY);
-            listMasks.add(matrixRR);
-            listMasks.add(matrixRL);
-
-            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
-            int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
-            setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
-        }
-    };
+//    private EventHandler<ActionEvent> listenerDirectionalOptionA = new EventHandler<ActionEvent>() {
+//
+//        @Override
+//        public void handle(ActionEvent event) {
+//
+//            int[][] matrixWeight = { { -1, -1, -1 }, { 1, -2, 1 }, { 1, 1, 1 } };
+//
+//            int[][] matrixDX = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_X);
+//            int[][] matrixDY = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, DERIVATE_Y);
+//            int[][] matrixRR = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_R);
+//            int[][] matrixRL = borderDetectors.applyBorderDetector(matrixGray, matrixWeight, ROTATION_L);
+//
+//            List<int[][]> listMasks = new ArrayList<>();
+//            listMasks.add(matrixDX);
+//            listMasks.add(matrixDY);
+//            listMasks.add(matrixRR);
+//            listMasks.add(matrixRL);
+//
+//            int[][] matrixResult = borderDetectors.buildMatrixDirectional(listMasks);
+//            int[][] normalizedMatrix = functions.normalizeMatrix(matrixResult);
+//            setSizeImageViewResult(ui.getImageResult(normalizedMatrix));
+//        }
+//    };
 
     private EventHandler<ActionEvent> listenerDirectionalKirsh = new EventHandler<ActionEvent>() {
 
