@@ -48,6 +48,8 @@ public class ThresholdColor {
             /* 5) */ mergeIsRequired = mergeClass();
             attempt++;
         }
+        if (attempt > 2)
+            System.out.println("valor: " + attempt);
         /* 7) */
         return getMatrixResult();
     }
@@ -114,6 +116,8 @@ public class ThresholdColor {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
+
+                // System.out.println( tr[i][j]);
 
                 // RED
                 if (matrixR[i][j] > tr[i][j]) {

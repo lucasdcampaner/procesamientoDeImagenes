@@ -359,13 +359,15 @@ public class Modifiers {
 
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                if (matrixGray[i][j] > valorOptimoDeUmbral) {
-                    matrixAux[i][j] = 255;
-                } else {
-                    matrixAux[i][j] = 0;
-                }
+                matrixAux[i][j] = valorOptimoDeUmbral;
             }
         }
+        // if (matrixGray[i][j] > valorOptimoDeUmbral) {
+        // matrixAux[i][j] = 255;
+        // } else {
+        // matrixAux[i][j] = 0;
+        // }
+
         // Dialogs.showInformation("Valor optimo de umbral: " + valorOptimoDeUmbral);
 
         return matrixAux;
